@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/10/27 20:20:20 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/10/27 21:35:00 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ INC = includes/
 
 SRC_DIR = srcs/
 
-SRC = main.c
+SRC = main.c \
+	  update_fps.c \
+	  end_of_program.c \
 
 OBJ_DIR = objs/
 
