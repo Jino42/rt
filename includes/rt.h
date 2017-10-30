@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ntoniolo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/27 22:50:35 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/10/29 23:57:33 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ typedef struct		s_event
 
 typedef struct		s_sdl
 {
-	unsigned int	width;
-	unsigned int	height;
+	uint32_t		width;
+	uint32_t		height;
+	float		ratio;
 	SDL_Window		*win;
 	SDL_Renderer	*render;
 	SDL_Texture		*img;
@@ -53,8 +54,17 @@ typedef struct		s_sdl
 	const uint8_t	*key;
 	uint32_t		*pix;
 }					t_sdl;
-//Do class ? 
+
+bool				sdl_init(t_sdl *sdl);
+void 				sdl_put_pixel(t_sdl *sdl, const uint32_t x,
+						const uint32_t y, uint32_t const col);
+void 				sdl_update_event(t_sdl *sdl, t_event *event);
+bool				sdl_event_exit(t_sdl *sdl);
+bool				sdl_key(t_sdl *sdl, const uint32_t key);
+
+//Do class ?
 ///////////////////////////////////////////////////
+
 typedef struct		s_fps
 {
 	struct timeval	step2;
