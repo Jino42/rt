@@ -219,7 +219,8 @@ void render(const std::vector<Sphere> &spheres)
 {
     unsigned width = 1080, height = 720;
     Vec3f *image = new Vec3f[width * height], *pixel = image;
-    float invWidth = 1 / float(width), invHeight = 1 / float(height);
+    float invWidth = 1 / float(width);
+	float invHeight = 1 / float(height);
     float fov = 66, aspectratio = width / float(height);
     float angle = tan(M_PI * 0.5 * fov / 180.);
     // Trace rays
@@ -231,7 +232,11 @@ void render(const std::vector<Sphere> &spheres)
             Vec3f raydir(xx, yy, -1);
             raydir.normalize();
 			if (x == 270  && y == 140)
+			{
+				std::cout << "Magnitude : " << raydir.length2() << "\n";
+				std::cout << "Px : " << xx << "_ Py : " << yy << "\n";
 				std::cout << " x " << raydir.x << " y " << raydir.y << " z " << raydir.z;
+			}
             *pixel = trace(Vec3f(0), raydir, spheres, 0);
         }
     }
