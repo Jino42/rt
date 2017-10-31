@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/10/29 18:58:28 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/10/31 21:35:11 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRC_DIR = srcs/
 SRC = main.c \
 	  update_fps.c \
 	  end_of_program.c \
+	  matrix.c \
 	  sdl/sdl_init.c \
 	  sdl/sdl_put_pixel.c \
 	  sdl/sdl_key.c \

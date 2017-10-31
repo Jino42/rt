@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/29 23:57:33 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/10/31 23:43:10 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/includes/libft.h"
 # include "../vector/includes/vector.h"
 # include "../SDL2-2.0.5/include/SDL.h"
+# include "matrix.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -25,8 +26,8 @@
 
 # define ERROR_SDL (1 << 1)
 
-# define HEIGHT 720
-# define WIDTH 1080
+# define HEIGHT 500
+# define WIDTH 600
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
 
 ///////////////////////////////////////////////////
@@ -45,7 +46,7 @@ typedef struct		s_sdl
 {
 	uint32_t		width;
 	uint32_t		height;
-	float		ratio;
+	float			ratio;
 	SDL_Window		*win;
 	SDL_Renderer	*render;
 	SDL_Texture		*img;
@@ -65,6 +66,15 @@ bool				sdl_key(t_sdl *sdl, const uint32_t key);
 //Do class ?
 ///////////////////////////////////////////////////
 
+typedef struct	s_cam
+{
+	t_vector	position;
+	t_vector	angle;
+	t_matrix	camera_to_world;
+}				t_cam;
+
+///////////////////////////////////////////////////
+
 typedef struct		s_fps
 {
 	struct timeval	step2;
@@ -79,6 +89,8 @@ typedef struct		s_env
 {
 	t_sdl			sdl;
 	t_fps			fps;
+
+	t_cam			cam;
 }					t_env;
 
 void				update_fps(t_fps *fps);
