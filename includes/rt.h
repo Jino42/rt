@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/31 23:43:10 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/02 18:30:03 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,15 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <stdint.h>
+# include <pthread.h>
 
 # define ERROR_SDL (1 << 1)
 
 # define HEIGHT 500
 # define WIDTH 600
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
+
+# define NB_THREAD 4
 
 ///////////////////////////////////////////////////
 
@@ -75,6 +78,23 @@ typedef struct	s_cam
 
 ///////////////////////////////////////////////////
 
+typedef struct	s_light
+{
+	t_vector	position;
+	float		intensity;
+	uint32_t	color;
+}				t_light;
+
+typedef struct 	s_sphere
+{
+	t_vector	position;
+	float		radius;
+	float		distance;
+	uint32_t	color;
+}				t_sphere;
+
+///////////////////////////////////////////////////
+
 typedef struct		s_fps
 {
 	struct timeval	step2;
@@ -91,9 +111,23 @@ typedef struct		s_env
 	t_fps			fps;
 
 	t_cam			cam;
+	t_list			*sphere;
+	t_light			light;
 }					t_env;
 
+typedef struct		s_arg_thread
+{
+	t_env 			*e;
+	uint32_t		start_y;
+	uint32_t		end_y;
+}					t_arg_thread;
+
+void 				*foreachpix(void *arg_thread);
+
 void				update_fps(t_fps *fps);
+void 				update_cam(t_cam *cam);
+
+void 				event_cam(t_event *event, t_cam *cam);
 
 int					end_of_program(t_env *e, char *str, int flag);
 #endif

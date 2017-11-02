@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/10/31 21:35:11 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/11/02 17:25:12 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = rt
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 
 INC_FILES = includes/rt.h
 
@@ -24,8 +24,11 @@ SRC_DIR = srcs/
 
 SRC = main.c \
 	  update_fps.c \
+	  update_cam.c \
 	  end_of_program.c \
 	  matrix.c \
+	  test.c \
+	  event_cam.c \
 	  sdl/sdl_init.c \
 	  sdl/sdl_put_pixel.c \
 	  sdl/sdl_key.c \
