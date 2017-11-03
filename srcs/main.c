@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/02 20:39:44 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/03 18:45:31 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,27 @@ t_sphere 	sphere_construct(const t_vector position, const float radius,
 	return (s);
 }
 
+t_plan		plan_construct(const t_vector position, const float len,
+							const uint32_t color)
+{
+	t_plan p;
+
+	p.color = color;
+	p.position = position;
+	p.len = len;
+
+	p.p0 = vector_construct(position.x - len, position.y - len, position.z);
+	p.p1 = vector_construct(0, len * 2, 0);
+	p.p1 = vector_get_add(&p.p0, &p.p1);
+	p.p2 = vector_construct(len * 2, 0, 0);
+	p.p2 = vector_get_add(&p.p0, &p.p2);
+	printf("Position = %.2f %.2f %.2f\n", p.position.x, p.position.y, p.position.z);
+	printf("P0 = %.2f %.2f %.2f\n", p.p0.x, p.p0.y, p.p0.z);
+	printf("P1 = %.2f %.2f %.2f\n", p.p1.x, p.p1.y, p.p1.z);
+	printf("P2 = %.2f %.2f %.2f\n", p.p2.x, p.p2.y, p.p2.z);
+	return (p);
+}
+
 bool 		init_object(t_env *e)
 {
 	uint32_t	nb_sphere = 7;
@@ -32,7 +53,7 @@ bool 		init_object(t_env *e)
 
 	//Sphere(Vec3(-20,15,70),11,Color(255,255,255)),// S0
 	//Sphere(Vec3(20,-15,75),13,Color(200,55,200))// S1
-	s[0] = sphere_construct(vector_construct(0, 0, -10), 1.7, 0x84F15E);
+	s[0] = sphere_construct(vector_construct(10, 10, -10), 1.7, 0x84F15E);
 	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000); // RIGHT WALL
 				//Sphere(Vec3(1e5,0, -2500)  ,1e5,Color(255,0,0)), //Right wall
 	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00); // LEFT WALL
@@ -55,6 +76,13 @@ bool 		init_object(t_env *e)
 	e->light.position = vector_construct(10, 10, 0);
 	e->light.intensity = 1;
 	e->light.color = 0xFFFFFF;
+
+	t_plan p;
+
+	p = plan_construct(vector_construct(0, 0, 0), 1, 0xFF00FF);
+	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
+		return (false);
+	ft_lstadd(&e->plan, push);
 	return (true);
 }
 

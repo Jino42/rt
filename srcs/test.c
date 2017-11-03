@@ -1,26 +1,5 @@
 #include "rt.h"
-/*
-int			raytest(const t_vector *cam, const t_vector *dir, const float len)
-{
-	t_sphere s;
 
-	s.position = vector_construct(0, 0, -10);
-	s.radius = 1.7;
-	t_vector originToSphere = vector_get_sub(&s.position, cam);
-	float projection = vector_dot(&originToSphere, dir);
-	t_vector mult = vector_get_mult(dir, projection);
-	t_vector sphere_to_intersect = vector_get_sub(&originToSphere, &mult);
-	float distanceSq = vector_magnitude(&sphere_to_intersect);
-	float radiusSq = s.radius;
-
-	if (distanceSq > radiusSq)
-		return (0);
-	float newLen = projection - sqrt(radiusSq - distanceSq);
-	if (newLen < len && newLen > 0)
-		return (1);
-	return (0);
-}
-*/
 float			raytest(const t_vector *cam, const t_vector *dir, const float len, t_sphere *s)
 {
 	t_vector originToSphere = vector_get_sub(&s->position, cam);
@@ -136,6 +115,39 @@ uint32_t	hex_intensity(uint32_t color, float intensity)
 	return ((r << 16) + (g << 8) + b);
 }
 
+t_vector	test_vector_get_cross_product(t_vector *a, t_vector *b)
+{
+	t_vector n;
+
+	n.x = (a->y * b->z) - (a->z * b->y);
+	n.y = (a->z * b->x) - (a->x * b->z);
+	n.z = (a->x * b->y) - (a->y * b->x);
+	return (n);
+}
+
+int		plan_test(t_env *e, const t_vector *dir, const t_vector *cam, const float len)
+{
+	t_plan *p = (t_plan *)e->plan->content;
+
+	t_vector normal;
+	t_vector a = vector_get_sub(&p->p1, &p->p0);
+	t_vector b = vector_get_sub(&p->p2, &p->p0);
+	vector_normalize(&a);
+	vector_normalize(&b);
+	normal = test_vector_get_cross_product(&a, &b);
+	//Normalize no need
+	float denom = vector_dot(&normal, dir);
+	if (denom > 1e-6)
+	{
+		t_vector origin_to_plan = vector_get_sub(&p->position, cam);
+		float t = vector_dot(&origin_to_plan, &normal) / denom;
+		if (t >=0 && t < len)
+			return (t);
+	}
+
+	return (false);
+}
+
 void 		*foreachpix(void *arg_thread)
 {
 	t_env *e;
@@ -175,8 +187,8 @@ void 		*foreachpix(void *arg_thread)
 			while (obj)
 			{
 				s = (t_sphere *)obj->content;
-				//ret = raytest(&e->cam.position, &dir, INFINITY, s);
-				ret = intersect(&e->cam.position, &dir, INFINITY, s);
+				//ret = raytest(&e->cam.position, &dir, INFINITY, s); // Geometria
+				ret = intersect(&e->cam.position, &dir, INFINITY, s); // Analytic
 				if (ret)
 				{
 					if (ret < min_distance)
@@ -202,6 +214,10 @@ void 		*foreachpix(void *arg_thread)
 
 						//sdl_put_pixel(sdl, x, y, s->color);
 						min_distance = ret;
+					}
+					if (plan_test(e, &dir, &e->cam.position, INFINITY) > 0 && < ret)
+					{
+						sdl_put_pixel(sdl, x, y, ((t_plan *)e->plan->content)->color);
 					}
 				}
 				obj = obj->next;
