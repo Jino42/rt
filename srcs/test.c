@@ -125,28 +125,51 @@ t_vector	test_vector_get_cross_product(t_vector *a, t_vector *b)
 	return (n);
 }
 
-int		plan_test(t_env *e, const t_vector *dir, const t_vector *cam, const float len)
+float		plan_test(t_env *e, const t_vector *dir, const t_vector *cam, const float len)
 {
 	t_plan *p = (t_plan *)e->plan->content;
 
 	t_vector normal;
-	t_vector a = vector_get_sub(&p->p1, &p->p0);
+	t_vector temp = vector_get_rotate_x(&((t_plan *)e->plan->content)->p1, e->temp);
+	t_vector a = vector_get_sub(&temp, &p->p0);
 	t_vector b = vector_get_sub(&p->p2, &p->p0);
-	vector_normalize(&a);
-	vector_normalize(&b);
+	//vector_normalize(&a);
+	//vector_normalize(&b);
 	normal = test_vector_get_cross_product(&a, &b);
-	//Normalize no need
+	//vector_normalize(&normal);
+	//Normalize no need normaly
 	float denom = vector_dot(&normal, dir);
-	if (denom > 1e-6)
+	if (fabs(denom) > 0.0001)
 	{
 		t_vector origin_to_plan = vector_get_sub(&p->position, cam);
 		float t = vector_dot(&origin_to_plan, &normal) / denom;
-		if (t >=0 && t < len)
-			return (t);
-	}
+		if (t >= 0 && t < len)
+		{
+			t_vector len;
+			t_vector point;
 
+			point = vector_get_mult(dir, t);
+			point = vector_get_add(&point, cam);
+			len = vector_get_sub(&point, &p->position);
+			//disk EAsy!
+			/*
+				float dot = vector_magnitude(&len);
+				if (sqrtf(dot) < 20)
+			*/
+			//SQUARE : Roatate size Wrong
+			/*
+				t_vector size = vector_construct(2, 2, 2);
+				size = vector_get_rotate_x(&size, e->temp);
+				vector_abs(&len);
+				vector_abs(&size);
+				if (len.x <= size.x && len.y <= size.y && len.z <= size.z)
+			*/
+				return (t);
+		}
+	}
 	return (false);
 }
+
 
 void 		*foreachpix(void *arg_thread)
 {
@@ -209,18 +232,21 @@ void 		*foreachpix(void *arg_thread)
 							if (dot < 0)
 								dot = 0;
 						//	list_light = list_light->next;
-						//}
+						//}*/
 							sdl_put_pixel(sdl, x, y, hex_intensity(s->color, dot));
 
 						//sdl_put_pixel(sdl, x, y, s->color);
 						min_distance = ret;
 					}
-					if (plan_test(e, &dir, &e->cam.position, INFINITY) > 0 && < ret)
-					{
-						sdl_put_pixel(sdl, x, y, ((t_plan *)e->plan->content)->color);
-					}
 				}
 				obj = obj->next;
+			}
+			//PLAN
+			ret = plan_test(e, &dir, &e->cam.position, INFINITY);
+			if (ret && ret < min_distance)
+			{
+				sdl_put_pixel(sdl, x, y, ((t_plan *)e->plan->content)->color);
+				min_distance = ret;
 			}
 		}
 	}

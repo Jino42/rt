@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/03 18:45:31 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/04 23:32:45 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ bool 		init_object(t_env *e)
 
 	t_plan p;
 
-	p = plan_construct(vector_construct(0, 0, 0), 1, 0xFF00FF);
+	p = plan_construct(vector_construct(0, 0, -10), 1, 0xFF00FF);
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
 	ft_lstadd(&e->plan, push);
@@ -109,6 +109,21 @@ void 		run_multi_thread(t_env *e)
 	}
 }
 
+
+void 		update_lul(t_env *e, t_sdl *sdl)
+{
+	t_event *ev;
+
+	ev = &sdl->event;
+	if (ev->key[SDL_SCANCODE_T])
+	{
+		e->temp += 0.04;
+	}
+
+	if (ev->key[SDL_SCANCODE_Y])
+		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
+}
+
 void		sdl_loop(t_env *e, t_sdl *sdl)
 {
 	while (!sdl_event_exit(sdl))
@@ -117,6 +132,7 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 		sdl_update_event(sdl, &sdl->event);
 		event_cam(&sdl->event, &e->cam);
 		update_cam(&e->cam);
+		update_lul(e, sdl);
 		run_multi_thread(e);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
 		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
