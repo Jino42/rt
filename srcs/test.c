@@ -93,6 +93,12 @@ void 		*foreachpix(void *arg_thread)
 				sdl_put_pixel(sdl, x, y, ((t_plan *)e->plan->content)->color);
 				min_distance = ret;
 			}
+			ret = intersection_cylinder(&e->cam.position, &dir, INFINITY, e->cylinder->content, e);
+			if (ret && ret < min_distance)
+			{
+				sdl_put_pixel(sdl, x, y, ((t_cylinder *)e->cylinder->content)->color);
+				min_distance = ret;
+			}
 		}
 	}
 	pthread_exit(NULL);

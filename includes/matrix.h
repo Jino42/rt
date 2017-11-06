@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/31 21:27:35 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/31 22:42:42 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/06 22:42:28 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,13 @@ typedef struct	s_matrix
 }				t_matrix;
 
 t_matrix		matrix_get_identity();
-t_matrix		matrix_get_mult_matrix(t_matrix *a, t_matrix *b);
-t_vector		matrix_get_mult_vector(t_matrix *m, t_vector *v);
+t_matrix		matrix_get_mult_matrix(const t_matrix *a, const t_matrix *b);
+t_vector		matrix_get_mult_vector(const t_matrix *m, const t_vector *v);
+t_vector		matrix_get_mult_dir_vector(const t_matrix *m, const t_vector *v);
 t_matrix		matrix_get_rotation_x(const float a);
 t_matrix		matrix_get_rotation_y(const float a);
 t_matrix		matrix_get_rotation_z(const float a);
+t_matrix		matrix_get_translation(const t_vector *trans);
 
 
 #endif

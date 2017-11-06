@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/06 10:38:33 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/06 23:49:11 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ t_sphere 	sphere_construct(const t_vector position, const float radius,
 {
 	t_sphere s;
 
+	s.world_to_object = matrix_get_identity();
 	s.color = color;
 	s.position = position;
 	s.radius = radius;
+	s.radius2 = radius * radius;
 
 	return (s);
 }
@@ -29,6 +31,7 @@ t_plan		plan_construct(const t_vector position, const float len,
 {
 	t_plan p;
 
+	p.world_to_object = matrix_get_identity();
 	p.color = color;
 	p.position = position;
 	p.len = len;
@@ -36,11 +39,22 @@ t_plan		plan_construct(const t_vector position, const float len,
 	p.p0 = vector_construct(position.x - len, position.y - len, position.z);
 	p.p1 = vector_construct(0, 1, 0);
 	p.p2 = vector_construct(1, 0, 0);
-	printf("Position = %.2f %.2f %.2f\n", p.position.x, p.position.y, p.position.z);
-	printf("P0 = %.2f %.2f %.2f\n", p.p0.x, p.p0.y, p.p0.z);
-	printf("P1 = %.2f %.2f %.2f\n", p.p1.x, p.p1.y, p.p1.z);
-	printf("P2 = %.2f %.2f %.2f\n", p.p2.x, p.p2.y, p.p2.z);
 	return (p);
+}
+
+t_cylinder	cylinder_construct(const t_vector position, const float radius,
+								const uint32_t color)
+{
+	t_cylinder c;
+
+	c.world_to_object = matrix_get_identity();
+	c.color = color;
+	c.position = position;
+	c.radius = radius;
+	c.radius2 = radius * radius;
+	c.dir = vector_construct(0, 1, 0);
+
+	return (c);
 }
 
 bool 		init_object(t_env *e)
@@ -73,6 +87,13 @@ bool 		init_object(t_env *e)
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
 	ft_lstadd(&e->plan, push);
+
+	t_cylinder c;
+
+	c = cylinder_construct(vector_construct(-10, 14, 1), 2, 0x0BFF28);
+	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
+		return (false);
+	ft_lstadd(&e->cylinder, push);
 	return (true);
 }
 
@@ -102,13 +123,32 @@ void 		run_multi_thread(t_env *e)
 
 void 		update_lul(t_env *e, t_sdl *sdl)
 {
-	t_event *ev;
+	t_event		*ev;
+	t_matrix	m;
 
 	ev = &sdl->event;
 	if (ev->key[SDL_SCANCODE_T])
 		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
 	if (ev->key[SDL_SCANCODE_Y])
 		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
+	if (ev->key[SDL_SCANCODE_I])
+	{
+		m = matrix_get_rotation_x(0.04);
+		((t_cylinder *)e->cylinder->content)->world_to_object =
+		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
+	}
+	if (ev->key[SDL_SCANCODE_O])
+	{
+		m = matrix_get_rotation_y(0.04);
+		((t_cylinder *)e->cylinder->content)->world_to_object =
+		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
+	}
+	if (ev->key[SDL_SCANCODE_P])
+	{
+		m = matrix_get_rotation_z(0.04);
+		((t_cylinder *)e->cylinder->content)->world_to_object =
+		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
+	}
 }
 
 void		sdl_loop(t_env *e, t_sdl *sdl)

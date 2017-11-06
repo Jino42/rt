@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/06 10:41:58 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/06 23:40:55 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # include "../SDL2-2.0.5/include/SDL.h"
 # include "matrix.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/time.h>
 # include <stdbool.h>
 # include <stdint.h>
@@ -87,14 +87,18 @@ typedef struct	s_light
 
 typedef struct 	s_sphere
 {
+	t_matrix	world_to_object;
 	t_vector	position;
+	t_vector	dir;
 	float		radius;
+	float		radius2;
 	float		distance;
 	uint32_t	color;
 }				t_sphere;
 
 typedef struct	s_plan
 {
+	t_matrix	world_to_object;
 	t_vector	position;
 	t_vector	p0; // Bas gauche
 	t_vector	p1; // haut gauche RELATIVE
@@ -102,6 +106,17 @@ typedef struct	s_plan
 	float		len;
 	uint32_t	color;
 }				t_plan;
+
+typedef struct	s_cylinder
+{
+	t_matrix	world_to_object;
+	t_vector	angle;
+	t_vector	position;
+	t_vector	dir;
+	float		radius;
+	float		radius2;
+	uint32_t	color;
+}				t_cylinder;
 
 ///////////////////////////////////////////////////
 
@@ -123,6 +138,7 @@ typedef struct		s_env
 	t_cam			cam;
 	t_list			*sphere;
 	t_list			*plan;
+	t_list			*cylinder;
 	t_light			light;
 
 	float			temp;
@@ -152,6 +168,7 @@ float				intersection_plane(t_env *e, const t_vector *dir,
 							const t_vector *cam, const float len);
 float				intersection_disk(t_env *e, const t_vector *dir,
 							const t_vector *cam, const float len);
-
+float				intersection_cylinder(const t_vector *origin, const t_vector *dir,
+							const float len, t_cylinder *obj, t_env *e);
 int					end_of_program(t_env *e, char *str, int flag);
 #endif

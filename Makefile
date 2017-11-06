@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/11/06 10:42:05 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/11/06 11:18:26 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRC = main.c \
 	  intersection_sphere.c \
 	  intersection_plane.c \
 	  intersection_disk.c \
+	  intersection_cylinder.c \
 	  sdl/sdl_init.c \
 	  sdl/sdl_put_pixel.c \
 	  sdl/sdl_key.c \
