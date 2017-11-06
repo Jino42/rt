@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/04 23:32:45 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/06 10:38:33 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ t_plan		plan_construct(const t_vector position, const float len,
 	p.len = len;
 
 	p.p0 = vector_construct(position.x - len, position.y - len, position.z);
-	p.p1 = vector_construct(0, len * 2, 0);
-	p.p1 = vector_get_add(&p.p0, &p.p1);
-	p.p2 = vector_construct(len * 2, 0, 0);
-	p.p2 = vector_get_add(&p.p0, &p.p2);
+	p.p1 = vector_construct(0, 1, 0);
+	p.p2 = vector_construct(1, 0, 0);
 	printf("Position = %.2f %.2f %.2f\n", p.position.x, p.position.y, p.position.z);
 	printf("P0 = %.2f %.2f %.2f\n", p.p0.x, p.p0.y, p.p0.z);
 	printf("P1 = %.2f %.2f %.2f\n", p.p1.x, p.p1.y, p.p1.z);
@@ -51,21 +49,13 @@ bool 		init_object(t_env *e)
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	//Sphere(Vec3(-20,15,70),11,Color(255,255,255)),// S0
-	//Sphere(Vec3(20,-15,75),13,Color(200,55,200))// S1
 	s[0] = sphere_construct(vector_construct(10, 10, -10), 1.7, 0x84F15E);
 	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000); // RIGHT WALL
-				//Sphere(Vec3(1e5,0, -2500)  ,1e5,Color(255,0,0)), //Right wall
 	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00); // LEFT WALL
-				//Sphere(Vec3(-1e5 ,0, -2500),1e5,Color(0,255,0)), //Left  wall
 	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF); // BACK WALL
-				//Sphere(Vec3(0,0,1e5 + 100),1e5,Color(0,0,255)),// Back wall
 	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500); // FRONT WALL
-				//Sphere(Vec3(0,0,-1e5 - 100),1e5,Color(0,55,0)),// Front wall
 	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF); // TOP WALL
-				//Sphere(Vec3(0,1e5,2500),1e5,Color(55,200,0)),// Top wall
 	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500); // DOWN WALL
-				//Sphere(Vec3(0, -1e5, -2500),1e5,Color(200,55,0)),// Bottom wall
 
 	while (nb_sphere-- != 0)
 	{
@@ -79,7 +69,7 @@ bool 		init_object(t_env *e)
 
 	t_plan p;
 
-	p = plan_construct(vector_construct(0, 0, -10), 1, 0xFF00FF);
+	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
 	ft_lstadd(&e->plan, push);
@@ -116,10 +106,7 @@ void 		update_lul(t_env *e, t_sdl *sdl)
 
 	ev = &sdl->event;
 	if (ev->key[SDL_SCANCODE_T])
-	{
-		e->temp += 0.04;
-	}
-
+		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
 	if (ev->key[SDL_SCANCODE_Y])
 		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
 }

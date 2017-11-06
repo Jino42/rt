@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/04 23:26:38 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/06 10:41:58 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,8 @@ typedef struct	s_plan
 {
 	t_vector	position;
 	t_vector	p0; // Bas gauche
-	t_vector	p1; // haut gauche
-	t_vector	p2; // bas droite
+	t_vector	p1; // haut gauche RELATIVE
+	t_vector	p2; // bas droite RELATIVE
 	float		len;
 	uint32_t	color;
 }				t_plan;
@@ -141,6 +141,17 @@ void				update_fps(t_fps *fps);
 void 				update_cam(t_cam *cam);
 
 void 				event_cam(t_event *event, t_cam *cam);
+
+bool				solve_quadratic(const float a, const float b, const float c,
+							float *inter0, float *inter1);
+float				intersection_sphere(const t_vector *origin, const t_vector *dir,
+							const float len, t_sphere *s);
+float				geo_intersection_sphere(const t_vector *origin, const t_vector *dir,
+							const float len, t_sphere *s);
+float				intersection_plane(t_env *e, const t_vector *dir,
+							const t_vector *cam, const float len);
+float				intersection_disk(t_env *e, const t_vector *dir,
+							const t_vector *cam, const float len);
 
 int					end_of_program(t_env *e, char *str, int flag);
 #endif
