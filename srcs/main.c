@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 16:48:26 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 18:51:08 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ t_cylinder	cylinder_construct(const t_vector position, const float radius,
 	t_cylinder c;
 
 	c.world_to_object = matrix_get_identity();
+	c.translation = matrix_get_identity();
 	c.color = color;
 	c.position = position;
 	c.radius = radius;
@@ -134,13 +135,24 @@ void 		update_lul(t_env *e, t_sdl *sdl)
 		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
 	if (ev->key[SDL_SCANCODE_Y])
 		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
-		
+
+	t_vector dir;
 	if (ev->key[SDL_SCANCODE_I])
 		matrix_rotation_x(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_O])
 		matrix_rotation_y(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_P])
 		matrix_rotation_z(&c->world_to_object, c->rotate_speed);
+	if (ev->key[SDL_SCANCODE_K])
+	{
+		dir = vector_construct(7, 2, -2);
+		matrix_translation(&c->translation, &dir);
+	}
+	if (ev->key[SDL_SCANCODE_M])
+	{
+		dir = vector_construct(1, 1, 1);
+		matrix_translation(&c->translation, &dir);
+	}
 }
 
 void		sdl_loop(t_env *e, t_sdl *sdl)

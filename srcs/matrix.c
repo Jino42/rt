@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/31 21:34:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 16:49:04 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 16:53:59 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,4 +177,16 @@ t_matrix	matrix_get_translation(const t_vector *trans)
 	new.matrix[1][3] = trans->y;
 	new.matrix[2][3] = trans->z;
 	return (new);
+}
+
+void		matrix_translation(t_matrix *m, const t_vector *trans)
+{
+	t_matrix new;
+
+	new = matrix_get_identity();
+	new.matrix[0][3] = trans->x;
+	new.matrix[1][3] = trans->y;
+	new.matrix[2][3] = trans->z;
+	*m = matrix_get_mult_matrix(m, &new);
+	return ;
 }

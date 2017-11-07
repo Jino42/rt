@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 16:44:21 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 18:38:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,11 @@ typedef struct	s_plan
 
 typedef struct	s_cylinder
 {
+	/////////// S
+	/////////// R
+	/////////// T
+
+	t_matrix	translation;
 	t_matrix	world_to_object;
 	t_vector	position;
 	t_vector	dir;
