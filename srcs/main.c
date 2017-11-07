@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/06 23:49:11 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 16:48:26 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ t_cylinder	cylinder_construct(const t_vector position, const float radius,
 	c.position = position;
 	c.radius = radius;
 	c.radius2 = radius * radius;
+	c.rotate_speed = 0.04;
+	c.speed = 0.04;
 	c.dir = vector_construct(0, 1, 0);
 
 	return (c);
@@ -124,31 +126,21 @@ void 		run_multi_thread(t_env *e)
 void 		update_lul(t_env *e, t_sdl *sdl)
 {
 	t_event		*ev;
-	t_matrix	m;
+	t_cylinder	*c;
 
+	c = (t_cylinder *)e->cylinder->content;
 	ev = &sdl->event;
 	if (ev->key[SDL_SCANCODE_T])
 		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
 	if (ev->key[SDL_SCANCODE_Y])
 		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
+		
 	if (ev->key[SDL_SCANCODE_I])
-	{
-		m = matrix_get_rotation_x(0.04);
-		((t_cylinder *)e->cylinder->content)->world_to_object =
-		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
-	}
+		matrix_rotation_x(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_O])
-	{
-		m = matrix_get_rotation_y(0.04);
-		((t_cylinder *)e->cylinder->content)->world_to_object =
-		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
-	}
+		matrix_rotation_y(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_P])
-	{
-		m = matrix_get_rotation_z(0.04);
-		((t_cylinder *)e->cylinder->content)->world_to_object =
-		matrix_get_mult_matrix(&m, &((t_cylinder *)e->cylinder->content)->world_to_object);
-	}
+		matrix_rotation_z(&c->world_to_object, c->rotate_speed);
 }
 
 void		sdl_loop(t_env *e, t_sdl *sdl)

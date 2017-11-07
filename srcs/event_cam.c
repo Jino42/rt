@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   event_cam.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ntoniolo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/02 15:21:51 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/02 15:22:24 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 16:39:04 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@ void 		event_cam(t_event *event, t_cam *cam)
 		vector_add(&cam->position, &dir);
 	}
 	if (event->key[SDL_SCANCODE_LEFT])
-		cam->angle.y += speed;
-	if (event->key[SDL_SCANCODE_RIGHT])
 		cam->angle.y -= speed;
+	if (event->key[SDL_SCANCODE_RIGHT])
+		cam->angle.y += speed;
 	if (event->key[SDL_SCANCODE_W])
-		cam->angle.x += speed;
-	if (event->key[SDL_SCANCODE_S])
 		cam->angle.x -= speed;
+	if (event->key[SDL_SCANCODE_S])
+		cam->angle.x += speed;
 	if (event->key[SDL_SCANCODE_A])
-		cam->angle.z += speed;
-	if (event->key[SDL_SCANCODE_D])
 		cam->angle.z -= speed;
+	if (event->key[SDL_SCANCODE_D])
+		cam->angle.z += speed;
 }

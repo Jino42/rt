@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 11:14:22 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/06 23:34:52 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 16:15:52 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,21 @@ float		intersection_cylinder(const t_vector *origin, const t_vector *dir,
 										const float len, t_cylinder *obj, t_env *e)
 {
 	(void)e;
-	float inter0, inter1; //Point d'intersection
+	float inter0, inter1;
 	float a, b, c;
-	t_vector	origin_object;
 	t_vector	dir_object;
-	t_vector	origin_to_cylinder;
+	t_vector	origin_object;
 
 
-	origin_object = matrix_get_mult_vector(&obj->world_to_object, origin);
 	dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
-	//t_vector t = vector_construct(-10, -10, -10);
-	//t_matrix trans = matrix_get_translation(&t);
-	//t_matrix rot = matrix_get_rotation_x(e->temp);
-	//t_matrix final = matrix_get_mult_matrix(&rot, &trans);
-	//t_vector new_o = matrix_get_mult_vector(&final, origin);
-	origin_to_cylinder = vector_get_sub(&origin_object, &obj->position); ///////////>
-	//t_vector new;
-	//new = matrix_get_mult_vector(&final, dir);
-	//new = matrix_get_mult_dir_vector(&final, dir);
-	//(p - pa + vt - (va,p - pa + vt)va)2 - r2
-	//(xE + t * Dx)^2 + (yE + t * Dy)^2 - 1 = 0
+	origin_object = vector_get_sub(origin, &obj->position);
+	origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
 	a = dir_object.x * dir_object.x + dir_object.z * dir_object.z;
-	b = 2 * origin_to_cylinder.x * dir_object.x +
-		2 * origin_to_cylinder.z * dir_object.z;
-	c = origin_to_cylinder.x * origin_to_cylinder.x +
-		origin_to_cylinder.z * origin_to_cylinder.z - obj->radius2;
+	b = 2 * origin_object.x * dir_object.x +
+		2 * origin_object.z * dir_object.z;
+	c = origin_object.x * origin_object.x +
+		origin_object.z * origin_object.z - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 > inter1)
@@ -66,13 +56,7 @@ float		intersection_cylinder(const t_vector *origin, const t_vector *dir,
 			return (0);
 	}
 	if (inter0 < len)
-	{
-		t_vector point;
-
-		point = vector_get_mult(&dir_object, inter0);
-		//if (fabs(point.y) < 4)
 			return (inter0);
-	}
 	return (0);
 }
 /*
