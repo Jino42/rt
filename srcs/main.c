@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 18:51:08 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 22:26:13 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ bool 		init_object(t_env *e)
 
 	t_cylinder c;
 
-	c = cylinder_construct(vector_construct(-10, 14, 1), 2, 0x0BFF28);
+	c = cylinder_construct(vector_construct(0, 0, 0), 2, 0x0BFF28);
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
 		return (false);
 	ft_lstadd(&e->cylinder, push);
@@ -145,12 +145,17 @@ void 		update_lul(t_env *e, t_sdl *sdl)
 		matrix_rotation_z(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_K])
 	{
-		dir = vector_construct(7, 2, -2);
-		matrix_translation(&c->translation, &dir);
+		printf("Before : \n");
+		matrix_string(&c->world_to_object);
+		dir = vector_construct(3, 2, 1);
+		matrix_translation(&c->world_to_object, &dir);
+		printf("\nAfter : \n");
+		matrix_string(&c->world_to_object);
+		printf("\n");
 	}
 	if (ev->key[SDL_SCANCODE_M])
 	{
-		dir = vector_construct(1, 1, 1);
+		dir = vector_construct(-1, -1, -1);
 		matrix_translation(&c->translation, &dir);
 	}
 }

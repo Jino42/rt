@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 18:38:56 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/07 20:54:16 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,6 @@ float				intersection_plane(t_env *e, const t_vector *dir,
 float				intersection_disk(t_env *e, const t_vector *dir,
 							const t_vector *cam, const float len);
 float				intersection_cylinder(const t_vector *origin, const t_vector *dir,
-							const float len, t_cylinder *obj, t_env *e);
+							const float len, t_cylinder *obj, t_env *e, const uint32_t x, const uint32_t y);
 int					end_of_program(t_env *e, char *str, int flag);
 #endif
