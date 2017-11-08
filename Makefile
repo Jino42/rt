@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/11/06 11:18:26 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/11/08 14:10:18 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRC_DIR = srcs/
 SRC = main.c \
 	  update_fps.c \
 	  update_cam.c \
+	  update_obj.c \
 	  end_of_program.c \
 	  matrix.c \
 	  test.c \

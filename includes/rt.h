@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:35:23 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 14:27:37 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,8 @@ typedef struct		s_env
 	t_light			light;
 
 	t_list			*obj;
+	int32_t		obj_len;
+	int32_t		obj_index;
 
 	float			temp;
 }					t_env;
@@ -193,6 +195,7 @@ void 				*foreachpix(void *arg_thread);
 
 void				update_fps(t_fps *fps);
 void 				update_cam(t_cam *cam);
+void 				update_obj(t_env *e, t_sdl *sdl);
 
 void 				event_cam(t_event *event, t_cam *cam);
 

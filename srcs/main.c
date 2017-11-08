@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:36:42 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 14:34:47 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ t_sphere 	sphere_construct(const t_vector position,
 	s.position = position;
 	s.radius = radius;
 	s.radius2 = radius * radius;
-	s.rotate_speed = 0.04;
-	s.speed = 0.04;
+	s.rotate_speed = 1.5;
+	s.speed = 5;
 
 	s.world_to_object = matrix_get_identity();
 	s.translation = matrix_get_identity();
@@ -43,8 +43,8 @@ t_plan		plan_construct(const t_vector position,
 	p.color = color;
 	p.position = position;
 	p.len = len;
-	p.rotate_speed = 0.04;
-	p.speed = 0.04;
+	p.rotate_speed = 1.5;
+	p.speed = 5;
 
 	p.world_to_object = matrix_get_identity();
 	p.translation = matrix_get_identity();
@@ -68,8 +68,8 @@ t_cylinder	cylinder_construct(const t_vector position,
 	c.position = position;
 	c.radius = radius;
 	c.radius2 = radius * radius;
-	c.rotate_speed = 0.04;
-	c.speed = 0.04;
+	c.rotate_speed = 1.5;
+	c.speed = 5;
 
 	c.world_to_object = matrix_get_identity();
 	c.translation = matrix_get_identity();
@@ -97,7 +97,7 @@ bool 		init_object(t_env *e)
 	{
 		if (!(push = ft_lstnew(&s[nb_sphere], sizeof(t_sphere))))
 			return (false);
-		ft_lstadd(&e->obj, push);
+		ft_lstinsert(&e->obj, push);
 	}
 	e->light.position = vector_construct(10, 10, 0);
 	e->light.intensity = 1;
@@ -108,14 +108,15 @@ bool 		init_object(t_env *e)
 	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
-	ft_lstadd(&e->obj, push);
+	ft_lstinsert(&e->obj, push);
 
 	t_cylinder c;
 
-	c = cylinder_construct(vector_construct(0, 0, 0), 2, 0x0BFF28);
+	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28);
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
 		return (false);
-	ft_lstadd(&e->obj, push);
+	ft_lstinsert(&e->obj, push);
+	e->obj_len = ft_lstlen(e->obj);
 	return (true);
 }
 
@@ -142,42 +143,6 @@ void 		run_multi_thread(t_env *e)
 	}
 }
 
-
-void 		update_lul(t_env *e, t_sdl *sdl)
-{
-	t_event		*ev;
-	t_cylinder	*c;
-	t_sphere	*s;
-
-	c = (t_cylinder *)e->cylinder->content;
-	s = (t_sphere *)e->sphere->content;
-	ev = &sdl->event;
-	if (ev->key[SDL_SCANCODE_T])
-		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
-	if (ev->key[SDL_SCANCODE_Y])
-		vector_rotate_y(&((t_plan *)e->plan->content)->p2, 0.04);
-
-	t_vector dir;
-	if (ev->key[SDL_SCANCODE_I])
-		matrix_rotation_x(&c->world_to_object, c->rotate_speed);
-	if (ev->key[SDL_SCANCODE_O])
-		matrix_rotation_y(&c->world_to_object, c->rotate_speed);
-	if (ev->key[SDL_SCANCODE_P])
-		matrix_rotation_z(&c->world_to_object, c->rotate_speed);
-	if (ev->key[SDL_SCANCODE_K])
-	{
-		dir = vector_construct(3, 2, 1);
-		matrix_translation(&s->translation, &dir);
-		matrix_translation(&c->translation, &dir);
-	}
-	if (ev->key[SDL_SCANCODE_M])
-	{
-		dir = vector_construct(-1, -1, -1);
-		matrix_translation(&s->translation, &dir);
-		matrix_translation(&c->translation, &dir);
-	}
-}
-
 void		sdl_loop(t_env *e, t_sdl *sdl)
 {
 	while (!sdl_event_exit(sdl))
@@ -186,7 +151,7 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 		sdl_update_event(sdl, &sdl->event);
 		event_cam(&sdl->event, &e->cam);
 		update_cam(&e->cam);
-		//update_lul(e, sdl);
+		update_obj(e, sdl);
 		run_multi_thread(e);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
 		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
