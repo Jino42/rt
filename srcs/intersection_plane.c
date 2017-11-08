@@ -6,23 +6,40 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 10:09:53 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:31:29 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 15:23:24 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-float		intersection_plane(t_plan *p,
+float		intersection_plane(t_plan *obj,
 								const t_vector *origin,
 								const t_vector *dir,
 								const float len)
 {
 	t_vector normal;
-	normal = vector_get_cross_product(&p->p1, &p->p2);
+
+	t_vector	origin_object;
+	//t_vector	dir_object;
+
+	//dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+
+	origin_object = vector_get_sub(origin, &obj->position);
+	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
+	//origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
+	//t_vector te1 = obj->p1;
+	//t_vector te2 = obj->p2;
+
+	//te1 = matrix_get_mult_vector(&obj->world_to_object, &te1);
+	//te2 = matrix_get_mult_vector(&obj->world_to_object, &te2);
+	//normal = vector_get_cross_product(&te1, &te2);
+	normal = vector_get_cross_product(&obj->p1, &obj->p2);
+	normal = matrix_get_mult_vector(&obj->world_to_object, &normal);
 	float denom = vector_dot(&normal, dir);
 	if (fabs(denom) > 0.0001)
 	{
-		t_vector origin_to_plan = vector_get_sub(&p->position, origin);
+		t_vector origin_to_plan = vector_get_sub(&obj->position, &origin_object);
 		float t = vector_dot(&origin_to_plan, &normal) / denom;
 		if (t >= 0 && t < len)
 		{
@@ -30,8 +47,8 @@ float		intersection_plane(t_plan *p,
 			t_vector point;
 
 			point = vector_get_mult(dir, t);
-			point = vector_get_add(&point, origin);
-			len = vector_get_sub(&point, &p->position);
+			point = vector_get_add(&point, &origin_object);
+			len = vector_get_sub(&point, &obj->position);
 			//disk EAsy!
 			/*
 				float dot = vector_magnitude(&len);
