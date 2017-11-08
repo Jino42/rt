@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:13:54 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:35:23 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
 
 # define NB_THREAD 4
+
+# define OBJ_SPHERE 0
+# define OBJ_PLANE 1
+# define OBJ_CYLINDER 2
 
 ///////////////////////////////////////////////////
 
@@ -85,51 +89,69 @@ typedef struct	s_light
 	uint32_t	color;
 }				t_light;
 
-typedef struct 	s_sphere
+typedef struct	s_obj
 {
+	float		(*intersect)(void *, const t_vector *,
+						const t_vector *, const float);
 	uint8_t		id;
-	t_matrix	translation;
-	t_matrix	world_to_object;
+	uint32_t	color;
 	t_vector	position;
-	float		radius;
-	float		radius2;
+	t_matrix	world_to_object;
+	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+}				t_obj;
+
+typedef struct 	s_sphere
+{
+	float		(*intersect)(struct s_sphere *, const t_vector *,
+						const t_vector *, const float);
+	uint8_t		id;
 	uint32_t	color;
-	float		(*intersect)(t_sphere *, const t_vector *, const t_vector *,
-								const float);
+
+	t_vector	position;
+	t_matrix	world_to_object;
+	t_matrix	translation;
+	float		rotate_speed;
+	float		speed;
+
+	float		radius;
+	float		radius2;
 }				t_sphere;
 
 typedef struct	s_plan
 {
+	float		(*intersect)(struct s_plan *, const t_vector *,
+						const t_vector *, const float);
 	uint8_t		id;
-	t_matrix	translation;
-	t_matrix	world_to_object;
+	uint32_t	color;
 	t_vector	position;
+	t_matrix	world_to_object;
+	t_matrix	translation;
+	float		rotate_speed;
+	float		speed;
+
 	t_vector	p0; // Bas gauche
 	t_vector	p1; // haut gauche RELATIVE
 	t_vector	p2; // bas droite RELATIVE
 	float		len;
-	float		rotate_speed;
-	float		speed;
-	uint32_t	color;
-	float		(*intersect)(t_plan *, const t_vector *, const t_vector *,
-								const float);
 }				t_plan;
 
 typedef struct	s_cylinder
 {
+	float		(*intersect)(struct s_cylinder *, const t_vector *,
+						const t_vector *, const float);
+
 	uint8_t		id;
-	t_matrix	translation;
-	t_matrix	world_to_object;
+	uint32_t	color;
 	t_vector	position;
-	float		radius;
-	float		radius2;
+	t_matrix	world_to_object;
+	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
-	uint32_t	color;
-	float		(*intersect)(t_cylinder *, const t_vector *, const t_vector *,
-								const float);
+
+	float		radius;
+	float		radius2;
 }				t_cylinder;
 
 ///////////////////////////////////////////////////
@@ -176,15 +198,17 @@ void 				event_cam(t_event *event, t_cam *cam);
 
 bool				solve_quadratic(const float a, const float b, const float c,
 							float *inter0, float *inter1);
-float				intersection_sphere(const t_vector *origin, const t_vector *dir,
-							const float len, t_sphere *s);
+
+float				intersection_sphere(t_sphere *obj, const t_vector *origin, const t_vector *dir,
+							const float len);
 float				geo_intersection_sphere(const t_vector *origin, const t_vector *dir,
 							const float len, t_sphere *s);
-float				intersection_plane(t_env *e, const t_vector *dir,
-							const t_vector *cam, const float len);
+float				intersection_plane(t_plan *obj, const t_vector *origin,
+							const t_vector *dir, const float len);
+float				intersection_cylinder(t_cylinder *obj, const t_vector *origin, const t_vector *dir,
+							const float len);
+
 float				intersection_disk(t_env *e, const t_vector *dir,
 							const t_vector *cam, const float len);
-float				intersection_cylinder(const t_vector *origin, const t_vector *dir,
-							const float len, t_cylinder *obj, t_env *e, const uint32_t x, const uint32_t y);
 int					end_of_program(t_env *e, char *str, int flag);
 #endif

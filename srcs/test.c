@@ -18,7 +18,29 @@ uint32_t	hex_intensity(uint32_t color, float intensity)
 	return ((r << 16) + (g << 8) + b);
 }
 
+float 		test_light_sphere(const t_env *e, const t_light *light, const t_obj *o, const t_vector *dir, const float ret)
+{
+	float dot;
+	t_vector dir_sphere;
+	t_vector dir_sphere_to_light;
+	t_vector hit;
 
+	dot = 0;
+
+	hit = vector_get_mult(dir, ret);
+	hit = vector_get_add(&e->cam.position, &hit);
+
+	dir_sphere = vector_get_sub(&hit, &o->position);
+	dir_sphere = matrix_get_mult_vector(&o->translation, &dir_sphere);
+	dir_sphere_to_light  = vector_get_sub(&light->position, &hit);
+
+	vector_normalize(&dir_sphere);
+	vector_normalize(&dir_sphere_to_light);
+	dot = vector_dot(&dir_sphere, &dir_sphere_to_light);
+	if (dot < 0)
+		dot = 0;
+	return (dot);
+}
 
 void 		*foreachpix(void *arg_thread)
 {
@@ -31,8 +53,6 @@ void 		*foreachpix(void *arg_thread)
 	sdl = &e->sdl;
 	t_vector	dir;
 	t_list		*obj;
-	//t_list		*list_light;
-	t_sphere	*s;
 	t_light		*light;
 
 	light = &e->light;
@@ -55,60 +75,23 @@ void 		*foreachpix(void *arg_thread)
 			dir = vector_construct(px, py, -1);
 			dir = matrix_get_mult_vector(&e->cam.camera_to_world, &dir);
 			vector_normalize(&dir);
-			obj = e->sphere;
+			obj = e->obj;
 			while (obj)
 			{
-				s = (t_sphere *)obj->content;
-				//ret = raytest(&e->cam.position, &dir, INFINITY, s); // Geometria
-				ret = intersection_sphere(&e->cam.position, &dir, INFINITY, s); // Analytic
-				if (ret)
+				t_obj *o = obj->content;
+				ret = o->intersect(obj->content, &e->cam.position, &dir, INFINITY);
+				if (ret && ret < min_distance)
 				{
-					if (ret < min_distance)
-					{
-
-						//BEGIN LIGHT
-							float dot;
-							t_vector dir_sphere;
-							t_vector dir_sphere_to_light;
-							dot = 0;
-							t_vector hit;
-
-							hit = vector_get_mult(&dir, ret);
-							hit = vector_get_add(&e->cam.position, &hit);
-
-							dir_sphere = vector_get_sub(&hit, &s->position);
-							dir_sphere = matrix_get_mult_vector(&s->translation, &dir_sphere);
-							dir_sphere_to_light  = vector_get_sub(&light->position, &hit);
-							vector_normalize(&dir_sphere);
-							vector_normalize(&dir_sphere_to_light);
-							dot = vector_dot(&dir_sphere, &dir_sphere_to_light);
-							if (dot < 0)
-								dot = 0;
-							sdl_put_pixel(sdl, x, y, hex_intensity(s->color, dot));
-						//	END LIGHT
-
-						//sdl_put_pixel(sdl, x, y, s->color);
-						min_distance = ret;
-					}
+					if (o->id == OBJ_SPHERE)
+						sdl_put_pixel(sdl, x, y, hex_intensity(o->color, test_light_sphere(e, light, o, &dir, ret)));
+					else
+						sdl_put_pixel(sdl, x, y, o->color);
+					min_distance = ret;
 				}
 				obj = obj->next;
-			}
-			//PLAN
-			ret = intersection_plane(e, &dir, &e->cam.position, INFINITY);
-			if (ret && ret < min_distance)
-			{
-				sdl_put_pixel(sdl, x, y, ((t_plan *)e->plan->content)->color);
-				min_distance = ret;
-			}
-			ret = intersection_cylinder(&e->cam.position, &dir, INFINITY, e->cylinder->content, e, x, y);
-			if (ret && ret < min_distance)
-			{
-				sdl_put_pixel(sdl, x, y, ((t_cylinder *)e->cylinder->content)->color);
-				min_distance = ret;
 			}
 		}
 	}
 	pthread_exit(NULL);
 	return (NULL);
-	//exit(0);
 }

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 10:09:53 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:15:53 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:31:29 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ float		intersection_plane(t_plan *p,
 			t_vector point;
 
 			point = vector_get_mult(dir, t);
-			point = vector_get_add(&point, cam);
+			point = vector_get_add(&point, origin);
 			len = vector_get_sub(&point, &p->position);
 			//disk EAsy!
 			/*

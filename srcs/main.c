@@ -6,52 +6,64 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 11:55:49 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:36:42 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_sphere 	sphere_construct(const t_vector position, const float radius,
+t_sphere 	sphere_construct(const t_vector position,
+								const float radius,
 								const uint32_t color)
 {
 	t_sphere s;
 
-	s.world_to_object = matrix_get_identity();
+	s.id = OBJ_SPHERE;
 	s.color = color;
 	s.position = position;
 	s.radius = radius;
 	s.radius2 = radius * radius;
+	s.rotate_speed = 0.04;
+	s.speed = 0.04;
 
 	s.world_to_object = matrix_get_identity();
 	s.translation = matrix_get_identity();
 
+	s.intersect = &intersection_sphere;
 	return (s);
 }
 
-t_plan		plan_construct(const t_vector position, const float len,
+t_plan		plan_construct(const t_vector position,
+							const float len,
 							const uint32_t color)
 {
 	t_plan p;
 
-	p.world_to_object = matrix_get_identity();
+	p.id = OBJ_PLANE;
 	p.color = color;
 	p.position = position;
 	p.len = len;
+	p.rotate_speed = 0.04;
+	p.speed = 0.04;
+
+	p.world_to_object = matrix_get_identity();
+	p.translation = matrix_get_identity();
 
 	p.p0 = vector_construct(position.x - len, position.y - len, position.z);
 	p.p1 = vector_construct(0, 1, 0);
 	p.p2 = vector_construct(1, 0, 0);
+
+	p.intersect = &intersection_plane;
 	return (p);
 }
 
-t_cylinder	cylinder_construct(const t_vector position, const float radius,
+t_cylinder	cylinder_construct(const t_vector position,
+								const float radius,
 								const uint32_t color)
 {
 	t_cylinder c;
 
-	c.world_to_object = matrix_get_identity();
-	c.translation = matrix_get_identity();
+	c.id = OBJ_CYLINDER;
 	c.color = color;
 	c.position = position;
 	c.radius = radius;
@@ -59,6 +71,10 @@ t_cylinder	cylinder_construct(const t_vector position, const float radius,
 	c.rotate_speed = 0.04;
 	c.speed = 0.04;
 
+	c.world_to_object = matrix_get_identity();
+	c.translation = matrix_get_identity();
+
+	c.intersect = &intersection_cylinder;
 	return (c);
 }
 
@@ -81,7 +97,7 @@ bool 		init_object(t_env *e)
 	{
 		if (!(push = ft_lstnew(&s[nb_sphere], sizeof(t_sphere))))
 			return (false);
-		ft_lstadd(&e->sphere, push);
+		ft_lstadd(&e->obj, push);
 	}
 	e->light.position = vector_construct(10, 10, 0);
 	e->light.intensity = 1;
@@ -92,14 +108,14 @@ bool 		init_object(t_env *e)
 	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
-	ft_lstadd(&e->plan, push);
+	ft_lstadd(&e->obj, push);
 
 	t_cylinder c;
 
 	c = cylinder_construct(vector_construct(0, 0, 0), 2, 0x0BFF28);
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
 		return (false);
-	ft_lstadd(&e->cylinder, push);
+	ft_lstadd(&e->obj, push);
 	return (true);
 }
 
@@ -170,7 +186,7 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 		sdl_update_event(sdl, &sdl->event);
 		event_cam(&sdl->event, &e->cam);
 		update_cam(&e->cam);
-		update_lul(e, sdl);
+		//update_lul(e, sdl);
 		run_multi_thread(e);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
 		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
