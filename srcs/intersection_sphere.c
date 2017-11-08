@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 09:59:42 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 11:44:26 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:15:07 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ float			geo_intersection_sphere(const t_vector *origin, const t_vector *dir,
 	return (0);
 }
 
-float		intersection_sphere(const t_vector *origin, const t_vector *dir,
-										const float len, t_sphere *obj)
+float		intersection_sphere(t_sphere *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
 {
-	float inter0, inter1; //Point d'intersection
+	float inter0, inter1;
 	float a, b, c;
 
 	t_vector	origin_object;
@@ -68,15 +70,7 @@ float		intersection_sphere(const t_vector *origin, const t_vector *dir,
 			return (0);
 	}
 	if (inter0 < len)
-	{
-		/*
-		t_vector final_point = vector_get_mult(dir, inter0);
-		final_point = vector_get_add(origin, &final_point);
-
-		return (vector_magnitude(&final_point));
-		*/
 		return (inter0);
-	}
 	return (0);
 }
 

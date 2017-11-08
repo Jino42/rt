@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 10:35:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:13:54 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,33 +87,7 @@ typedef struct	s_light
 
 typedef struct 	s_sphere
 {
-	t_matrix	translation;
-	t_matrix	world_to_object;
-	t_vector	position;
-	float		radius;
-	float		radius2;
-	float		distance;
-	uint32_t	color;
-}				t_sphere;
-
-typedef struct	s_plan
-{
-	t_matrix	translation;
-	t_matrix	world_to_object;
-	t_vector	position;
-	t_vector	p0; // Bas gauche
-	t_vector	p1; // haut gauche RELATIVE
-	t_vector	p2; // bas droite RELATIVE
-	float		len;
-	uint32_t	color;
-}				t_plan;
-
-typedef struct	s_cylinder
-{
-	/////////// S
-	/////////// R
-	/////////// T
-
+	uint8_t		id;
 	t_matrix	translation;
 	t_matrix	world_to_object;
 	t_vector	position;
@@ -122,6 +96,40 @@ typedef struct	s_cylinder
 	float		rotate_speed;
 	float		speed;
 	uint32_t	color;
+	float		(*intersect)(t_sphere *, const t_vector *, const t_vector *,
+								const float);
+}				t_sphere;
+
+typedef struct	s_plan
+{
+	uint8_t		id;
+	t_matrix	translation;
+	t_matrix	world_to_object;
+	t_vector	position;
+	t_vector	p0; // Bas gauche
+	t_vector	p1; // haut gauche RELATIVE
+	t_vector	p2; // bas droite RELATIVE
+	float		len;
+	float		rotate_speed;
+	float		speed;
+	uint32_t	color;
+	float		(*intersect)(t_plan *, const t_vector *, const t_vector *,
+								const float);
+}				t_plan;
+
+typedef struct	s_cylinder
+{
+	uint8_t		id;
+	t_matrix	translation;
+	t_matrix	world_to_object;
+	t_vector	position;
+	float		radius;
+	float		radius2;
+	float		rotate_speed;
+	float		speed;
+	uint32_t	color;
+	float		(*intersect)(t_cylinder *, const t_vector *, const t_vector *,
+								const float);
 }				t_cylinder;
 
 ///////////////////////////////////////////////////
@@ -146,6 +154,8 @@ typedef struct		s_env
 	t_list			*plan;
 	t_list			*cylinder;
 	t_light			light;
+
+	t_list			*obj;
 
 	float			temp;
 }					t_env;

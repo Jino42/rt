@@ -6,17 +6,17 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 11:14:22 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 22:50:08 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 13:14:42 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-float		intersection_cylinder(const t_vector *origin, const t_vector *dir,
-										const float len, t_cylinder *obj, t_env *e,
-										const uint32_t x, const uint32_t y)
+float		intersection_cylinder(t_cylinder *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
 {
-	(void)e;(void)x;(void)y;
 	float inter0, inter1;
 	float a, b, c;
 	t_vector	dir_object;
