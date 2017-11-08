@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 09:59:42 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:15:07 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 15:00:32 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ float		intersection_sphere(t_sphere *obj,
 
 
 	a = 1; //Donc 1
-	b = 2 * vector_dot(dir, &origin_object); ///////////>
+	b = 2 * vector_dot(&dir_object, &origin_object); ///////////>
 	c = vector_magnitude(&origin_object) - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
