@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 22:26:13 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 11:55:49 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ t_sphere 	sphere_construct(const t_vector position, const float radius,
 	s.position = position;
 	s.radius = radius;
 	s.radius2 = radius * radius;
+
+	s.world_to_object = matrix_get_identity();
+	s.translation = matrix_get_identity();
 
 	return (s);
 }
@@ -55,14 +58,13 @@ t_cylinder	cylinder_construct(const t_vector position, const float radius,
 	c.radius2 = radius * radius;
 	c.rotate_speed = 0.04;
 	c.speed = 0.04;
-	c.dir = vector_construct(0, 1, 0);
 
 	return (c);
 }
 
 bool 		init_object(t_env *e)
 {
-	uint32_t	nb_sphere = 7;
+	uint32_t	nb_sphere = 8;
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
@@ -73,6 +75,7 @@ bool 		init_object(t_env *e)
 	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500); // FRONT WALL
 	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF); // TOP WALL
 	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500); // DOWN WALL
+	s[7] = sphere_construct(vector_construct(10, 10, 0), 0.1, 0xFFFFFF);
 
 	while (nb_sphere-- != 0)
 	{
@@ -128,8 +131,10 @@ void 		update_lul(t_env *e, t_sdl *sdl)
 {
 	t_event		*ev;
 	t_cylinder	*c;
+	t_sphere	*s;
 
 	c = (t_cylinder *)e->cylinder->content;
+	s = (t_sphere *)e->sphere->content;
 	ev = &sdl->event;
 	if (ev->key[SDL_SCANCODE_T])
 		vector_rotate_x(&((t_plan *)e->plan->content)->p1, 0.04);
@@ -145,17 +150,14 @@ void 		update_lul(t_env *e, t_sdl *sdl)
 		matrix_rotation_z(&c->world_to_object, c->rotate_speed);
 	if (ev->key[SDL_SCANCODE_K])
 	{
-		printf("Before : \n");
-		matrix_string(&c->world_to_object);
 		dir = vector_construct(3, 2, 1);
-		matrix_translation(&c->world_to_object, &dir);
-		printf("\nAfter : \n");
-		matrix_string(&c->world_to_object);
-		printf("\n");
+		matrix_translation(&s->translation, &dir);
+		matrix_translation(&c->translation, &dir);
 	}
 	if (ev->key[SDL_SCANCODE_M])
 	{
 		dir = vector_construct(-1, -1, -1);
+		matrix_translation(&s->translation, &dir);
 		matrix_translation(&c->translation, &dir);
 	}
 }

@@ -65,13 +65,20 @@ void 		*foreachpix(void *arg_thread)
 				{
 					if (ret < min_distance)
 					{
+
 						//BEGIN LIGHT
-							float dot = 0;
+							float dot;
+							t_vector dir_sphere;
+							t_vector dir_sphere_to_light;
+							dot = 0;
 							t_vector hit;
+
 							hit = vector_get_mult(&dir, ret);
 							hit = vector_get_add(&e->cam.position, &hit);
-							t_vector dir_sphere = vector_get_sub(&hit, &s->position);
-							t_vector dir_sphere_to_light  = vector_get_sub(&light->position, &hit);
+
+							dir_sphere = vector_get_sub(&hit, &s->position);
+							dir_sphere = matrix_get_mult_vector(&s->translation, &dir_sphere);
+							dir_sphere_to_light  = vector_get_sub(&light->position, &hit);
 							vector_normalize(&dir_sphere);
 							vector_normalize(&dir_sphere_to_light);
 							dot = vector_dot(&dir_sphere, &dir_sphere_to_light);

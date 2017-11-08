@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 20:54:16 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 10:35:20 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ typedef struct	s_light
 
 typedef struct 	s_sphere
 {
+	t_matrix	translation;
 	t_matrix	world_to_object;
 	t_vector	position;
-	t_vector	dir;
 	float		radius;
 	float		radius2;
 	float		distance;
@@ -98,6 +98,7 @@ typedef struct 	s_sphere
 
 typedef struct	s_plan
 {
+	t_matrix	translation;
 	t_matrix	world_to_object;
 	t_vector	position;
 	t_vector	p0; // Bas gauche
@@ -116,7 +117,6 @@ typedef struct	s_cylinder
 	t_matrix	translation;
 	t_matrix	world_to_object;
 	t_vector	position;
-	t_vector	dir;
 	float		radius;
 	float		radius2;
 	float		rotate_speed;
