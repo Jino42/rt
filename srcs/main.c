@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 14:34:47 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/08 19:49:18 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,27 @@ t_sphere 	sphere_construct(const t_vector position,
 
 	s.intersect = &intersection_sphere;
 	return (s);
+}
+
+t_paraboloid 	paraboloid_construct(const t_vector position,
+										const float radius,
+										const uint32_t color)
+{
+	t_paraboloid obj;
+
+	obj.id = OBJ_PARABOLOID;
+	obj.color = color;
+	obj.position = position;
+	obj.radius = radius;
+	obj.radius2 = radius * radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+
+	obj.world_to_object = matrix_get_identity();
+	obj.translation = matrix_get_identity();
+
+	obj.intersect = &intersection_paraboloid;
+	return (obj);
 }
 
 t_plan		plan_construct(const t_vector position,
@@ -114,6 +135,12 @@ bool 		init_object(t_env *e)
 
 	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28);
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
+		return (false);
+	ft_lstinsert(&e->obj, push);
+
+	t_paraboloid paraboloid;
+	paraboloid = paraboloid_construct(vector_construct(0, 0, 0), 2, 0x0BFF28);
+	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
 	e->obj_len = ft_lstlen(e->obj);
