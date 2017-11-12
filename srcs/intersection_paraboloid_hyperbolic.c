@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersection_paraboloid.c                          :+:      :+:    :+:   */
+/*   intersection_paraboloid_hyperbolic.c               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/08 19:46:09 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 14:33:28 by ntoniolo         ###   ########.fr       */
+/*   Created: 2017/11/12 14:26:28 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/11/12 14:46:41 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-float		intersection_paraboloid(t_paraboloid *obj,
+/*
+DOS NOT WORKK !!!!
+*/
+
+float		intersection_paraboloid_hyperbolic(t_paraboloid_hyperbolic *obj,
 		const t_vector *origin,
 		const t_vector *dir,
 		const float len)
@@ -38,10 +42,13 @@ float		intersection_paraboloid(t_paraboloid *obj,
 		v=val*() - z
 **
 */
-	a = (dir_object.x * dir_object.x + dir_object.z * dir_object.z);
-	b = (2 * origin_object.x * dir_object.x +
+	float temp;
+
+	temp = 1;
+	a = temp * (dir_object.x * dir_object.x - dir_object.z * dir_object.z);
+	b = temp * (2 * origin_object.x * dir_object.x -
 		2 * origin_object.z * dir_object.z) - (dir_object.y);
-	c = (origin_object.x * origin_object.x +
+	c = temp * (origin_object.x * origin_object.x -
 		origin_object.z * origin_object.z) - (origin_object.y);
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);

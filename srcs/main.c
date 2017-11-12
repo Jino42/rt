@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 14:22:10 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/12 16:03:38 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,64 @@ t_sphere 	sphere_construct(const t_vector position,
 								const float radius,
 								const uint32_t color)
 {
-	t_sphere s;
+	t_sphere obj;
 
-	s.id = OBJ_SPHERE;
-	s.color = color;
-	s.position = position;
-	s.radius = radius;
-	s.radius2 = radius * radius;
-	s.rotate_speed = 1.5;
-	s.speed = 5;
+	obj.id = OBJ_SPHERE;
+	obj.color = color;
+	obj.position = position;
+	obj.radius = radius;
+	obj.radius2 = radius * radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
 
-	s.world_to_object = matrix_get_identity();
-	s.translation = matrix_get_identity();
+	obj.world_to_object = matrix_get_identity();
+	obj.translation = matrix_get_identity();
 
-	s.intersect = &intersection_sphere;
-	return (s);
+	obj.intersect = &intersection_sphere;
+	return (obj);
 }
+
+t_ellipsoid 	ellipsoid_construct(const t_vector position,
+									const t_vector size,
+									const float	   radius,
+									const uint32_t color)
+{
+	t_ellipsoid obj;
+
+	obj.id = OBJ_ELLIPSOID;
+	obj.color = color;
+	obj.position = position;
+	obj.radius = radius;
+	obj.radius2 = radius * radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+	obj.size = size;
+
+	obj.world_to_object = matrix_get_identity();
+	obj.translation = matrix_get_identity();
+
+	obj.intersect = &intersection_ellipsoid;
+	return (obj);
+}
+
+t_cone 	cone_construct(const t_vector position,
+								const uint32_t color)
+{
+	t_cone obj;
+
+	obj.id = OBJ_CONE;
+	obj.color = color;
+	obj.position = position;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+
+	obj.world_to_object = matrix_get_identity();
+	obj.translation = matrix_get_identity();
+
+	obj.intersect = &intersection_cone;
+	return (obj);
+}
+
 
 t_paraboloid 	paraboloid_construct(const t_vector position,
 										const float radius,
@@ -51,6 +93,27 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 	obj.translation = matrix_get_identity();
 
 	obj.intersect = &intersection_paraboloid;
+	return (obj);
+}
+
+t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position,
+										const float radius,
+										const uint32_t color)
+{
+	t_paraboloid_hyperbolic obj;
+
+	obj.id = OBJ_PARABOLOID_HYPERBOLIC;
+	obj.color = color;
+	obj.position = position;
+	obj.radius = radius;
+	obj.radius2 = radius * radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+
+	obj.world_to_object = matrix_get_identity();
+	obj.translation = matrix_get_identity();
+
+	obj.intersect = &intersection_paraboloid_hyperbolic;
 	return (obj);
 }
 
@@ -143,6 +206,19 @@ bool 		init_object(t_env *e)
 	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
+
+	t_ellipsoid ellipsoid;
+	ellipsoid = ellipsoid_construct(vector_construct(-5, -4, -20), vector_construct(10, 2, 30),10, 0x225be6);
+	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
+		return (false);
+	ft_lstinsert(&e->obj, push);
+
+	t_cone cone;
+	cone = cone_construct(vector_construct(-5, -4, -20), 0xbe6226);
+	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
+		return (false);
+	ft_lstinsert(&e->obj, push);
+
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
 }

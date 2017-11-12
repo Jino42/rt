@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   intersection_paraboloid.c                          :+:      :+:    :+:   */
+/*   intersection_cone.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/08 19:46:09 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 14:33:28 by ntoniolo         ###   ########.fr       */
+/*   Created: 2017/11/12 15:34:11 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/11/12 16:04:41 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-float		intersection_paraboloid(t_paraboloid *obj,
-		const t_vector *origin,
-		const t_vector *dir,
-		const float len)
+float		intersection_cone(t_cone *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
 {
 	float inter0, inter1;
 	float a, b, c;
@@ -28,21 +28,15 @@ float		intersection_paraboloid(t_paraboloid *obj,
 	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
 	origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
 
-/*
-**
-**	Basic function
-**		Can add one more parameter for grow the pointer
-**		with ;
-		a*=val;
-		b=val*() - z
-		v=val*() - z
-**
-*/
-	a = (dir_object.x * dir_object.x + dir_object.z * dir_object.z);
-	b = (2 * origin_object.x * dir_object.x +
-		2 * origin_object.z * dir_object.z) - (dir_object.y);
-	c = (origin_object.x * origin_object.x +
-		origin_object.z * origin_object.z) - (origin_object.y);
+	a = (dir_object.x * dir_object.x +
+	 	 dir_object.y * dir_object.y -
+	 	 dir_object.z * dir_object.z);
+	 b = (2 * origin_object.x * dir_object.x +
+		  2 * origin_object.y * dir_object.y -
+		  2 * origin_object.z * dir_object.z);
+	 c = (origin_object.x * origin_object.x +
+		  origin_object.y * origin_object.y -
+		  origin_object.z * origin_object.z);
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 > inter1)
@@ -58,6 +52,6 @@ float		intersection_paraboloid(t_paraboloid *obj,
 			return (0);
 	}
 	if (inter0 < len)
-			return (inter0);
+		return (inter0);
 	return (0);
 }

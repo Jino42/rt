@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 19:48:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/12 16:04:14 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@
 # define OBJ_PLANE 1
 # define OBJ_CYLINDER 2
 # define OBJ_PARABOLOID 3
+# define OBJ_PARABOLOID_HYPERBOLIC 4
+# define OBJ_ELLIPSOID 5
+# define OBJ_CONE 6
 
 ///////////////////////////////////////////////////
 
@@ -120,6 +123,41 @@ typedef struct 	s_sphere
 	float		radius2;
 }				t_sphere;
 
+typedef struct 	s_ellipsoid
+{
+	float		(*intersect)(struct s_ellipsoid *, const t_vector *,
+						const t_vector *, const float);
+	uint8_t		id;
+	uint32_t	color;
+
+	t_vector	position;
+	t_matrix	world_to_object;
+	t_matrix	translation;
+	float		rotate_speed;
+	float		speed;
+
+	t_vector	size;
+	float		radius;
+	float		radius2;
+}				t_ellipsoid;
+
+typedef struct 	s_cone
+{
+	float		(*intersect)(struct s_cone *, const t_vector *,
+						const t_vector *, const float);
+	uint8_t		id;
+	uint32_t	color;
+
+	t_vector	position;
+	t_matrix	world_to_object;
+	t_matrix	translation;
+	float		rotate_speed;
+	float		speed;
+
+	float		radius;
+	float		radius2;
+}				t_cone;
+
 typedef struct	s_paraboloid
 {
 	float		(*intersect)(struct s_paraboloid *, const t_vector *,
@@ -135,6 +173,22 @@ typedef struct	s_paraboloid
 	float		radius;
 	float		radius2;
 }				t_paraboloid;
+
+typedef struct	s_paraboloid_hyperbolic
+{
+	float		(*intersect)(struct s_paraboloid_hyperbolic *, const t_vector *,
+						const t_vector *, const float);
+	uint8_t		id;
+	uint32_t	color;
+	t_vector	position;
+	t_matrix	world_to_object;
+	t_matrix	translation;
+	float		rotate_speed;
+	float		speed;
+
+	float		radius;
+	float		radius2;
+}				t_paraboloid_hyperbolic;
 
 typedef struct	s_plan
 {
@@ -227,9 +281,14 @@ float				intersection_plane(t_plan *obj, const t_vector *origin,
 							const t_vector *dir, const float len);
 float				intersection_cylinder(t_cylinder *obj, const t_vector *origin, const t_vector *dir,
 							const float len);
-float		intersection_paraboloid(t_paraboloid *obj, const t_vector *origin, const t_vector *dir,
+float				intersection_paraboloid(t_paraboloid *obj, const t_vector *origin, const t_vector *dir,
 							const float len);
-
+float				intersection_paraboloid_hyperbolic(t_paraboloid_hyperbolic *obj, const t_vector *origin, const t_vector *dir,
+							const float len);
+float				intersection_ellipsoid(t_ellipsoid *obj, const t_vector *origin, const t_vector *dir,
+							const float len);
+float				intersection_cone(t_cone *obj, const t_vector *origin, const t_vector *dir,
+							const float len);
 
 float				intersection_disk(t_env *e, const t_vector *dir,
 							const t_vector *cam, const float len);
