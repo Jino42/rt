@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 16:03:38 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/12 18:00:34 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ bool 		init_object(t_env *e)
 	e->light.intensity = 1;
 	e->light.color = 0xFFFFFF;
 
+/*
 	t_plan p;
 
 	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
@@ -206,18 +207,19 @@ bool 		init_object(t_env *e)
 	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
-
+*/
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(-5, -4, -20), vector_construct(10, 2, 30),10, 0x225be6);
 	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
-
+/*
 	t_cone cone;
 	cone = cone_construct(vector_construct(-5, -4, -20), 0xbe6226);
 	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
+	*/
 
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);

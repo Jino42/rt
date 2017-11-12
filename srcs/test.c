@@ -82,8 +82,17 @@ void 		*foreachpix(void *arg_thread)
 				ret = o->intersect(obj->content, &e->cam.position, &dir, INFINITY);
 				if (ret && ret < min_distance)
 				{
-					if (o->id == OBJ_SPHERE)
-						sdl_put_pixel(sdl, x, y, hex_intensity(o->color, test_light_sphere(e, light, o, &dir, ret)));
+					if (o->id == OBJ_SPHERE || o->id == OBJ_ELLIPSOID)
+					{
+						o->hit_point = vector_get_mult(&dir, ret);
+						o->hit_point = vector_get_add(&e->cam.position, &o->hit_point);
+						o->hit_normal = vector_get_sub(&o->hit_point, &o->position);
+						vector_normalize(&o->hit_normal);
+						t_vector a = vector_construct(-dir.x, -dir.y, -dir.z);
+
+						float color_intensity = ft_fmax(0, vector_dot(&o->hit_normal, &a));
+						sdl_put_pixel(sdl, x, y, hex_intensity(o->color, color_intensity));
+					}
 					else
 						sdl_put_pixel(sdl, x, y, o->color);
 					min_distance = ret;

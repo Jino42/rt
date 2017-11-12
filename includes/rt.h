@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 16:04:14 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/12 20:16:35 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@
 
 # define ERROR_SDL (1 << 1)
 
-# define HEIGHT 500
-# define WIDTH 600
+# define HEIGHT 300
+# define WIDTH 400
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
 
-# define NB_THREAD 4
+# define NB_THREAD 1
 
 # define OBJ_SPHERE 0
 # define OBJ_PLANE 1
@@ -88,6 +88,7 @@ typedef struct	s_cam
 
 typedef struct	s_light
 {
+	t_matrix	light_to_world;
 	t_vector	position;
 	float		intensity;
 	uint32_t	color;
@@ -104,6 +105,9 @@ typedef struct	s_obj
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 }				t_obj;
 
 typedef struct 	s_sphere
@@ -118,6 +122,9 @@ typedef struct 	s_sphere
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
@@ -135,6 +142,9 @@ typedef struct 	s_ellipsoid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 
 	t_vector	size;
 	float		radius;
@@ -154,6 +164,9 @@ typedef struct 	s_cone
 	float		rotate_speed;
 	float		speed;
 
+	t_vector	hit_point;
+	t_vector	hit_normal;
+
 	float		radius;
 	float		radius2;
 }				t_cone;
@@ -169,6 +182,9 @@ typedef struct	s_paraboloid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
@@ -186,6 +202,9 @@ typedef struct	s_paraboloid_hyperbolic
 	float		rotate_speed;
 	float		speed;
 
+	t_vector	hit_point;
+	t_vector	hit_normal;
+
 	float		radius;
 	float		radius2;
 }				t_paraboloid_hyperbolic;
@@ -201,6 +220,9 @@ typedef struct	s_plan
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 
 	t_vector	p0; // Bas gauche
 	t_vector	p1; // haut gauche RELATIVE
@@ -220,6 +242,9 @@ typedef struct	s_cylinder
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
