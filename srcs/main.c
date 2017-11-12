@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 19:49:18 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/12 14:22:10 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ bool 		init_object(t_env *e)
 	ft_lstinsert(&e->obj, push);
 
 	t_paraboloid paraboloid;
-	paraboloid = paraboloid_construct(vector_construct(0, 0, 0), 2, 0x0BFF28);
+	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 2, 0xF28FB0);
 	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
