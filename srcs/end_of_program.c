@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 21:32:50 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/02 18:30:11 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/13 17:54:28 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ int		end_of_program(t_env *e, char *str, int flag)
 		ft_dprintf(2, "%s\n", str);
 	if (flag)
 		ft_dprintf(2, "%s\n", SDL_GetError());
+	if (!(e->flag & F_CPU))
+		cl_end(&e->cl);
 	ft_lstdel(&e->sphere, &free_list_object);
 	end_sdl(&e->sdl);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 18:00:34 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/13 18:41:07 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,73 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 	}
 }
 
+void 		cl_render(t_cl *cl, t_sdl *sdl)
+{
+	/* SET KERNEL ARGS*/
+	cl_event event = 0;
+	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
+							sizeof(uint32_t) * sdl->width * sdl->height,
+							sdl->pix, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueWriteBuffer");
+	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), (void *)&(cl->mem[0]));
+	cl_check_err(cl->err, "clSetKernelArg");
+	/* RUN KERNEL     */
+	cl->err = clEnqueueNDRangeKernel(cl->cq, cl->kernel, 1, NULL,
+										&cl->global_item_size,
+										&cl->local_item_size,
+										0, NULL, &event);
+	cl_check_err(cl->err, "clEnqueueNDRangeKernel");
+	clWaitForEvents(1, &event);
+	cl_check_err(cl->err, "clEnqueueNDRangeKernel");
+	cl->err = clFlush(cl->cq);
+	cl_check_err(cl->err, "clFlush");
+	clReleaseEvent(event);
+	/* GET RET        */
+	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[0], CL_FALSE, 0,
+			sizeof(uint32_t) * sdl->width * sdl->height,
+			sdl->pix, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueReadBuffer");
+	/*			      */
+}
+
+void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
+{
+
+	while (!sdl_event_exit(sdl))
+	{
+		update_fps(&e->fps);
+		sdl_update_event(sdl, &sdl->event);
+		event_cam(&sdl->event, &e->cam);
+		update_cam(&e->cam);
+		update_obj(e, sdl);
+
+		cl_render(&e->cl, sdl);
+		//run_multi_thread(e);
+
+		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
+		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
+		SDL_RenderPresent(sdl->render);
+		bzero(sdl->pix, sizeof(uint32_t) * sdl->height * sdl->width); //////////???????????
+		SDL_RenderClear(sdl->render);
+	}
+}
+
+bool		flag(int64_t *f, int argc, char **argv)
+{
+	int i;
+
+	i = 1;
+	while (i < argc)
+	{
+		if (ft_strequ(argv[i], "-cpu"))
+			*f |= F_CPU;
+		else
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
 int main(int argc, char **argv)
 {
 	(void)argc;(void)argv;
@@ -273,11 +340,21 @@ int main(int argc, char **argv)
 	t_env e;
 
 	ft_bzero(&e, sizeof(t_env));
+	if (!flag(&e.flag, argc, argv))
+		return (end_of_program(&e, "usage: ./rt [-cpu]", 0));
 	if (!init_object(&e))
 		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
-	sdl_loop(&e, &e.sdl);
+	if (!(e.flag & F_CPU))
+	{
+		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
+		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
+	}
+	if (e.flag & F_CPU)
+		sdl_loop(&e, &e.sdl);
+	else
+		sdl_loop_gpu(&e, &e.sdl);
 
 	end_of_program(&e, NULL, 0);
 	return (0);

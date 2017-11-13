@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 20:16:35 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/13 18:29:35 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../vector/includes/vector.h"
 # include "../SDL2-2.0.5/include/SDL.h"
 # include "matrix.h"
+# include "rt_cl.h"
 
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -25,10 +26,12 @@
 # include <stdint.h>
 # include <pthread.h>
 
+# define F_CPU (1 << 1)
+
 # define ERROR_SDL (1 << 1)
 
-# define HEIGHT 300
-# define WIDTH 400
+# define HEIGHT 720
+# define WIDTH 1280
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
 
 # define NB_THREAD 1
@@ -264,6 +267,7 @@ typedef struct		s_fps
 
 typedef struct		s_env
 {
+	t_cl			cl;
 	t_sdl			sdl;
 	t_fps			fps;
 
@@ -278,6 +282,7 @@ typedef struct		s_env
 	int32_t		obj_index;
 
 	float			temp;
+	int64_t			flag;
 }					t_env;
 
 typedef struct		s_arg_thread
