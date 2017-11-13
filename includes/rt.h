@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/13 18:29:35 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/13 21:14:05 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # define WIDTH 1280
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
 
-# define NB_THREAD 1
+# define NB_THREAD 4
 
 # define OBJ_SPHERE 0
 # define OBJ_PLANE 1
@@ -99,6 +99,7 @@ typedef struct	s_light
 
 typedef struct	s_obj
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(void *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -115,6 +116,7 @@ typedef struct	s_obj
 
 typedef struct 	s_sphere
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_sphere *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -135,6 +137,7 @@ typedef struct 	s_sphere
 
 typedef struct 	s_ellipsoid
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_ellipsoid *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -156,6 +159,7 @@ typedef struct 	s_ellipsoid
 
 typedef struct 	s_cone
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_cone *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -176,6 +180,7 @@ typedef struct 	s_cone
 
 typedef struct	s_paraboloid
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -195,6 +200,7 @@ typedef struct	s_paraboloid
 
 typedef struct	s_paraboloid_hyperbolic
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid_hyperbolic *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -214,6 +220,7 @@ typedef struct	s_paraboloid_hyperbolic
 
 typedef struct	s_plan
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_plan *, const t_vector *,
 						const t_vector *, const float);
 	uint8_t		id;
@@ -235,6 +242,7 @@ typedef struct	s_plan
 
 typedef struct	s_cylinder
 {
+	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_cylinder *, const t_vector *,
 						const t_vector *, const float);
 
@@ -278,6 +286,9 @@ typedef struct		s_env
 	t_light			light;
 
 	t_list			*obj;
+	uint64_t		len_ptr_obj;
+	void 			*ptr_obj;
+
 	int32_t		obj_len;
 	int32_t		obj_index;
 

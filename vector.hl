@@ -1,0 +1,319 @@
+#ifndef VECTOR_HL
+# define VECTOR_HL
+
+typedef struct	s_vector
+{
+	float		x;
+	float		y;
+	float		z;
+	float		w;
+}				t_vector;
+
+t_vector		vector_construct(const float x, const float y, const float z);
+
+/*OvverRide*/ /*O*/
+
+void			vector_normalize(t_vector *vec);
+void			vector_abs(t_vector *a);
+void			vector_add(t_vector *a, const t_vector *b);
+void			vector_sub(t_vector *a, const t_vector *b);
+void			vector_scale(t_vector *a, const t_vector *b);
+void			vector_mult(t_vector *a, const float mult);
+void			vector_div(t_vector *a, const float div);
+void 			vector_rotate_z(t_vector *a, const float angle);
+void 			vector_rotate_y(t_vector *a, const float angle);
+void 			vector_rotate_x(t_vector *a, const float angle);
+
+/* */
+bool			vector_aequals(const t_vector *a, const t_vector *b);
+float			vector_distance(const t_vector *a, const t_vector *b);
+float			vector_magnitude(const t_vector *vec);
+float			vector_sqrt_magnitude(const t_vector *vec);
+float			vector_dot(const t_vector *a, const t_vector *b);
+
+/*New vector*/
+t_vector		vector_get_normalize(const t_vector *vec);
+t_vector		vector_get_add(const t_vector *a, const t_vector *b);
+t_vector		vector_get_sub(const t_vector *a, const t_vector *b);
+t_vector		vector_get_scale(const t_vector *a, const t_vector *b);
+t_vector		vector_get_mult(const t_vector *a, const float mult);
+t_vector		vector_get_div(const t_vector *a, const float div);
+t_vector		vector_get_abs(const t_vector *a);
+t_vector 		vector_get_rotate_z(const t_vector *a, const float angle);
+t_vector 		vector_get_rotate_y(const t_vector *a, const float angle);
+t_vector 		vector_get_rotate_x(const t_vector *a, const float angle);
+
+t_vector			vector_get_cross_product(const t_vector *a, const t_vector *b);
+void				vector_cross_product(t_vector *a, const t_vector *b);
+
+t_vector		vector_get_abs(const t_vector *a)
+{
+	t_vector new;
+
+	new = *a;
+	vector_abs(&new);
+	return (new);
+}
+
+void		vector_abs(t_vector *a)
+{
+	if (a->x < 0)
+		a->x *= -1;
+	if (a->y < 0)
+		a->y *= -1;
+	if (a->z < 0)
+		a->z *= -1;
+	return ;
+}
+
+
+t_vector		vector_get_add(const t_vector *a, const t_vector *b)
+{
+	t_vector new;
+
+	new.x = a->x + b->x;
+	new.y = a->y + b->y;
+	new.z = a->z + b->z;
+
+	return (new);
+}
+
+void		vector_add(t_vector *a, const t_vector *b)
+{
+	a->x += b->x;
+	a->y += b->y;
+	a->z += b->z;
+	return ;
+}
+
+bool		vector_aequals(const t_vector *a, const t_vector *b)
+{
+	if (fabs(vector_sqrt_magnitude(a) - vector_sqrt_magnitude(b)) < 0.00005)
+		return (true);
+	return (false);
+}
+
+t_vector		vector_get_sub(const t_vector *a, const t_vector *b)
+{
+	t_vector new;
+
+	new.x = a->x - b->x;
+	new.y = a->y - b->y;
+	new.z = a->z - b->z;
+
+	return (new);
+}
+
+void		vector_sub(t_vector *a, const t_vector *b)
+{
+	a->x -= b->x;
+	a->y -= b->y;
+	a->z -= b->z;
+
+	return ;
+}
+
+float		vector_dot(const t_vector *a, const t_vector *b)
+{
+	return ((a->x * b->x) + (a->y * b->y) + (a->z * b->z));
+}
+
+t_vector		vector_get_div(const t_vector *a, const float div)
+{
+	t_vector new;
+
+	new.x = a->x / div;
+	new.y = a->y / div;
+	new.z = a->z / div;
+
+	return (new);
+}
+
+void		vector_div(t_vector *a, const float div)
+{
+	a->x /= div;
+	a->y /= div;
+	a->z /= div;
+
+	return ;
+}
+
+float	vector_distance(const t_vector *a, const t_vector *b)
+{
+	t_vector new;
+	new.x = a->x - b->x;
+	new.y = a->y - b->y;
+	new.z = a->z - b->z;
+	return (vector_sqrt_magnitude(&new));
+}
+
+void		vector_cross_product(t_vector *a, const t_vector *b)
+{
+	t_vector new;
+
+	new.x = (a->y * b->z) - (a->z * b->y);
+	new.y = (a->z * b->x) - (a->x * b->z);
+	new.z = (a->x * b->y) - (a->y * b->x);
+	*a = new;
+	return ;
+}
+
+t_vector	vector_get_cross_product(const t_vector *a, const t_vector *b)
+{
+	t_vector new;
+
+	new.x = (a->y * b->z) - (a->z * b->y);
+	new.y = (a->z * b->x) - (a->x * b->z);
+	new.z = (a->x * b->y) - (a->y * b->x);
+	return (new);
+}
+
+t_vector		vector_construct(const float x, const float y, const float z)
+{
+	t_vector new;
+
+	new.x = x;
+	new.y = y;
+	new.z = z;
+
+	return (new);
+}
+
+void 	vector_rotate_y(t_vector *a, const float angle)
+{
+	float tmp;
+
+	tmp = a->x * cos(angle) + a->z * sin(angle);
+	a->z = a->x * -sin(angle) + a->z * cos(angle);
+	a->x = tmp;
+	return ;
+}
+
+t_vector 	vector_get_rotate_y(const t_vector *a, const float angle)
+{
+	t_vector new;
+
+	new.x = a->x * cos(angle) + a->z * sin(angle);
+	new.z = a->x * -sin(angle) + a->z * cos(angle);
+	new.y = a->y;
+	return (new);
+}
+
+void 	vector_rotate_x(t_vector *a, const float angle)
+{
+	float tmp;
+
+	tmp = a->y * cos(angle) - a->z * sin(angle);
+	a->z = a->y * sin(angle) + a->z * cos(angle);
+	a->y = tmp;
+	return ;
+}
+
+t_vector 	vector_get_rotate_x(const t_vector *a, const float angle)
+{
+	t_vector new;
+
+	new.y = a->y * cos(angle) - a->z * sin(angle);
+	new.z = a->y * sin(angle) + a->z * cos(angle);
+	new.x = a->x;
+	return (new);
+}
+
+t_vector		vector_get_normalize(const t_vector *vec)
+{
+	t_vector new;
+	float magnitude;
+
+	magnitude = vector_sqrt_magnitude(vec);
+	if (!magnitude)
+		return (*vec);
+	new.x = vec->x / magnitude;
+	new.y = vec->y / magnitude;
+	new.z = vec->z / magnitude;
+	return (new);
+}
+
+void		vector_normalize(t_vector *vec)
+{
+	float magnitude;
+
+	magnitude = vector_sqrt_magnitude(vec);
+	if (!magnitude)
+		return ;
+	vec->x = vec->x / magnitude;
+	vec->y = vec->y / magnitude;
+	vec->z = vec->z / magnitude;
+	return ;
+}
+
+t_vector		vector_get_mult(const t_vector *a, const float mult)
+{
+	t_vector new;
+
+	new.x = a->x * mult;
+	new.y = a->y * mult;
+	new.z = a->z * mult;
+
+	return (new);
+}
+
+void		vector_mult(t_vector *a, const float mult)
+{
+	a->x *= mult;
+	a->y *= mult;
+	a->z *= mult;
+
+	return ;
+}
+
+float		vector_magnitude(const t_vector *vec)
+{
+	return (fabs((vec->x * vec->x)) + fabs((vec->y * vec->y)) + fabs((vec->z * vec->z)));
+}
+
+float		vector_sqrt_magnitude(const t_vector *vec)
+{
+	return (sqrtf(fabs((vec->x * vec->x)) + fabs((vec->y * vec->y)) + fabs((vec->z * vec->z))));
+}
+
+t_vector		vector_get_scale(const t_vector *a, const t_vector *b)
+{
+	t_vector new;
+
+	new.x = a->x * b->x;
+	new.y = a->y * b->y;
+	new.z = a->z * b->z;
+
+	return (new);
+}
+
+void		vector_scale(t_vector *a, const t_vector *b)
+{
+	a->x *= b->x;
+	a->y *= b->y;
+	a->z *= b->z;
+
+	return ;
+}
+
+void 	vector_rotate_z(t_vector *a, const float angle)
+{
+	float tmp;
+
+	tmp = a->x * cos(angle) - a->y * sin(angle);
+	a->y = a->x * sin(angle) + a->y * cos(angle);
+	a->x = tmp;
+	return ;
+}
+
+t_vector 	vector_get_rotate_z(const t_vector *a, const float angle)
+{
+	t_vector new;
+
+	new.x = a->x * cos(angle) - a->y * sin(angle);
+	new.y = a->x * sin(angle) + a->y * cos(angle);
+	new.z = a->z;
+	return (new);
+}
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:08:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/13 18:20:21 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/13 18:53:20 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void		cl_compile_kernel(t_cl *cl)
 		cl->err = clGetProgramBuildInfo(cl->program, cl->device_id,
 				CL_PROGRAM_BUILD_LOG, 10000, buffer, &len);
 		if (cl->err == CL_SUCCESS)
-			ft_printf("\033[31mCompiler error message :\033[0m\n", buffer);
+			ft_printf("\033[31mCompiler error message :%i\033[0m\n%s", len, buffer);
 		else
 			ft_printf("Erreur étonnate\n");
 		exit(EXIT_FAILURE);
