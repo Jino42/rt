@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/13 22:43:36 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 17:21:25 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,21 +190,21 @@ bool 		init_object(t_env *e)
 
 	while (nb_sphere-- != 0)
 	{
-		//e->len_ptr_obj += sizeof(t_sphere);
+		//e->mem_size_obj += sizeof(t_sphere);
 		ft_printf("Avant realloc\n");
-		if (!(e->ptr_obj = ft_memrealloc(e->ptr_obj, e->len_ptr_obj, e->len_ptr_obj + sizeof(t_sphere))))
-		//if (!(e->ptr_obj = realloc(e->ptr_obj, e->len_ptr_obj)))
+		if (!(e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_sphere))))
+		//if (!(e->ptr_obj = realloc(e->ptr_obj, e->mem_size_obj)))
 			return (end_of_program(e, "malloc failed", 0));
-		ft_printf("Avant Copy %llu\n", e->len_ptr_obj);
-		if (!(e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&s[nb_sphere], e->len_ptr_obj, sizeof(t_sphere))))
+		ft_printf("Avant Copy %llu\n", e->mem_size_obj);
+		if (!(e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&s[nb_sphere], e->mem_size_obj, sizeof(t_sphere))))
 			return (end_of_program(e, "memcpy return Null", 0));
-		e->len_ptr_obj += sizeof(t_sphere);
+		e->mem_size_obj += sizeof(t_sphere);
 
 		ft_printf("Apres copy\n");
 		if (!(push = ft_lstnew(&s[nb_sphere], sizeof(t_sphere))))
 			return (false);
 		ft_lstinsert(&e->obj, push);
-		to = e->ptr_obj + e->len_ptr_obj - sizeof(t_sphere);
+		to = e->ptr_obj + e->mem_size_obj - sizeof(t_sphere);
 		printf("%llu\n%hhi\n", to->mem_size_obj, to->id);
 	}
 	e->light.position = vector_construct(10, 10, 0);
@@ -246,11 +246,12 @@ bool 		init_object(t_env *e)
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(-10, -4, -20), vector_construct(2, 20, 3),10, 0x225be6);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->len_ptr_obj, e->len_ptr_obj + sizeof(t_ellipsoid));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&ellipsoid, e->len_ptr_obj, sizeof(t_ellipsoid));
-	e->len_ptr_obj += sizeof(t_ellipsoid);
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_ellipsoid));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&ellipsoid, e->mem_size_obj, sizeof(t_ellipsoid));
+	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 
-	vector_string(&((t_obj*)(e->ptr_obj))->position);
+	e->mem_size_obj += sizeof(t_ellipsoid);
+
 
 	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
 		return (false);
@@ -309,16 +310,33 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 	}
 }
 
-void 		cl_render(t_cl *cl, t_sdl *sdl)
+void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 {
-	/* SET KERNEL ARGS*/
 	cl_event event = 0;
-	/*cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
+
+	/* SET KERNEL ARGS*/
+/*
+			//------------>Write IMG
+	cl->err = clEnqueueWriteBuffer(cl->cq, e->a, CL_TRUE, 0,
 							sizeof(uint32_t) * sdl->width * sdl->height,
 							sdl->pix, 0, NULL, NULL);
-	cl_check_err(cl->err, "clEnqueueWriteBuffer");*/
-	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), (void *)&(cl->mem[0]));
-	cl_check_err(cl->err, "clSetKernelArg");
+	cl_check_err(cl->err, "clEnqueueWriteBuffer");
+
+			//------------>Write OBJ
+	cl->err = clEnqueueWriteBuffer(cl->cq, e->b, CL_TRUE, 0,
+							e->mem_size_obj,
+							e->ptr_obj, 0, NULL, NULL);
+	//printf("HORS DE LA | !! \n");vector_string(&(((t_obj*)e->ptr_obj)->position));
+	cl_check_err(cl->err, "clEnqueueWriteBuffer");
+	*/
+
+
+	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &e->a);
+	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
+	cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &e->b);
+	cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
+	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->mem_size_obj));
+	cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
 	/* RUN KERNEL     */
 	cl->err = clEnqueueNDRangeKernel(cl->cq, cl->kernel, 1, NULL,
 										&cl->global_item_size,
@@ -330,11 +348,33 @@ void 		cl_render(t_cl *cl, t_sdl *sdl)
 	cl->err = clFlush(cl->cq);
 	cl_check_err(cl->err, "clFlush");
 	clReleaseEvent(event);
+
 	/* GET RET        */
-	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[0], CL_FALSE, 0,
+	cl->err = clEnqueueReadBuffer(cl->cq, e->a, CL_TRUE, 0,
 			sizeof(uint32_t) * sdl->width * sdl->height,
 			sdl->pix, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueReadBuffer");
+
+
+	int i = 0;
+	while (i++ < 200)
+		printf("%i", *((char *)(e->ptr_obj + i)));
+		printf("\n");
+
+		printf("\nAPRES\n");
+
+	cl->err = clEnqueueReadBuffer(cl->cq, e->a, CL_TRUE, 0,
+			e->mem_size_obj,
+			e->ptr_obj, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueReadBuffer");
+
+	i = 0;
+	while (i++ < 200)
+		printf("%i", *((char *)(e->ptr_obj + i)));
+		printf("\n");
+
+	exit(0);
+
 	/*			      */
 }
 
@@ -349,7 +389,7 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 		update_cam(&e->cam);
 		update_obj(e, sdl);
 
-		cl_render(&e->cl, sdl);
+		cl_render(e, &e->cl, sdl);
 		//run_multi_thread(e);
 
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
@@ -391,8 +431,14 @@ int main(int argc, char **argv)
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
 	if (!(e.flag & F_CPU))
 	{
-		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
-		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
+		cl_init((void *)&e, &e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
+		/*cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
+		cl_create_buffer(&e.cl, e.mem_size_obj);*/
+		/*e.a = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE,
+				e.sdl.height * e.sdl.width * 4,  NULL, &(e.cl.err));
+		e.b = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+				e.mem_size_obj, e.ptr_obj, &(e.cl.err));
+		*/
 	}
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);

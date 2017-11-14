@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/13 21:14:05 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 16:12:03 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@
 # define OBJ_PARABOLOID_HYPERBOLIC 4
 # define OBJ_ELLIPSOID 5
 # define OBJ_CONE 6
+
+typedef struct	s_ptr_cl
+{
+
+}				t_ptr_cl;
 
 ///////////////////////////////////////////////////
 
@@ -286,7 +291,7 @@ typedef struct		s_env
 	t_light			light;
 
 	t_list			*obj;
-	uint64_t		len_ptr_obj;
+	uint64_t		mem_size_obj;
 	void 			*ptr_obj;
 
 	int32_t		obj_len;
@@ -294,6 +299,9 @@ typedef struct		s_env
 
 	float			temp;
 	int64_t			flag;
+
+	cl_mem			a;
+	cl_mem			b;
 }					t_env;
 
 typedef struct		s_arg_thread

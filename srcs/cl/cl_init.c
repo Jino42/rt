@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:08:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/13 18:53:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 17:09:38 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,14 @@ static void		cl_compile_kernel(t_cl *cl)
 	}
 }
 
-int				cl_init(t_cl *cl, const char *path, const char *name, const size_t global_item_size)
+int				cl_init(void *a, t_cl *cl, const char *path, const char *name, const size_t global_item_size)
 {
+	t_env *e = a;
 	cl_create_base(cl, path);
+	e->a = clCreateBuffer(e->cl.context, CL_MEM_READ_WRITE,
+			e->sdl.height * e->sdl.width * 4,  NULL, &(e->cl.err));
+	e->b = clCreateBuffer(e->cl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+			e->mem_size_obj, e->ptr_obj, &(e->cl.err));
 	cl_compile_kernel(cl);
 	cl->kernel = clCreateKernel(cl->program, name, &(cl->err));
 	cl_check_err(cl->err, "clCreateKernel");

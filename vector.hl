@@ -273,7 +273,7 @@ float		vector_magnitude(const t_vector *vec)
 
 float		vector_sqrt_magnitude(const t_vector *vec)
 {
-	return (sqrtf(fabs((vec->x * vec->x)) + fabs((vec->y * vec->y)) + fabs((vec->z * vec->z))));
+	return (sqrt(fabs((vec->x * vec->x)) + fabs((vec->y * vec->y)) + fabs((vec->z * vec->z))));
 }
 
 t_vector		vector_get_scale(const t_vector *a, const t_vector *b)
