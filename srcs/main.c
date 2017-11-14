@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:21:25 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 17:38:16 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,25 +315,23 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_event event = 0;
 
 	/* SET KERNEL ARGS*/
-/*
+
 			//------------>Write IMG
-	cl->err = clEnqueueWriteBuffer(cl->cq, e->a, CL_TRUE, 0,
+	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
 							sizeof(uint32_t) * sdl->width * sdl->height,
 							sdl->pix, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueWriteBuffer");
 
 			//------------>Write OBJ
-	cl->err = clEnqueueWriteBuffer(cl->cq, e->b, CL_TRUE, 0,
+	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[1], CL_TRUE, 0,
 							e->mem_size_obj,
 							e->ptr_obj, 0, NULL, NULL);
 	//printf("HORS DE LA | !! \n");vector_string(&(((t_obj*)e->ptr_obj)->position));
 	cl_check_err(cl->err, "clEnqueueWriteBuffer");
-	*/
 
-
-	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &e->a);
+	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->mem[0]);
 	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
-	cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &e->b);
+	cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &cl->mem[1]);
 	cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
 	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->mem_size_obj));
 	cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
@@ -350,12 +348,12 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	clReleaseEvent(event);
 
 	/* GET RET        */
-	cl->err = clEnqueueReadBuffer(cl->cq, e->a, CL_TRUE, 0,
+	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
 			sizeof(uint32_t) * sdl->width * sdl->height,
 			sdl->pix, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueReadBuffer");
 
-
+/*
 	int i = 0;
 	while (i++ < 200)
 		printf("%i", *((char *)(e->ptr_obj + i)));
@@ -373,7 +371,7 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 		printf("%i", *((char *)(e->ptr_obj + i)));
 		printf("\n");
 
-	exit(0);
+	exit(0);*/
 
 	/*			      */
 }
@@ -431,9 +429,9 @@ int main(int argc, char **argv)
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
 	if (!(e.flag & F_CPU))
 	{
-		cl_init((void *)&e, &e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
-		/*cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
-		cl_create_buffer(&e.cl, e.mem_size_obj);*/
+		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
+		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
+		cl_create_buffer(&e.cl, e.mem_size_obj);
 		/*e.a = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE,
 				e.sdl.height * e.sdl.width * 4,  NULL, &(e.cl.err));
 		e.b = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,

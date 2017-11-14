@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:10:34 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:09:24 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 17:38:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct	s_cl
 
 void 					cl_check_err(cl_int err, const char *name);
 void 					cl_end(t_cl *cl);
-int						cl_init(void *e, t_cl *cl, const char *path, const char *name, const size_t global_item_size);
+int						cl_init(t_cl *cl, const char *path, const char *name, const size_t global_item_size);
 bool					cl_create_buffer(t_cl *cl, size_t size);
 
 #endif
