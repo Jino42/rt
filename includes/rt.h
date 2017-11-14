@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 16:12:03 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 17:52:43 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,11 @@
 
 typedef struct	s_ptr_cl
 {
-
+	float		invH;
+	float		invW;
+	float		ratio;
+	float		scale;
+	float		fov;
 }				t_ptr_cl;
 
 ///////////////////////////////////////////////////
@@ -281,6 +285,7 @@ typedef struct		s_fps
 typedef struct		s_env
 {
 	t_cl			cl;
+	t_ptr_cl		p_cl;
 	t_sdl			sdl;
 	t_fps			fps;
 

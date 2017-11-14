@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:38:16 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/14 19:16:52 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ bool 		init_object(t_env *e)
 		return (false);
 	ft_lstinsert(&e->obj, push);
 */
+/*
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(-10, -4, -20), vector_construct(2, 20, 3),10, 0x225be6);
 
@@ -256,6 +257,7 @@ bool 		init_object(t_env *e)
 	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
+*/
 /*
 	t_cone cone;
 	cone = cone_construct(vector_construct(-5, -4, -20), 0xbe6226);
@@ -317,16 +319,15 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	/* SET KERNEL ARGS*/
 
 			//------------>Write IMG
-	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
+	/*cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
 							sizeof(uint32_t) * sdl->width * sdl->height,
 							sdl->pix, 0, NULL, NULL);
-	cl_check_err(cl->err, "clEnqueueWriteBuffer");
+	cl_check_err(cl->err, "clEnqueueWriteBuffer");*/
 
 			//------------>Write OBJ
 	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[1], CL_TRUE, 0,
 							e->mem_size_obj,
 							e->ptr_obj, 0, NULL, NULL);
-	//printf("HORS DE LA | !! \n");vector_string(&(((t_obj*)e->ptr_obj)->position));
 	cl_check_err(cl->err, "clEnqueueWriteBuffer");
 
 	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->mem[0]);
@@ -335,6 +336,12 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
 	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->mem_size_obj));
 	cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
+	cl->err = clSetKernelArg(cl->kernel, 3, sizeof(t_ptr_cl), &(e->p_cl));
+	cl_check_err(cl->err, "clSetKernelArg | p_cl");
+	cl->err = clSetKernelArg(cl->kernel, 4, sizeof(t_cam), &(e->cam));
+	cl_check_err(cl->err, "clSetKernelArg | t_cam");
+	cl->err = clSetKernelArg(cl->kernel, 5, e->mem_size_obj, NULL);
+	cl_check_err(cl->err, "clSetKernelArg | Local");
 	/* RUN KERNEL     */
 	cl->err = clEnqueueNDRangeKernel(cl->cq, cl->kernel, 1, NULL,
 										&cl->global_item_size,
@@ -352,26 +359,6 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 			sizeof(uint32_t) * sdl->width * sdl->height,
 			sdl->pix, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueReadBuffer");
-
-/*
-	int i = 0;
-	while (i++ < 200)
-		printf("%i", *((char *)(e->ptr_obj + i)));
-		printf("\n");
-
-		printf("\nAPRES\n");
-
-	cl->err = clEnqueueReadBuffer(cl->cq, e->a, CL_TRUE, 0,
-			e->mem_size_obj,
-			e->ptr_obj, 0, NULL, NULL);
-	cl_check_err(cl->err, "clEnqueueReadBuffer");
-
-	i = 0;
-	while (i++ < 200)
-		printf("%i", *((char *)(e->ptr_obj + i)));
-		printf("\n");
-
-	exit(0);*/
 
 	/*			      */
 }
@@ -432,11 +419,12 @@ int main(int argc, char **argv)
 		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
 		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
 		cl_create_buffer(&e.cl, e.mem_size_obj);
-		/*e.a = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE,
-				e.sdl.height * e.sdl.width * 4,  NULL, &(e.cl.err));
-		e.b = clCreateBuffer(e.cl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-				e.mem_size_obj, e.ptr_obj, &(e.cl.err));
-		*/
+		t_ptr_cl *c = &e.p_cl;
+		c->fov = 66;
+		c->invH = 1 / (float)e.sdl.height;
+		c->invW = 1 / (float)e.sdl.width;
+		c->ratio = (float)e.sdl.width / (float)e.sdl.height;
+		c->scale = tan(M_PI * 0.5 * c->fov / 180);
 	}
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);

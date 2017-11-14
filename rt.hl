@@ -25,9 +25,12 @@ typedef int int32_t;
 
 typedef struct	s_ptr_cl
 {
-
+	float		invH;
+	float		invW;
+	float		ratio;
+	float		scale;
+	float		fov;
 }				t_ptr_cl;
-
 
 typedef struct	s_cam
 {
