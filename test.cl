@@ -381,29 +381,29 @@ __kernel void test(__global int *img,
 */
 		if (ret && ret < min_distance)
 		{
-			if (0)
+			if (o->id == OBJ_SPHERE)
 			{
-				float dot;
+				float dott;
 				t_vector dir_sphere;
 				t_vector dir_sphere_to_light;
 				t_vector hit;
-				t_vector place_light = vector_construct(1, 1, 1);
+				t_vector place_light = vector_construct(10, 10, 0);
 
-				dot = 0;
+				dott = 0;
 
 				hit = vector_get_mult(&dir, ret);
 				hit = vector_get_add(&cam.position, &hit);
 
-				dir_sphere = vector_get_sub_local(&hit, &m->position);
-				dir_sphere = local_matrix_get_mult_vector(&m->translation, &dir_sphere);
+				dir_sphere = vector_get_sub_local(&hit, &o->position);
+				dir_sphere = local_matrix_get_mult_vector(&o->translation, &dir_sphere);
 				dir_sphere_to_light = vector_get_sub(&place_light, &hit);
 
 				vector_normalize(&dir_sphere);
 				vector_normalize(&dir_sphere_to_light);
-				dot = vector_dot(&dir_sphere, &dir_sphere_to_light);
-				if (dot < 0)
-					dot = 0;
-				img[x + y * WIDTH]  = hex_intensity(o->color, dot);
+				dott = vector_dot(&dir_sphere, &dir_sphere_to_light);
+				if (dott < 0)
+					dott = 0;
+				img[x + y * WIDTH]  = hex_intensity(o->color, dott);
 			}
 			else
 				img[x + y * WIDTH] = o->color;
