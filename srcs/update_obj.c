@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 20:39:50 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 21:08:02 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,36 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 {
 	t_vector dir;
 
-	(void)e;
 	if (ev->key[SDL_SCANCODE_KP_1])
 	{
-		matrix_rotation_x(&o->world_to_object, o->rotate_speed);
+		matrix_rotation_x(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_2])
 	{
-		matrix_rotation_y(&o->world_to_object, o->rotate_speed);
+		matrix_rotation_y(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_3])
 	{
-		matrix_rotation_z(&o->world_to_object, o->rotate_speed);
+		matrix_rotation_z(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_8])
 	{
-		dir = vector_construct(0, 0, o->speed);
+		dir = vector_construct(0, 0, o->speed * e->fps.delta_time);
 		matrix_translation(&o->translation, &dir);
 	}
 	if (ev->key[SDL_SCANCODE_KP_5])
 	{
-		dir = vector_construct(0, 0, -o->speed);
+		dir = vector_construct(0, 0, -o->speed * e->fps.delta_time);
 		matrix_translation(&o->translation, &dir);
 	}
 	if (ev->key[SDL_SCANCODE_KP_4])
 	{
-		dir = vector_construct(o->speed, 0, 0);
+		dir = vector_construct(o->speed * e->fps.delta_time, 0, 0);
 		matrix_translation(&o->translation, &dir);
 	}
 	if (ev->key[SDL_SCANCODE_KP_6])
 	{
-		dir = vector_construct(-o->speed, 0, 0);
+		dir = vector_construct(-o->speed * e->fps.delta_time, 0, 0);
 		matrix_translation(&o->translation, &dir);
 	}
 }
@@ -82,7 +81,10 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 	if (e->mem_obj_index + ((t_obj*)e->ptr_obj)->mem_size_obj >= e->mem_size_obj)
 		e->mem_obj_index = 0;
 	o = (t_obj *)(ft_lst_index(e->obj, e->obj_index)->content);
+	if (e->flag & F_CPU)
 		ft_printf("%i/%i\n TYPE %i\n", e->obj_index, e->obj_len, o->id);
+	else
+		ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->mem_size_obj, ((t_obj *)(e->ptr_obj + e->mem_obj_index))->id);
 }
 
 void 		update_obj(t_env *e, t_sdl *sdl)

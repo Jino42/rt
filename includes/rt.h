@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 20:19:50 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 21:12:51 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ typedef struct	s_cam
 	t_vector	position;
 	t_vector	angle;
 	t_matrix	camera_to_world;
+	float		speed;
+	float		speed_rotate;
 }				t_cam;
 
 ///////////////////////////////////////////////////
@@ -323,7 +325,7 @@ void				update_fps(t_fps *fps);
 void 				update_cam(t_cam *cam);
 void 				update_obj(t_env *e, t_sdl *sdl);
 
-void 				event_cam(t_event *event, t_cam *cam);
+void 				event_cam(t_env *e, t_event *event, t_cam *cam);
 
 bool				solve_quadratic(const float a, const float b, const float c,
 							float *inter0, float *inter1);

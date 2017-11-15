@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 20:08:04 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 21:13:18 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,7 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 	{
 		update_fps(&e->fps);
 		sdl_update_event(sdl, &sdl->event);
-		event_cam(&sdl->event, &e->cam);
+		event_cam(e, &sdl->event, &e->cam);
 		update_cam(&e->cam);
 		update_obj(e, sdl);
 
@@ -405,7 +405,7 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 	{
 		update_fps(&e->fps);
 		sdl_update_event(sdl, &sdl->event);
-		event_cam(&sdl->event, &e->cam);
+		event_cam(e, &sdl->event, &e->cam);
 		update_cam(&e->cam);
 		update_obj(e, sdl);
 
@@ -449,6 +449,8 @@ int main(int argc, char **argv)
 		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
+	e.cam.speed_rotate = 4;
+	e.cam.speed = 32;
 	if (!(e.flag & F_CPU))
 	{
 		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
