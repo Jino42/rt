@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/11/13 18:02:28 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/11/15 20:22:33 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ INC = includes/
 SRC_DIR = srcs/
 
 SRC = main.c \
+	  mem_obj.c \
 	  update_fps.c \
 	  update_cam.c \
 	  update_obj.c \

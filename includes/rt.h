@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:52:43 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 20:19:50 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,8 +299,9 @@ typedef struct		s_env
 	uint64_t		mem_size_obj;
 	void 			*ptr_obj;
 
-	int32_t		obj_len;
-	int32_t		obj_index;
+	int32_t			obj_len;
+	int32_t			obj_index;
+	uint64_t		mem_obj_index;
 
 	float			temp;
 	int64_t			flag;

@@ -3,6 +3,13 @@
 #include "rt.hl"
 
 bool		solve_quadratic(const float a, const float b, const float c,
+								float *inter0, float *inter1);
+float		intersection_sphere(__local t_sphere *obj, const t_vector *origin,
+								const t_vector *dir, const float len);
+float		intersection_ellipsoid(__local t_ellipsoid *obj, const t_vector *origin,
+								const t_vector *dir, const float len);
+
+bool		solve_quadratic(const float a, const float b, const float c,
 								float *inter0, float *inter1)
 {
 	float discr;
@@ -45,11 +52,8 @@ float		intersection_sphere(__local t_sphere *obj,
 	t_vector	dir_object;
 
 	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
-//	dir_object = *dir;
 
-
-
-	origin_object = local_vector_get_sub(origin, &obj->position);
+	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
 	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
 
@@ -74,6 +78,208 @@ float		intersection_sphere(__local t_sphere *obj,
 	if (inter0 < len)
 		return (inter0);
 	return (0);
+}
+
+float		intersection_ellipsoid(__local t_ellipsoid *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
+{
+	float inter0, inter1;
+	float a, b, c;
+	t_vector	dir_object;
+	t_vector	origin_object;
+
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
+	local_vector_scale(&origin_object, &obj->size);
+	local_vector_scale(&dir_object, &obj->size);
+	a = (dir_object.x * dir_object.x +
+	 	 dir_object.y * dir_object.y +
+	 	 dir_object.z * dir_object.z);
+	 b = (2 * origin_object.x * dir_object.x +
+		  2 * origin_object.y * dir_object.y +
+		  2 * origin_object.z * dir_object.z);
+	 c = (origin_object.x * origin_object.x +
+		  origin_object.y * origin_object.y +
+		  origin_object.z * origin_object.z) - obj->radius2;
+	if (!solve_quadratic(a, b, c, &inter0, &inter1))
+		return (0);
+	if (inter0 > inter1)
+	{
+		float tmp = inter0;
+		inter0 = inter1;
+		inter1 = tmp;
+	}
+	if (inter0 < 0)
+	{
+		inter0 = inter1;
+		if (inter0 < 0)
+			return (0);
+	}
+	if (inter0 < len)
+		return (inter0);
+	return (0);
+}
+
+float		intersection_cylinder(__local t_cylinder *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
+{
+	float inter0, inter1;
+	float a, b, c;
+	t_vector	dir_object;
+	t_vector	origin_object;
+
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+	a = dir_object.x * dir_object.x + dir_object.z * dir_object.z;
+	b = 2 * origin_object.x * dir_object.x +
+		2 * origin_object.z * dir_object.z;
+	c = origin_object.x * origin_object.x +
+		origin_object.z * origin_object.z - obj->radius2;
+	if (!solve_quadratic(a, b, c, &inter0, &inter1))
+		return (0);
+	if (inter0 > inter1)
+	{
+		float tmp = inter0;
+		inter0 = inter1;
+		inter1 = tmp;
+	}
+	if (inter0 < 0)
+	{
+		inter0 = inter1;
+		if (inter0 < 0)
+			return (0);
+	}
+	if (inter0 < len)
+			return (inter0);
+	return (0);
+}
+
+float		intersection_cone(__local t_cone *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
+{
+	float inter0, inter1;
+	float a, b, c;
+	t_vector	dir_object;
+	t_vector	origin_object;
+
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
+	a = (dir_object.x * dir_object.x +
+	 	 dir_object.y * dir_object.y -
+	 	 dir_object.z * dir_object.z);
+	 b = (2 * origin_object.x * dir_object.x +
+		  2 * origin_object.y * dir_object.y -
+		  2 * origin_object.z * dir_object.z);
+	 c = (origin_object.x * origin_object.x +
+		  origin_object.y * origin_object.y -
+		  origin_object.z * origin_object.z);
+	if (!solve_quadratic(a, b, c, &inter0, &inter1))
+		return (0);
+	if (inter0 > inter1)
+	{
+		float tmp = inter0;
+		inter0 = inter1;
+		inter1 = tmp;
+	}
+	if (inter0 < 0)
+	{
+		inter0 = inter1;
+		if (inter0 < 0)
+			return (0);
+	}
+	if (inter0 < len)
+		return (inter0);
+	return (0);
+}
+
+float		intersection_paraboloid(__local t_paraboloid *obj,
+									const t_vector *origin,
+									const t_vector *dir,
+									const float len)
+{
+	float inter0, inter1;
+	float a, b, c;
+	t_vector	dir_object;
+	t_vector	origin_object;
+
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
+	a = (dir_object.x * dir_object.x + dir_object.z * dir_object.z);
+	b = (2 * origin_object.x * dir_object.x +
+		2 * origin_object.z * dir_object.z) - (dir_object.y);
+	c = (origin_object.x * origin_object.x +
+		origin_object.z * origin_object.z) - (origin_object.y);
+	if (!solve_quadratic(a, b, c, &inter0, &inter1))
+		return (0);
+	if (inter0 > inter1)
+	{
+		float tmp = inter0;
+		inter0 = inter1;
+		inter1 = tmp;
+	}
+	if (inter0 < 0)
+	{
+		inter0 = inter1;
+		if (inter0 < 0)
+			return (0);
+	}
+	if (inter0 < len)
+			return (inter0);
+	return (0);
+}
+
+float		intersection_plane(__local t_plan *obj,
+								const t_vector *origin,
+								const t_vector *dir,
+								const float len)
+{
+	t_vector normal;
+
+	t_vector	origin_object;
+
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+
+
+	normal = local_vector_get_cross_product_local(&obj->p1, &obj->p2); //
+	normal = local_matrix_get_mult_vector(&obj->world_to_object, &normal);
+	float denom = vector_dot(&normal, dir);
+	if (fabs(denom) > 0.0001)
+	{
+		t_vector origin_to_plan = local_vector_get_sub(&obj->position, &origin_object); //
+		float t = vector_dot(&origin_to_plan, &normal) / denom;
+		if (t >= 0 && t < len)
+		{
+			t_vector len;
+			t_vector point;
+
+			point = vector_get_mult(dir, t);
+			point = vector_get_add(&point, &origin_object);
+			len = vector_get_sub_local(&point, &obj->position);
+			return (t);
+		}
+	}
+	return (false);
 }
 
 unsigned int	hex_intensity(unsigned int color, float intensity)
@@ -138,8 +344,28 @@ __kernel void test(__global int *img,
 		}
 		else if (o->id == OBJ_ELLIPSOID)
 		{
-			ret = intersection_ellipsoid((__local t_ellipsoid)o, &cam.position, &dir, INFINITY);
+			ret = intersection_ellipsoid((__local t_ellipsoid *)o, &cam.position, &dir, INFINITY);
 			cur += sizeof(t_ellipsoid);
+		}
+		else if (o->id == OBJ_CONE)
+		{
+			ret = intersection_cone((__local t_cone *)o, &cam.position, &dir, INFINITY);
+			cur += sizeof(t_cone);
+		}
+		else if (o->id == OBJ_CYLINDER)
+		{
+			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY);
+			cur += sizeof(t_cylinder);
+		}
+		else if (o->id == OBJ_PARABOLOID)
+		{
+			ret = intersection_paraboloid((__local t_paraboloid *)o, &cam.position, &dir, INFINITY);
+			cur += sizeof(t_paraboloid);
+		}
+		else if (o->id == OBJ_PLANE)
+		{
+			ret = intersection_plane((__local t_plan *)o, &cam.position, &dir, INFINITY);
+			cur += sizeof(t_plan);
 		}
 /*	if (i == 0  && x == 0 && y == 0)
 		{
@@ -168,7 +394,7 @@ __kernel void test(__global int *img,
 				hit = vector_get_mult(&dir, ret);
 				hit = vector_get_add(&cam.position, &hit);
 
-				dir_sphere = local_vector_get_sub(&hit, &m->position);
+				dir_sphere = vector_get_sub_local(&hit, &m->position);
 				dir_sphere = local_matrix_get_mult_vector(&m->translation, &dir_sphere);
 				dir_sphere_to_light = vector_get_sub(&place_light, &hit);
 

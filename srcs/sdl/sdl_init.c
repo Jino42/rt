@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/29 15:34:32 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 18:49:14 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 19:33:04 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ bool		sdl_init(t_sdl *sdl)
 				SDL_WINDOW_SHOWN)))
 		return (false);
 
-	if (!(sdl->render = SDL_CreateRenderer(sdl->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
+	if (!(sdl->render = SDL_CreateRenderer(sdl->win, -1, SDL_RENDERER_ACCELERATED)))//; | SDL_RENDERER_PRESENTVSYNC)))
 		return (false);
 	if (!(sdl->img = SDL_CreateTexture(sdl->render,
 					SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC,

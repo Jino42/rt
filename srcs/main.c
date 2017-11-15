@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 13:51:06 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 20:08:04 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,10 +228,17 @@ bool 		init_object(t_env *e)
 	}
 	printf("Sizeof t_sphere : %lu\n", sizeof(t_sphere));
 	printf("Sizeof t_obj    : %lu\n", sizeof(t_obj));
-/*
+
 	t_plan p;
 
 	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
+
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_plan));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&p, e->mem_size_obj, sizeof(t_plan));
+	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+
+	e->mem_size_obj += sizeof(t_plan);
+
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
@@ -239,17 +246,32 @@ bool 		init_object(t_env *e)
 	t_cylinder c;
 
 	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28);
+
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cylinder));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&c, e->mem_size_obj, sizeof(t_cylinder));
+	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+
+	e->mem_size_obj += sizeof(t_cylinder);
+
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
 
 	t_paraboloid paraboloid;
+
 	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 2, 0xF28FB0);
+
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_paraboloid));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&paraboloid, e->mem_size_obj, sizeof(t_paraboloid));
+	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+
+	e->mem_size_obj += sizeof(t_paraboloid);
+
 	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
-*/
-/*
+
+
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(-10, -4, -20), vector_construct(2, 20, 3),10, 0x225be6);
 
@@ -259,18 +281,25 @@ bool 		init_object(t_env *e)
 
 	e->mem_size_obj += sizeof(t_ellipsoid);
 
-
 	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
-*/
+
 /*
 	t_cone cone;
-	cone = cone_construct(vector_construct(-5, -4, -20), 0xbe6226);
+	cone = cone_construct(vector_construct(-500, -400, -200), 0xbe6226);
+	matrix_rotation_x(&cone.world_to_object, 40);//CONE
+
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
+	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+
+	e->mem_size_obj += sizeof(t_cone);
+
 	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
 		return (false);
 	ft_lstinsert(&e->obj, push);
-	*/
+*/
 
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
