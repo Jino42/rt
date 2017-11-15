@@ -3,6 +3,11 @@
 
 #include "matrix.hl"
 
+t_vector		local_matrix_get_mult_dir_vector(__local t_matrix *m, const t_vector *v);
+t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v);
+t_vector		local_vector_get_sub(const t_vector *a, __local t_vector *b);
+
+
 t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v)
 {
 	t_vector	new;
@@ -23,7 +28,6 @@ t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v)
 t_vector		local_matrix_get_mult_dir_vector(__local t_matrix *m, const t_vector *v)
 {
 	t_vector	n;
-	float		len;
 
 	n.x = (v->x * m->matrix[0][0]) + (v->y * m->matrix[0][1]) + (v->z * m->matrix[0][2]);
 	n.y = (v->x * m->matrix[1][0]) + (v->y * m->matrix[1][1]) + (v->z * m->matrix[1][2]);
