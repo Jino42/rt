@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 19:16:52 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/15 13:51:06 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,9 +219,15 @@ bool 		init_object(t_env *e)
 	{
 		to=tn;
 		vector_string(&to->position);
+		printf("Size obj : %llu\n", to->mem_size_obj);
+		printf("Id   obj : %i\n", to->id);
+		printf("Colorobj : %i\n", to->color);
+		printf("WTF! ! ! ! : %lu\n", sizeof(to->intersect));
 		tn+=to->mem_size_obj;
 		ti++;
 	}
+	printf("Sizeof t_sphere : %lu\n", sizeof(t_sphere));
+	printf("Sizeof t_obj    : %lu\n", sizeof(t_obj));
 /*
 	t_plan p;
 

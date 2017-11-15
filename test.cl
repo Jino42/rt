@@ -1,6 +1,9 @@
 #include "matrix.hl"
+#include "local_function.hl"
 #include "rt.hl"
 
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+#pragma OPENCL EXTENSION cl_khr_fp16 : enable
 
 bool		solve_quadratic(const float a, const float b, const float c,
 								float *inter0, float *inter1)
@@ -33,21 +36,32 @@ bool		solve_quadratic(const float a, const float b, const float c,
 }
 
 
-float		intersection_sphere(t_sphere *obj,
+float		intersection_sphere(__local t_sphere *obj,
 								const t_vector *origin,
 								const t_vector *dir,
-								const float len)
+								const float len,
+								int nb, int x, int y)
 {
 	float inter0, inter1;
 	float a, b, c;
 
-	t_sphere o = *obj;
-
 	t_vector	origin_object;
 	t_vector	dir_object;
-
-//	dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
-	dir_object = *dir;
+/*
+	if (nb == 0 && !x && !y)
+	{
+			printf("%i : %.2f %.2f %.2f\n", nb,
+				   	obj->position.x,
+				   	obj->position.y,
+				   	obj->position.z);
+			printf("Size de l'objet : %i\n", obj->mem_size_obj);
+			printf("Id   de l'objet : %i\n", obj->id);
+			printf("Colorde l'objet : %x\n", obj->color);
+			printf("Radius -> %.2f\n", obj->radius);
+	}
+*/
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+//	dir_object = *dir;
 
 /*
 	o.speed +=0.01;
@@ -58,10 +72,10 @@ float		intersection_sphere(t_sphere *obj,
 	o.speed +=0.01;
 */
 
-	
-	origin_object = vector_get_sub(origin, &obj->position);
-//	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
-//	origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+
+	origin_object = local_vector_get_sub(origin, &obj->position);
+	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
 
 
 	a = 1; //Donc 1
@@ -88,28 +102,40 @@ float		intersection_sphere(t_sphere *obj,
 
 __kernel void test(__global int *img,
 					__global char *objj,
-					unsigned long long mem_size_obj,
+					unsigned long mem_size_obj,
 					t_ptr_cl	p_cl,
 					t_cam		cam,
 					__local char *lobj)
 {
 
 	__global t_obj *o;
-	__local	t_obj *test;
+	__local	char testt[2000];
+	__local t_obj *q;	
 
 	int w = 1280;
 	int x = get_global_id(0) % w;
 	int y = get_global_id(0) / w;
 	int grp = get_group_id(0);
 	int a = y;
+	int num_elems = get_local_size(0);
+	event_t ev;
+//	event_t ev = async_work_group_copy(test, objj + grp * num_elems, num_elems, 0);
+
+	ev = async_work_group_copy(testt, objj, mem_size_obj, 0);
+	wait_group_events(1, &ev);
 	/*
+
+	// Wait for copies to complete
 	if (x == 0 && y == 0)
 	while (x + a * w < (int)mem_size_obj)
 	{
-		lobj[x + a * w] = objj[x + a * w];
+		event_t ev = async_work_group_copy(test,
+					test + x + a * w, 1, 0);
+		wait_group_events(1, &ev);
 		a++;
 	}
 	*/
+
 	t_vector dir;
 	float min_distance = INFINITY;
 	float ret;
@@ -119,23 +145,32 @@ __kernel void test(__global int *img,
 	dir = vector_construct(px, py, -1);
 	dir = matrix_get_mult_vector(&cam.camera_to_world, &dir);
 	vector_normalize(&dir);
-	for (int i = 0; i < 8; i++)
+	int i = 0;
+	__local t_sphere *m;
+	while (i < 8)
 	{
 		o = (__global t_obj *)(objj + sizeof(t_sphere) * i);
-		test = (lobj + sizeof(t_sphere) * i);
-/*
-		if (x == 20 &&  y == 2)
-			printf("%.2f %.2f %.2f\n",
-				   	test->position.x,
-				   	test->position.y,
-				   	test->position.z);
-*/
-		if ((ret = intersection_sphere(o, &cam.position, &dir, INFINITY)) &&
+		//test = (lobj + sizeof(t_sphere) * i);
+		q = (__local t_obj *)(testt + sizeof(t_sphere) * i);
+		m= (__local t_sphere *)(testt+sizeof(t_sphere) * i);	
+/*	if (i == 0  && x == 0 && y == 0)
+		{
+			printf("OBJJ  %i : %.2f %.2f %.2f\n", i,
+				   	o->position.x,
+				   	o->position.y,
+				   	o->position.z);
+			printf("TESTT %i : %.2f %.2f %.2f\n", i,
+				   	q->position.x,
+				   	q->position.y,
+				   	q->position.z);
+		}*/
+		if ((ret = intersection_sphere(m, &cam.position, &dir, INFINITY, i, x, y)) &&
 												ret < min_distance)
 		{
 			img[x + y * w]  = o->color;
 			min_distance = ret;
 		}
+		i++;
 	}
 /*
 	if (x == 0 && y == 0)
