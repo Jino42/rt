@@ -129,7 +129,8 @@ float		intersection_ellipsoid(__local t_ellipsoid *obj,
 float		intersection_cylinder(__local t_cylinder *obj,
 									const t_vector *origin,
 									const t_vector *dir,
-									const float len)
+									const float len,
+									t_ray_ret *r)
 {
 	float inter0, inter1;
 	float a, b, c;
@@ -160,7 +161,95 @@ float		intersection_cylinder(__local t_cylinder *obj,
 			return (0);
 	}
 	if (inter0 < len)
-			return (inter0);
+	{
+		/*
+		r->hit_point = vector_get_mult(dir, inter0);
+		r->hit_point = vector_get_add(origin, &r->hit_point);
+
+//		r->hit_point.y = obj->position.y; // Normal Cylinder
+
+		r->hit_normal = vector_get_sub_local(&r->hit_point, &obj->position);
+		r->hit_normal = local_matrix_get_mult_vector(&obj->translation, &r->hit_normal);
+		r->hit_normal = local_matrix_get_mult_vector(&obj->world_to_object, &r->hit_normal);
+		t_matrix z = obj->world_to_object;
+		z.matrix[1][1] = -z.matrix[1][1];
+		z.matrix[1][2] = -z.matrix[1][2];
+		z.matrix[2][2] = -z.matrix[2][2];
+		z.matrix[2][1] = -z.matrix[2][1];
+		r->hit_point.y = obj->position.y; // Normal Cylinder
+		r->hit_normal = matrix_get_mult_vector(&z, &r->hit_normal);
+
+		//r->hit_normal = local_matrix_get_mult_vector(&obj->world_to_object, &r->hit_normal);
+		vector_normalize(&r->hit_normal);
+		*/
+/********
+		t_vector y_axis = vector_construct(0, 1, 0);
+
+		y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
+
+		r->hit_point = vector_get_mult(dir, inter0);
+		r->hit_point = vector_get_add(origin, &r->hit_point);
+
+		t_vector tee = vector_get_sub_local(origin, &obj->position);
+		float res = vector_dot(&dir_object, &y_axis) * inter0 + vector_dot(&origin_object, &y_axis);
+		t_vector ta = vector_get_mult(&y_axis, res);
+		r->hit_normal = vector_get_sub_local(&r->hit_point, &obj->position);
+		r->hit_normal = vector_get_sub(&r->hit_normal, &ta);
+
+		vector_normalize(&r->hit_normal);
+*/
+/*
+		t_vector y_axis = vector_construct(0, 1, 0);
+
+		y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
+
+		r->hit_point = vector_get_mult(dir, inter0);
+		r->hit_point = vector_get_add(origin, &r->hit_point);
+
+		t_vector tmp = vector_get_sub(&r->hit_point, origin);
+		float len = vector_magnitude(&tmp);
+		float m = vector_dot(&dir_object, &y_axis) * len; //
+		tmp = vector_get_sub_local(origin, &obj->position); //
+		m += vector_dot(&tmp, &y_axis);
+		tmp = vector_get_sub_local(&r->hit_point, &obj->position);
+		r->hit_normal = vector_get_mult(&y_axis, m);
+		r->hit_normal = vector_get_sub(&tmp, &r->hit_normal);
+		vector_normalize(&r->hit_normal);
+*/
+
+		t_vector y_axis = vector_construct(0, 1, 0);
+
+		y_axis = local_matrix_get_mult_dir_vector(&obj->world_to_object, &y_axis);
+
+		r->hit_point = vector_get_mult(dir, inter0);
+		r->hit_point = vector_get_add(origin, &r->hit_point);
+/*
+		t_vector tmp;
+		tmp = vector_get_sub_local(&r->hit_point, &obj->position);
+		float rr = vector_dot(&tmp, &y_axis);
+		tmp = vector_get_mult(&y_axis, rr);
+		t_vector tmp2 = vector_get_sub_local(&r->hit_point, &obj->position);
+		tmp = vector_get_sub(&tmp2, &tmp);
+		r->hit_normal.x = tmp.x;
+		r->hit_normal.y = tmp.y;
+		r->hit_normal.z = tmp.z;
+*/
+		t_vector poshit = vector_get_sub_local(&r->hit_point, &obj->position);
+		poshit = local_matrix_get_mult_vector(&obj->world_to_object, &poshit);
+		t_vector osef = obj->position;
+		float m = vector_dot(dir, &y_axis) * inter0  + vector_dot(&osef, &y_axis);
+		r->hit_normal = vector_get_mult(&y_axis, m);
+		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
+		t_matrix z = obj->world_to_object;
+		z.matrix[1][1] = -z.matrix[1][1];
+		z.matrix[1][2] = -z.matrix[1][2];
+		z.matrix[2][1] = -z.matrix[2][1];
+		z.matrix[2][2] = -z.matrix[2][2];
+		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
+		vector_normalize(&r->hit_normal);
+
+		return (inter0);
+	}
 	return (0);
 }
 
@@ -308,17 +397,14 @@ __kernel void test(__global int *img,
 					__local char *l_mem_obj)
 {
 
-	__local t_sphere	*m;
 	__local t_obj		*o;
 
 	int x = get_global_id(0) % WIDTH;
 	int y = get_global_id(0) / WIDTH;
-	int grp = get_group_id(0);
-	int a = y;
-	int num_elems = get_local_size(0);
 	event_t ev;
 
 	ev = async_work_group_copy(l_mem_obj, g_mem_obj, mem_size_obj, 0);
+//	barrier(CLK_LOCAL_MEM_FENCE);
 	wait_group_events(1, &ev);
 
 	t_vector dir;
@@ -335,6 +421,7 @@ __kernel void test(__global int *img,
 
 	while (cur < mem_size_obj)
 	{
+		t_ray_ret tmp_r;
 		ret = 0;
 		o = (__local t_obj *)(l_mem_obj + cur);
 		if (o->id == OBJ_SPHERE)
@@ -354,7 +441,12 @@ __kernel void test(__global int *img,
 		}
 		else if (o->id == OBJ_CYLINDER)
 		{
-			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY);
+			t_vector y_axis = vector_construct(0, 1, 0);
+
+			y_axis = local_matrix_get_mult_vector(&o->world_to_object, &y_axis);
+			if (!x && !y)
+				printf("Dir Cylinder : %.2f %.2f %.2f\n", y_axis.x, y_axis.y, y_axis.z);
+			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r);
 			cur += sizeof(t_cylinder);
 		}
 		else if (o->id == OBJ_PARABOLOID)
@@ -380,31 +472,46 @@ __kernel void test(__global int *img,
 				   	q->position.z);
 		}
 */
+
 		if (ret && ret < min_distance)
 		{
 			if (o->id == OBJ_SPHERE)
 			{
-				float dott;
-				t_vector dir_sphere;
-				t_vector dir_sphere_to_light;
-				t_vector hit;
+				t_vector	hit_point;
+				t_vector	hit_normal;
+				float		ret_dot;
 				t_vector place_light = vector_construct(10, 10, 0);
+				t_vector dir_obj_to_light;
 
-				dott = 0;
+				hit_point = vector_get_mult(&dir, ret);
+				hit_point = vector_get_add(&cam.position, &hit_point);
 
-				hit = vector_get_mult(&dir, ret);
-				hit = vector_get_add(&cam.position, &hit);
+				hit_normal = vector_get_sub_local(&hit_point, &o->position);
+				vector_normalize(&hit_normal);
 
-				dir_sphere = vector_get_sub_local(&hit, &o->position);
-				dir_sphere = local_matrix_get_mult_vector(&o->translation, &dir_sphere);
-				dir_sphere_to_light = vector_get_sub(&place_light, &hit);
+				dir_obj_to_light = vector_get_sub(&place_light, &hit_point);
+				vector_normalize(&dir_obj_to_light);
 
-				vector_normalize(&dir_sphere);
-				vector_normalize(&dir_sphere_to_light);
-				dott = vector_dot(&dir_sphere, &dir_sphere_to_light);
-				if (dott < 0)
-					dott = 0;
-				img[x + y * WIDTH]  = hex_intensity(o->color, dott);
+				ret_dot = vector_dot(&hit_normal, &dir_obj_to_light);
+				if (ret_dot < 0)
+					ret_dot = 0;
+
+				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
+			}
+			else if (o->id == OBJ_CYLINDER)
+			{
+				float		ret_dot;
+				t_vector place_light = vector_construct(10, 10, 0);
+				t_vector dir_obj_to_light;
+
+				dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
+				vector_normalize(&dir_obj_to_light);
+
+				ret_dot = vector_dot(&tmp_r.hit_normal, &dir_obj_to_light);
+				if (ret_dot < 0)
+					ret_dot = 0;
+
+				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
 			}
 			else
 				img[x + y * WIDTH] = o->color;

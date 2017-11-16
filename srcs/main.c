@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/16 16:47:11 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/16 21:38:08 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -481,6 +481,7 @@ int main(int argc, char **argv)
 		c->ratio = (float)e.sdl.width / (float)e.sdl.height;
 		c->scale = tan(M_PI * 0.5 * c->fov / 180);
 	}
+	e.mem_obj_index = 1992;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else
