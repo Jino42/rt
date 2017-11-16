@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:10:34 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:52:22 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/16 16:39:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "../libft/includes/libft.h"
 # include <OpenCL/opencl.h>
 
-# define MAX_SOURCE_SIZE (11000)
+# define MAX_SOURCE_SIZE (20000)
 
 typedef struct	s_cl
 {

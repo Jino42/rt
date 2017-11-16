@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 21:13:18 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/16 16:47:11 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,6 +377,8 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clSetKernelArg | t_cam");
 	cl->err = clSetKernelArg(cl->kernel, 5, e->mem_size_obj, NULL);
 	cl_check_err(cl->err, "clSetKernelArg | Local");
+	/*cl->err = clSetKernelArg(cl->kernel, 6, sizeof(int), &e->flag);
+	cl_check_err(cl->err, "clSetKernelArg | flag");*/
 	/* RUN KERNEL     */
 	cl->err = clEnqueueNDRangeKernel(cl->cq, cl->kernel, 1, NULL,
 										&cl->global_item_size,
@@ -429,6 +431,12 @@ bool		flag(int64_t *f, int argc, char **argv)
 	{
 		if (ft_strequ(argv[i], "-cpu"))
 			*f |= F_CPU;
+		else if (ft_strequ(argv[i], "-debug"))
+			*f |= F_DEBUG;
+		else if (ft_strequ(argv[i], "-debug_cl"))
+			*f |= F_DEBUG_CL;
+		else if (ft_strequ(argv[i], "-debug_s"))
+			*f |= F_DEBUG_SIZE_STRUCT;
 		else
 			return (false);
 		i++;
@@ -449,6 +457,16 @@ int main(int argc, char **argv)
 		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
+	if (e.flag & F_DEBUG_SIZE_STRUCT)
+	{
+		printf("Size t_obj        : %lu\n", sizeof(t_obj));
+		printf("Size t_sphere     : %lu\n", sizeof(t_sphere));
+		printf("Size t_plan       : %lu\n", sizeof(t_plan));
+		printf("Size t_ellipsoid  : %lu\n", sizeof(t_ellipsoid));
+			printf("Size t_cone       : %lu\n", sizeof(t_cone));
+		printf("Size t_paraboloid : %lu\n", sizeof(t_paraboloid));
+		printf("Size t_cylinder   : %lu\n", sizeof(t_cylinder));
+	}
 	e.cam.speed_rotate = 4;
 	e.cam.speed = 32;
 	if (!(e.flag & F_CPU))

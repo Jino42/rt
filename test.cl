@@ -367,7 +367,8 @@ __kernel void test(__global int *img,
 			ret = intersection_plane((__local t_plan *)o, &cam.position, &dir, INFINITY);
 			cur += sizeof(t_plan);
 		}
-/*	if (i == 0  && x == 0 && y == 0)
+/*
+		if (i == 0  && x == 0 && y == 0)
 		{
 			printf("OBJJ  %i : %.2f %.2f %.2f\n", i,
 				   	o->position.x,
