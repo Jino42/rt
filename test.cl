@@ -136,12 +136,13 @@ float		intersection_cylinder(__local t_cylinder *obj,
 	float a, b, c;
 	t_vector	dir_object;
 	t_vector	origin_object;
-
-	/*dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+	t_vector y_axis = vector_construct(0, -1, 0);
+/*
+	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
 	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
-	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);*/
-
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+*/
 	dir_object = vector_get_rotate_local(dir, &obj->rot);
 	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
@@ -155,6 +156,7 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		return (0);
 	if (inter0 > inter1)
 	{
+		y_axis = vector_construct(0, 1, 0);
 		float tmp = inter0;
 		inter0 = inter1;
 		inter1 = tmp;
@@ -222,18 +224,18 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		vector_normalize(&r->hit_normal);
 */
 
-		t_vector y_axis = vector_construct(0, -1, 0);
+		//t_vector y_axis = vector_construct(0, 1, 0);
 
-		//y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
+		/////y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
+		//y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
 
 		r->hit_point = vector_get_mult(dir, inter0);
 		r->hit_point = vector_get_add(origin, &r->hit_point);
 
- 		//tr = vec3_sub(ray->hit, obj->pos);
 		t_vector poshit = vector_get_sub_local(&r->hit_point, &obj->position);
 		poshit = vector_get_rotate_local(&poshit, &obj->rot);
 
-		t_vector osef = local_vector_get_sub(&obj->position, origin);
+		//t_vector osef = local_vector_get_sub(&obj->position, origin);
 		//m = vec3_dot(r->dir, obj->dir) * o->in + vec3_dot(r->pos, obj->dir);
 
 		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
@@ -525,9 +527,10 @@ __kernel void test(__global int *img,
 				vector_normalize(&dir_obj_to_light);
 				__local t_plan *pp = ((__local t_plan *)o);
 				t_vector normal = local_vector_get_cross_product_local(&pp->p1, &pp->p2);
+				normal = local_matrix_get_mult_vector(&pp->world_to_object, &normal);
 				ret_dot = vector_dot(&normal, &dir_obj_to_light);
 				if (ret_dot < 0)
-					ret_dot = 0;
+					ret_dot = -ret_dot;
 
 				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
 			}
