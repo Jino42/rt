@@ -226,7 +226,7 @@ float		intersection_cylinder(__local t_cylinder *obj,
 
 		//t_vector y_axis = vector_construct(0, 1, 0);
 
-		/////y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
+		//y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
 		//y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
 
 		r->hit_point = vector_get_mult(dir, inter0);
@@ -239,6 +239,8 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		//m = vec3_dot(r->dir, obj->dir) * o->in + vec3_dot(r->pos, obj->dir);
 
 		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
+		if (m > 10 || m < -10)
+			return (0);
 		r->hit_normal = vector_get_mult(&y_axis, m);
 		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
 
