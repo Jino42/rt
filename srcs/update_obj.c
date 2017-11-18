@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 21:08:02 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/17 14:51:44 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,18 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 
 	if (ev->key[SDL_SCANCODE_KP_1])
 	{
-		matrix_rotation_x(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
+		o->rot.x += 0.08;
+		//matrix_rotation_x(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_2])
 	{
-		matrix_rotation_y(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
+		o->rot.y += 0.08;
+		//matrix_rotation_y(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_3])
 	{
-		matrix_rotation_z(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
+		o->rot.z += 0.08;
+		//matrix_rotation_z(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
 	if (ev->key[SDL_SCANCODE_KP_8])
 	{

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/16 21:38:08 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:35:43 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_sphere 	sphere_construct(const t_vector position,
 {
 	t_sphere obj;
 
+	ft_bzero(&obj, sizeof(t_sphere));
 	obj.mem_size_obj = sizeof(t_sphere);
 	obj.id = OBJ_SPHERE;
 	obj.color = color;
@@ -41,6 +42,7 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 {
 	t_ellipsoid obj;
 
+	ft_bzero(&obj, sizeof(t_ellipsoid));
 	obj.mem_size_obj = sizeof(t_ellipsoid);
 	obj.id = OBJ_ELLIPSOID;
 	obj.color = color;
@@ -63,6 +65,7 @@ t_cone 	cone_construct(const t_vector position,
 {
 	t_cone obj;
 
+	ft_bzero(&obj, sizeof(t_cone));
 	obj.mem_size_obj = sizeof(t_cone);
 	obj.id = OBJ_CONE;
 	obj.color = color;
@@ -84,6 +87,7 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 {
 	t_paraboloid obj;
 
+	ft_bzero(&obj, sizeof(t_paraboloid));
 	obj.mem_size_obj = sizeof(t_paraboloid);
 	obj.id = OBJ_PARABOLOID;
 	obj.color = color;
@@ -106,6 +110,7 @@ t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position
 {
 	t_paraboloid_hyperbolic obj;
 
+	ft_bzero(&obj, sizeof(t_paraboloid_hyperbolic));
 	obj.mem_size_obj = sizeof(t_paraboloid_hyperbolic);
 	obj.id = OBJ_PARABOLOID_HYPERBOLIC;
 	obj.color = color;
@@ -128,6 +133,7 @@ t_plan		plan_construct(const t_vector position,
 {
 	t_plan obj;
 
+	ft_bzero(&obj, sizeof(t_plan));
 	obj.mem_size_obj = sizeof(t_plan);
 	obj.id = OBJ_PLANE;
 	obj.color = color;
@@ -153,6 +159,7 @@ t_cylinder	cylinder_construct(const t_vector position,
 {
 	t_cylinder obj;
 
+	ft_bzero(&obj, sizeof(t_cylinder));
 	obj.mem_size_obj = sizeof(t_cylinder);
 	obj.id = OBJ_CYLINDER;
 	obj.color = color;
@@ -481,7 +488,7 @@ int main(int argc, char **argv)
 		c->ratio = (float)e.sdl.width / (float)e.sdl.height;
 		c->scale = tan(M_PI * 0.5 * c->fov / 180);
 	}
-	e.mem_obj_index = 1992;
+	e.mem_obj_index = 2136;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 11:14:22 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/08 13:14:42 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/17 15:01:20 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ float		intersection_cylinder(t_cylinder *obj,
 	t_vector	dir_object;
 	t_vector	origin_object;
 
-	dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+	//dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+	dir_object = vector_get_rotate(dir, &obj->rot);
 	origin_object = vector_get_sub(origin, &obj->position);
-	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
-	origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+	origin_object = vector_get_rotate(&origin_object, &obj->rot);
+	//origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
+	//origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
 	a = dir_object.x * dir_object.x + dir_object.z * dir_object.z;
 	b = 2 * origin_object.x * dir_object.x +
 		2 * origin_object.z * dir_object.z;

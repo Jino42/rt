@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/16 16:32:40 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/17 14:50:50 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ typedef struct	s_obj
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -141,6 +142,7 @@ typedef struct 	s_sphere
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -162,6 +164,7 @@ typedef struct 	s_ellipsoid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -184,6 +187,7 @@ typedef struct 	s_cone
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -204,6 +208,7 @@ typedef struct	s_paraboloid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -224,6 +229,7 @@ typedef struct	s_paraboloid_hyperbolic
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -244,6 +250,7 @@ typedef struct	s_plan
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -267,6 +274,7 @@ typedef struct	s_cylinder
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;

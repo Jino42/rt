@@ -137,10 +137,15 @@ float		intersection_cylinder(__local t_cylinder *obj,
 	t_vector	dir_object;
 	t_vector	origin_object;
 
-	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
+	/*dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
 	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
-	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);*/
+
+	dir_object = vector_get_rotate_local(dir, &obj->rot);
+	origin_object = vector_get_sub_local(origin, &obj->position);
+	origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
+
 	a = dir_object.x * dir_object.x + dir_object.z * dir_object.z;
 	b = 2 * origin_object.x * dir_object.x +
 		2 * origin_object.z * dir_object.z;
@@ -219,33 +224,23 @@ float		intersection_cylinder(__local t_cylinder *obj,
 
 		t_vector y_axis = vector_construct(0, 1, 0);
 
-		y_axis = local_matrix_get_mult_dir_vector(&obj->world_to_object, &y_axis);
+		y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
 
 		r->hit_point = vector_get_mult(dir, inter0);
 		r->hit_point = vector_get_add(origin, &r->hit_point);
-/*
-		t_vector tmp;
-		tmp = vector_get_sub_local(&r->hit_point, &obj->position);
-		float rr = vector_dot(&tmp, &y_axis);
-		tmp = vector_get_mult(&y_axis, rr);
-		t_vector tmp2 = vector_get_sub_local(&r->hit_point, &obj->position);
-		tmp = vector_get_sub(&tmp2, &tmp);
-		r->hit_normal.x = tmp.x;
-		r->hit_normal.y = tmp.y;
-		r->hit_normal.z = tmp.z;
-*/
+
+ 		//tr = vec3_sub(ray->hit, obj->pos);
 		t_vector poshit = vector_get_sub_local(&r->hit_point, &obj->position);
-		poshit = local_matrix_get_mult_vector(&obj->world_to_object, &poshit);
-		t_vector osef = obj->position;
-		float m = vector_dot(dir, &y_axis) * inter0  + vector_dot(&osef, &y_axis);
+		poshit = vector_get_rotate_local(&poshit, &obj->rot);
+
+		t_vector osef = local_vector_get_sub(&obj->position, origin);
+		//m = vec3_dot(r->dir, obj->dir) * o->in + vec3_dot(r->pos, obj->dir);
+
+		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
 		r->hit_normal = vector_get_mult(&y_axis, m);
 		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
-		t_matrix z = obj->world_to_object;
-		z.matrix[1][1] = -z.matrix[1][1];
-		z.matrix[1][2] = -z.matrix[1][2];
-		z.matrix[2][1] = -z.matrix[2][1];
-		z.matrix[2][2] = -z.matrix[2][2];
-		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
+
+		r->hit_normal = vector_get_inverse_rotate_local(&r->hit_normal, &obj->rot);
 		vector_normalize(&r->hit_normal);
 
 		return (inter0);
@@ -443,9 +438,10 @@ __kernel void test(__global int *img,
 		{
 			t_vector y_axis = vector_construct(0, 1, 0);
 
-			y_axis = local_matrix_get_mult_vector(&o->world_to_object, &y_axis);
+			//y_axis = local_matrix_get_mult_vector(&o->world_to_object, &y_axis);
+			y_axis = vector_get_rotate_local(&y_axis, &o->rot);
 			if (!x && !y)
-				printf("Dir Cylinder : %.2f %.2f %.2f\n", y_axis.x, y_axis.y, y_axis.z);
+				printf("Dir Cylinder : %.2f %.2f %.2f\n", o->rot.x, o->rot.y, o->rot.z);
 			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r);
 			cur += sizeof(t_cylinder);
 		}

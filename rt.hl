@@ -14,7 +14,6 @@ typedef unsigned int uint32_t;
 typedef unsigned long uint64_t;
 typedef int int32_t;
 
-
 # define HEIGHT 720
 # define WIDTH 1280
 # define SIZE_RENDER (HEIGHT * WIDTH * 4)
@@ -75,6 +74,7 @@ typedef struct	s_obj
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -94,6 +94,7 @@ typedef struct 	s_sphere
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -116,6 +117,7 @@ typedef struct 	s_ellipsoid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -139,6 +141,7 @@ typedef struct 	s_cone
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -160,6 +163,7 @@ typedef struct	s_paraboloid
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -181,6 +185,7 @@ typedef struct	s_paraboloid_hyperbolic
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -202,6 +207,7 @@ typedef struct	s_plan
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -226,6 +232,7 @@ typedef struct	s_cylinder
 	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
+	t_vector	rot;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
