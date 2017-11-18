@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/17 15:35:43 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/18 16:20:14 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ bool 		init_object(t_env *e)
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	s[0] = sphere_construct(vector_construct(10, 10, -10), 1.7, 0x84F15E);
+	s[0] = sphere_construct(vector_construct(0, 0, 0), 0.1, 0x84F15E);
 	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000); // RIGHT WALL
 	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00); // LEFT WALL
 	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF); // BACK WALL

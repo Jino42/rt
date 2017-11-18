@@ -222,9 +222,9 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		vector_normalize(&r->hit_normal);
 */
 
-		t_vector y_axis = vector_construct(0, 1, 0);
+		t_vector y_axis = vector_construct(0, -1, 0);
 
-		y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
+		//y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
 
 		r->hit_point = vector_get_mult(dir, inter0);
 		r->hit_point = vector_get_add(origin, &r->hit_point);
@@ -440,8 +440,8 @@ __kernel void test(__global int *img,
 
 			//y_axis = local_matrix_get_mult_vector(&o->world_to_object, &y_axis);
 			y_axis = vector_get_rotate_local(&y_axis, &o->rot);
-			if (!x && !y)
-				printf("Dir Cylinder : %.2f %.2f %.2f\n", o->rot.x, o->rot.y, o->rot.z);
+		//	if (!x && !y)
+			//	printf("Dir Cylinder : %.2f %.2f %.2f\n", o->rot.x, o->rot.y, o->rot.z);
 			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r);
 			cur += sizeof(t_cylinder);
 		}
@@ -500,10 +500,32 @@ __kernel void test(__global int *img,
 				t_vector place_light = vector_construct(10, 10, 0);
 				t_vector dir_obj_to_light;
 
+				//Vec3f V = (E - P).normalize(); // or -ray.dir if you use ray-tracing
+
 				dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
 				vector_normalize(&dir_obj_to_light);
 
 				ret_dot = vector_dot(&tmp_r.hit_normal, &dir_obj_to_light);
+				if (ret_dot < 0)
+					ret_dot = 0;
+
+				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
+			}
+			else if (o->id == OBJ_PLANE)
+			{
+				float		ret_dot;
+				t_vector place_light = vector_construct(10, 10, 0);
+				t_vector dir_obj_to_light;
+
+				//Vec3f V = (E - P).normalize(); // or -ray.dir if you use ray-tracing
+
+				t_vector hh = vector_get_mult(&dir, ret);
+				hh = vector_get_add(&cam.position, &hh);
+				dir_obj_to_light = vector_get_sub(&place_light, &hh);
+				vector_normalize(&dir_obj_to_light);
+				__local t_plan *pp = ((__local t_plan *)o);
+				t_vector normal = local_vector_get_cross_product_local(&pp->p1, &pp->p2);
+				ret_dot = vector_dot(&normal, &dir_obj_to_light);
 				if (ret_dot < 0)
 					ret_dot = 0;
 
