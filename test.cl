@@ -130,20 +130,19 @@ float		intersection_cylinder(__local t_cylinder *obj,
 									const t_vector *origin,
 									const t_vector *dir,
 									const float len,
-									t_ray_ret *r,
-									int x, int y)
+									t_ray_ret *r)
 {
 	float inter0, inter1;
 	float a, b, c;
 	t_vector	dir_object;
 	t_vector	origin_object;
 	t_vector y_axis = vector_construct(0, -1, 0);
-/*
+	/*
 	dir_object = local_matrix_get_mult_dir_vector(&obj->world_to_object, dir);
 	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
 	origin_object = local_matrix_get_mult_vector(&obj->world_to_object, &origin_object);
-*/
+	*/
 	dir_object = vector_get_rotate_local(dir, &obj->rot);
 	origin_object = vector_get_sub_local(origin, &obj->position);
 	origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
@@ -155,10 +154,9 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		origin_object.z * origin_object.z - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
+	float tmp = inter0;
 	if (inter0 > inter1)
 	{
-		y_axis = vector_construct(0, 1, 0);
-		float tmp = inter0;
 		inter0 = inter1;
 		inter1 = tmp;
 	}
@@ -170,46 +168,6 @@ float		intersection_cylinder(__local t_cylinder *obj,
 	}
 	if (inter0 < len)
 	{
-/********
-		t_vector y_axis = vector_construct(0, 1, 0);
-
-		y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
-
-		r->hit_point = vector_get_mult(dir, inter0);
-		r->hit_point = vector_get_add(origin, &r->hit_point);
-
-		t_vector tee = vector_get_sub_local(origin, &obj->position);
-		float res = vector_dot(&dir_object, &y_axis) * inter0 + vector_dot(&origin_object, &y_axis);
-		t_vector ta = vector_get_mult(&y_axis, res);
-		r->hit_normal = vector_get_sub_local(&r->hit_point, &obj->position);
-		r->hit_normal = vector_get_sub(&r->hit_normal, &ta);
-
-		vector_normalize(&r->hit_normal);
-*/
-/*
-		t_vector y_axis = vector_construct(0, 1, 0);
-
-		y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
-
-		r->hit_point = vector_get_mult(dir, inter0);
-		r->hit_point = vector_get_add(origin, &r->hit_point);
-
-		t_vector tmp = vector_get_sub(&r->hit_point, origin);
-		float len = vector_magnitude(&tmp);
-		float m = vector_dot(&dir_object, &y_axis) * len; //
-		tmp = vector_get_sub_local(origin, &obj->position); //
-		m += vector_dot(&tmp, &y_axis);
-		tmp = vector_get_sub_local(&r->hit_point, &obj->position);
-		r->hit_normal = vector_get_mult(&y_axis, m);
-		r->hit_normal = vector_get_sub(&tmp, &r->hit_normal);
-		vector_normalize(&r->hit_normal);
-*/
-
-		//t_vector y_axis = vector_construct(0, 1, 0);
-
-		//y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
-		//y_axis = local_matrix_get_mult_vector(&obj->world_to_object, &y_axis);
-
 		r->hit_point = vector_get_mult(dir, inter0);
 		r->hit_point = vector_get_add(origin, &r->hit_point);
 
@@ -219,23 +177,17 @@ float		intersection_cylinder(__local t_cylinder *obj,
 
 		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
 		if (m > 10 || m < -10)
-			return (0);
+		{
+			m = vector_dot(&dir_object, &y_axis) * inter1  + vector_dot(&origin_object, &y_axis);
+			if (m > 10 || m < -10)
+				return (0);
+		}
 		r->hit_normal = vector_get_mult(&y_axis, m);
 		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
 
 		r->hit_normal = vector_get_inverse_rotate_local(&r->hit_normal, &obj->rot);
 		vector_normalize(&r->hit_normal);
 
-		y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
-		if (x == WIDTH / 2 && y == HEIGHT / 2)
-			printf("Vector Y_AXIS {[%.2f][%.2f][%.2f]}\n",
-					y_axis.x,
-					y_axis.y,
-					y_axis.z);
-/*
-		r->hit_point = vector_get_mult(&dir_object, inter0);
-		r->hit_point = vector_get_add(&origin_object, &r->hit_point);
-*/
 		return (inter0);
 	}
 	return (0);
@@ -288,7 +240,8 @@ float		intersection_cone(__local t_cone *obj,
 float		intersection_paraboloid(__local t_paraboloid *obj,
 									const t_vector *origin,
 									const t_vector *dir,
-									const float len)
+									const float len,
+									t_ray_ret *r)
 {
 	float inter0, inter1;
 	float a, b, c;
@@ -321,7 +274,31 @@ float		intersection_paraboloid(__local t_paraboloid *obj,
 			return (0);
 	}
 	if (inter0 < len)
-			return (inter0);
+	{
+		t_vector y_axis = vector_construct(0, 1, 0);
+
+		r->hit_point = vector_get_mult(dir, inter0);
+		r->hit_point = vector_get_add(origin, &r->hit_point);
+
+		t_vector poshit = vector_get_sub_local(&r->hit_point, &obj->position);
+		poshit = vector_get_rotate_local(&poshit, &obj->rot);
+
+		//mor intern;
+		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
+		if (m > 10 || m < -10)
+		{
+			m = vector_dot(&dir_object, &y_axis) * inter1  + vector_dot(&origin_object, &y_axis);
+			if (m > 10 || m < -10)
+				return (0);
+		}
+		r->hit_normal = vector_get_mult(&y_axis, m);
+		r->hit_normal = vector_get_sub(&poshit, &r->hit_normal);
+
+		r->hit_normal = vector_get_inverse_rotate_local(&r->hit_normal, &obj->rot);
+		vector_normalize(&r->hit_normal);
+
+		return (inter0);
+	}
 	return (0);
 }
 
@@ -392,7 +369,6 @@ __kernel void test(__global int *img,
 	event_t ev;
 
 	ev = async_work_group_copy(l_mem_obj, g_mem_obj, mem_size_obj, 0);
-//	barrier(CLK_LOCAL_MEM_FENCE);
 	wait_group_events(1, &ev);
 
 	t_vector dir;
@@ -429,18 +405,12 @@ __kernel void test(__global int *img,
 		}
 		else if (o->id == OBJ_CYLINDER)
 		{
-			t_vector y_axis = vector_construct(0, 1, 0);
-
-			//y_axis = local_matrix_get_mult_vector(&o->world_to_object, &y_axis);
-			y_axis = vector_get_rotate_local(&y_axis, &o->rot);
-		//	if (!x && !y)
-			//	printf("Dir Cylinder : %.2f %.2f %.2f\n", o->rot.x, o->rot.y, o->rot.z);
-			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r, x, y);
+			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r);
 			cur += sizeof(t_cylinder);
 		}
 		else if (o->id == OBJ_PARABOLOID)
 		{
-			ret = intersection_paraboloid((__local t_paraboloid *)o, &cam.position, &dir, INFINITY);
+			ret = intersection_paraboloid((__local t_paraboloid *)o, &cam.position, &dir, INFINITY, &tmp_r);
 			cur += sizeof(t_paraboloid);
 		}
 		else if (o->id == OBJ_PLANE)
@@ -448,19 +418,6 @@ __kernel void test(__global int *img,
 			ret = intersection_plane((__local t_plan *)o, &cam.position, &dir, INFINITY);
 			cur += sizeof(t_plan);
 		}
-/*
-		if (i == 0  && x == 0 && y == 0)
-		{
-			printf("OBJJ  %i : %.2f %.2f %.2f\n", i,
-				   	o->position.x,
-				   	o->position.y,
-				   	o->position.z);
-			printf("TESTT %i : %.2f %.2f %.2f\n", i,
-				   	q->position.x,
-				   	q->position.y,
-				   	q->position.z);
-		}
-*/
 
 		if (ret && ret < min_distance)
 		{
@@ -487,7 +444,7 @@ __kernel void test(__global int *img,
 
 				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
 			}
-			else if (o->id == OBJ_CYLINDER)
+			else if (o->id == OBJ_CYLINDER || o->id == OBJ_PARABOLOID)
 			{
 				float		ret_dot;
 				t_vector place_light = vector_construct(10, 10, 0);
@@ -509,8 +466,6 @@ __kernel void test(__global int *img,
 				float		ret_dot;
 				t_vector place_light = vector_construct(10, 10, 0);
 				t_vector dir_obj_to_light;
-
-				//Vec3f V = (E - P).normalize(); // or -ray.dir if you use ray-tracing
 
 				t_vector hh = vector_get_mult(&dir, ret);
 				hh = vector_get_add(&cam.position, &hh);
