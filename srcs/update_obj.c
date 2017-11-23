@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/18 17:08:00 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/23 18:18:40 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 		o->rot.z += o->rotate_speed * e->fps.delta_time;
 		matrix_rotation_z(&o->world_to_object, o->rotate_speed * e->fps.delta_time);
 	}
+	(void)dir;
+	/*
 	if (ev->key[SDL_SCANCODE_KP_8])
 	{
 		dir = vector_construct(0, 0, o->speed * e->fps.delta_time);
@@ -62,7 +64,19 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 	{
 		dir = vector_construct(-o->speed * e->fps.delta_time, 0, 0);
 		matrix_translation(&o->translation, &dir);
-	}
+	}*/
+	if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.x += 0.1;
+	if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.y += 0.1;
+	if (ev->key[SDL_SCANCODE_KP_9] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.z += 0.1;
+	if (ev->key[SDL_SCANCODE_KP_4] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.x -= 0.1;
+	if (ev->key[SDL_SCANCODE_KP_5] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.y -= 0.1;
+	if (ev->key[SDL_SCANCODE_KP_6] && o->id == OBJ_ELLIPSOID)
+		((t_ellipsoid *)o)->size.z -= 0.1;
 }
 
 void 		update_obj_index(t_env *e, const int32_t incr)
