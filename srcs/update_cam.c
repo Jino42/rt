@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/02 15:25:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/07 16:56:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/23 11:19:25 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void 		update_cam(t_cam *cam)
 {
+
 	t_matrix rot_x;
 	t_matrix rot_y;
 	t_matrix rot_z;

@@ -111,12 +111,13 @@ t_vector	vector_get_inverse_rotate_local(const t_vector *this, __local t_vector 
 	t_vector n;
 
 	n = *this;
-	if (-rot->x)
-		vector_rotate_x(&n, -rot->x);
-	if (-rot->y)
-		vector_rotate_y(&n, -rot->y);
+
 	if (-rot->z)
 		vector_rotate_z(&n, -rot->z);
+	if (-rot->y)
+		vector_rotate_y(&n, -rot->y);
+	if (-rot->x)
+		vector_rotate_x(&n, -rot->x);
 	return (n);
 }
 

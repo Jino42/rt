@@ -130,7 +130,8 @@ float		intersection_cylinder(__local t_cylinder *obj,
 									const t_vector *origin,
 									const t_vector *dir,
 									const float len,
-									t_ray_ret *r)
+									t_ray_ret *r,
+									int x, int y)
 {
 	float inter0, inter1;
 	float a, b, c;
@@ -169,26 +170,6 @@ float		intersection_cylinder(__local t_cylinder *obj,
 	}
 	if (inter0 < len)
 	{
-		/*
-		r->hit_point = vector_get_mult(dir, inter0);
-		r->hit_point = vector_get_add(origin, &r->hit_point);
-
-//		r->hit_point.y = obj->position.y; // Normal Cylinder
-
-		r->hit_normal = vector_get_sub_local(&r->hit_point, &obj->position);
-		r->hit_normal = local_matrix_get_mult_vector(&obj->translation, &r->hit_normal);
-		r->hit_normal = local_matrix_get_mult_vector(&obj->world_to_object, &r->hit_normal);
-		t_matrix z = obj->world_to_object;
-		z.matrix[1][1] = -z.matrix[1][1];
-		z.matrix[1][2] = -z.matrix[1][2];
-		z.matrix[2][2] = -z.matrix[2][2];
-		z.matrix[2][1] = -z.matrix[2][1];
-		r->hit_point.y = obj->position.y; // Normal Cylinder
-		r->hit_normal = matrix_get_mult_vector(&z, &r->hit_normal);
-
-		//r->hit_normal = local_matrix_get_mult_vector(&obj->world_to_object, &r->hit_normal);
-		vector_normalize(&r->hit_normal);
-		*/
 /********
 		t_vector y_axis = vector_construct(0, 1, 0);
 
@@ -235,8 +216,6 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		t_vector poshit = vector_get_sub_local(&r->hit_point, &obj->position);
 		poshit = vector_get_rotate_local(&poshit, &obj->rot);
 
-		//t_vector osef = local_vector_get_sub(&obj->position, origin);
-		//m = vec3_dot(r->dir, obj->dir) * o->in + vec3_dot(r->pos, obj->dir);
 
 		float m = vector_dot(&dir_object, &y_axis) * inter0  + vector_dot(&origin_object, &y_axis);
 		if (m > 10 || m < -10)
@@ -247,6 +226,16 @@ float		intersection_cylinder(__local t_cylinder *obj,
 		r->hit_normal = vector_get_inverse_rotate_local(&r->hit_normal, &obj->rot);
 		vector_normalize(&r->hit_normal);
 
+		y_axis = vector_get_rotate_local(&y_axis, &obj->rot);
+		if (x == WIDTH / 2 && y == HEIGHT / 2)
+			printf("Vector Y_AXIS {[%.2f][%.2f][%.2f]}\n",
+					y_axis.x,
+					y_axis.y,
+					y_axis.z);
+/*
+		r->hit_point = vector_get_mult(&dir_object, inter0);
+		r->hit_point = vector_get_add(&origin_object, &r->hit_point);
+*/
 		return (inter0);
 	}
 	return (0);
@@ -446,7 +435,7 @@ __kernel void test(__global int *img,
 			y_axis = vector_get_rotate_local(&y_axis, &o->rot);
 		//	if (!x && !y)
 			//	printf("Dir Cylinder : %.2f %.2f %.2f\n", o->rot.x, o->rot.y, o->rot.z);
-			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r);
+			ret = intersection_cylinder((__local t_cylinder *)o, &cam.position, &dir, INFINITY, &tmp_r, x, y);
 			cur += sizeof(t_cylinder);
 		}
 		else if (o->id == OBJ_PARABOLOID)
@@ -510,8 +499,8 @@ __kernel void test(__global int *img,
 				vector_normalize(&dir_obj_to_light);
 
 				ret_dot = vector_dot(&tmp_r.hit_normal, &dir_obj_to_light);
-				if (ret_dot < 0)
-					ret_dot = 0;
+				//if (ret_dot < 0)
+					//ret_dot = 0;
 
 				img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
 			}
