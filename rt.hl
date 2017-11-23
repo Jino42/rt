@@ -2,7 +2,7 @@
 #ifndef RT_H
 # define RT_H
 
-
+# define EPSILON 0.000005f
 
 # define F_CPU (1 << 1)
 # define F_DEBUG (1 << 2)
@@ -56,9 +56,17 @@ typedef struct	s_light
 
 typedef struct	s_ray_ret
 {
+	t_vector	y_axis;
+
 	float		t;
+
+	float		m;
+
+	float		inter0;
+	float		inter1;
 	t_vector	hit_point;
 	t_vector	hit_normal;
+	t_vector	position_obj_to_hit;
 }				t_ray_ret;
 
 typedef struct	s_obj
