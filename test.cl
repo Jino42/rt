@@ -237,6 +237,11 @@ void	normal_sphere(__local t_sphere *obj, t_ray_ret *r)
 	r->hit_normal = r->position_obj_to_hit;
 }
 
+void	normal_plan(__local t_plan *obj, t_ray_ret *r)
+{
+	r->hit_normal = obj->normal;
+}
+
 unsigned int	hex_intensity(unsigned int color, float intensity)
 {
 	int r = (color >> 16) & 0xFF;
@@ -310,7 +315,7 @@ __kernel void test(__global int *img,
 		{
 			ret = intersection_plane((__local t_plan *)o, &cam.position, &dir, INFINITY);
 			cur += sizeof(t_plan);
-		}//////////////////////
+		}
 		else if (o->id == OBJ_ELLIPSOID)
 		{
 			ret = intersection_ellipsoid((__local t_ellipsoid *)o, &origin_object, &dir_object, INFINITY, &tmp_r);
@@ -345,51 +350,31 @@ __kernel void test(__global int *img,
 	tmp_r.position_obj_to_hit = vector_get_sub_local(&tmp_r.hit_point, &o->position);
 	tmp_r.position_obj_to_hit = vector_get_rotate_local(&tmp_r.position_obj_to_hit, &o->rot);
 
-	if (o->id == OBJ_PLANE)
-	{
-		float		ret_dot;
-		t_vector place_light = vector_construct(10, 10, 0);
-		t_vector dir_obj_to_light;
+	if (o->id == OBJ_SPHERE)
+		normal_sphere((__local t_sphere *)o, &tmp_r);
+	if (o->id == OBJ_CYLINDER)
+		normal_cylinder((__local t_cylinder *)o, &tmp_r);
+	else if (o->id == OBJ_PARABOLOID)
+		normal_paraboloid((__local t_paraboloid *)o, &tmp_r);
+	else if (o->id == OBJ_ELLIPSOID)
+		normal_ellipsoid((__local t_ellipsoid *)o, &tmp_r);
+	else if (o->id == OBJ_PLANE)
+		normal_plan((__local t_plan *)o, &tmp_r);
 
-		dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
-		vector_normalize(&dir_obj_to_light);
+	tmp_r.hit_normal = vector_get_inverse_rotate_local(&tmp_r.hit_normal, &o->rot);
+	vector_normalize(&tmp_r.hit_normal);
 
-		__local t_plan *pp = ((__local t_plan *)o);
-		t_vector normal = pp->normal;
-		normal = vector_get_inverse_rotate_local(&normal, &o->rot);
-		ret_dot = vector_dot(&normal, &dir_obj_to_light);
-		if (ret_dot < 0)
-			ret_dot = -ret_dot;
+	float		ret_dot;
+	t_vector place_light = vector_construct(10, 10, 0);
+	t_vector dir_obj_to_light;
 
-		img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
-	}
-	else if (o->id == OBJ_CYLINDER || o->id == OBJ_PARABOLOID || o->id == OBJ_ELLIPSOID || o->id == OBJ_SPHERE)
-	{
-		if (o->id == OBJ_SPHERE)
-			normal_sphere((__local t_sphere *)o, &tmp_r);
-		if (o->id == OBJ_CYLINDER)
-			normal_cylinder((__local t_cylinder *)o, &tmp_r);
-		else if (o->id == OBJ_PARABOLOID)
-			normal_paraboloid((__local t_paraboloid *)o, &tmp_r);
-		else if (o->id == OBJ_ELLIPSOID)
-			normal_ellipsoid((__local t_ellipsoid *)o, &tmp_r);
+	dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
+	vector_normalize(&dir_obj_to_light);
 
-		tmp_r.hit_normal = vector_get_inverse_rotate_local(&tmp_r.hit_normal, &o->rot);
-		vector_normalize(&tmp_r.hit_normal);
-
-		float		ret_dot;
-		t_vector place_light = vector_construct(10, 10, 0);
-		t_vector dir_obj_to_light;
-
-		dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
-		vector_normalize(&dir_obj_to_light);
-
-		ret_dot = vector_dot(&tmp_r.hit_normal, &dir_obj_to_light);
-		if (ret_dot < 0)
-			ret_dot = 0;
-
-		img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
-	}
-	else
-		img[x + y * WIDTH] = o->color;
+	ret_dot = vector_dot(&tmp_r.hit_normal, &dir_obj_to_light);
+	if (o->id == OBJ_PLANE && ret_dot < 0)
+		ret_dot = fabs(ret_dot);
+	else if (ret_dot < 0)
+		ret_dot = 0;
+	img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot);
 }
