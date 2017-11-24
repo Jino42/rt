@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/17 14:50:50 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/24 18:19:38 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,7 @@ typedef struct	s_plan
 	t_vector	p0; // Bas gauche
 	t_vector	p1; // haut gauche RELATIVE
 	t_vector	p2; // bas droite RELATIVE
+	t_vector	normal;
 	float		len;
 }				t_plan;
 

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/23 19:01:42 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/24 18:20:05 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ t_plan		plan_construct(const t_vector position,
 	obj.p0 = vector_construct(position.x - len, position.y - len, position.z);
 	obj.p1 = vector_construct(0, 1, 0);
 	obj.p2 = vector_construct(1, 0, 0);
+	obj.normal = vector_construct(0, 0, 1);
 
 	obj.intersect = &intersection_plane;
 	return (obj);

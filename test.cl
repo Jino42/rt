@@ -80,26 +80,17 @@ float		intersection_plane(__local t_plan *obj,
 	t_vector	origin_object;
 
 	origin_object = vector_get_sub_local(origin, &obj->position);
-	origin_object = local_matrix_get_mult_vector(&obj->translation, &origin_object);
 
+	normal = obj->normal;
+	normal = vector_get_inverse_rotate_local(&normal, &obj->rot);
 
-	normal = local_vector_get_cross_product_local(&obj->p1, &obj->p2); //
-	normal = local_matrix_get_mult_vector(&obj->world_to_object, &normal);
 	float denom = vector_dot(&normal, dir);
-	if (fabs(denom) > 0.0001)
+	if (fabs(denom) > EPSILON)
 	{
 		t_vector origin_to_plan = local_vector_get_sub(&obj->position, &origin_object); //
 		float t = vector_dot(&origin_to_plan, &normal) / denom;
 		if (t >= 0 && t < len)
-		{
-			t_vector len;
-			t_vector point;
-
-			point = vector_get_mult(dir, t);
-			point = vector_get_add(&point, &origin_object);
-			len = vector_get_sub_local(&point, &obj->position);
 			return (t);
-		}
 	}
 	return (false);
 }
@@ -243,7 +234,7 @@ void	normal_paraboloid(__local t_paraboloid *obj, t_ray_ret *r)
 }
 void	normal_sphere(__local t_sphere *obj, t_ray_ret *r)
 {
-	r->hit_normal = vector_get_sub_local(&r->hit_point, &obj->position);
+	r->hit_normal = r->position_obj_to_hit;
 }
 
 unsigned int	hex_intensity(unsigned int color, float intensity)
@@ -360,13 +351,12 @@ __kernel void test(__global int *img,
 		t_vector place_light = vector_construct(10, 10, 0);
 		t_vector dir_obj_to_light;
 
-		t_vector hh = vector_get_mult(&dir, min_distance);
-		hh = vector_get_add(&cam.position, &hh);
-		dir_obj_to_light = vector_get_sub(&place_light, &hh);
+		dir_obj_to_light = vector_get_sub(&place_light, &tmp_r.hit_point);
 		vector_normalize(&dir_obj_to_light);
+
 		__local t_plan *pp = ((__local t_plan *)o);
-		t_vector normal = local_vector_get_cross_product_local(&pp->p1, &pp->p2);
-		normal = local_matrix_get_mult_vector(&pp->world_to_object, &normal);
+		t_vector normal = pp->normal;
+		normal = vector_get_inverse_rotate_local(&normal, &o->rot);
 		ret_dot = vector_dot(&normal, &dir_obj_to_light);
 		if (ret_dot < 0)
 			ret_dot = -ret_dot;
