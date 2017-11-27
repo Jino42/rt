@@ -168,6 +168,7 @@ float		calculate_m_value(t_ray_ret *r, const t_vector *origin_object, const t_ve
 		r->m = vector_dot(dir_object, &r->y_axis) * inter1 + vector_dot(origin_object, &r->y_axis);
 		if (r->m > 10 || r->m < -10)
 			return (0);
+		return (inter1);
 	}
 	return (inter0);
 }
