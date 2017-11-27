@@ -54,21 +54,6 @@ typedef struct	s_light
 	uint32_t	color;
 }				t_light;
 
-typedef struct	s_ray_ret
-{
-	t_vector	y_axis;
-
-	float		t;
-
-	float		m;
-
-	float		inter0;
-	float		inter1;
-	t_vector	hit_point;
-	t_vector	hit_normal;
-	t_vector	position_obj_to_hit;
-}				t_ray_ret;
-
 typedef struct	s_obj
 {
 	uint64_t	mem_size_obj;
@@ -87,6 +72,23 @@ typedef struct	s_obj
 	t_vector	hit_point;
 	t_vector	hit_normal;
 }				t_obj;
+
+typedef struct	s_ray_ret
+{
+	t_vector	y_axis;
+
+	float		t;
+
+	float		m;
+
+	float		distance_intersection;
+
+	t_vector	hit_point;
+	t_vector	hit_normal;
+	t_vector	position_obj_to_hit;
+
+	__local t_obj *ptr_obj;
+}				t_ray_ret;
 
 typedef struct 	s_sphere
 {

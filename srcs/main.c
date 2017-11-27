@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/24 18:20:05 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/27 21:40:28 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,7 +479,7 @@ int main(int argc, char **argv)
 	e.cam.speed = 32;
 	if (!(e.flag & F_CPU))
 	{
-		cl_init(&e.cl, "test.cl", "test", e.sdl.height * e.sdl.width);
+		cl_init(&e.cl, "srcs_cl/test.cl", "test", e.sdl.height * e.sdl.width);
 		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
 		cl_create_buffer(&e.cl, e.mem_size_obj);
 		t_ptr_cl *c = &e.p_cl;

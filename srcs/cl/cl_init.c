@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:08:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 17:48:52 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/27 22:44:52 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,20 @@ static void		cl_create_base(t_cl *cl, const char *path)
 
 static void		cl_compile_kernel(t_cl *cl)
 {
-	char		buffer[10000];
+	size_t		len_buffer = 17000;
+	char		buffer[len_buffer];
 	size_t		len;
 
-	cl->err = clBuildProgram(cl->program, 0, NULL, "-I.", NULL, NULL);
+	cl->err = clBuildProgram(cl->program, 0, NULL, "-I includes_cl/", NULL, NULL);
 	if (cl->err != CL_SUCCESS)
 	{
-		ft_bzero(buffer, 10000);
+		ft_bzero(buffer, len_buffer);
 		cl->err = clGetProgramBuildInfo(cl->program, cl->device_id,
-				CL_PROGRAM_BUILD_LOG, 10000, buffer, &len);
+				CL_PROGRAM_BUILD_LOG, len_buffer, buffer, &len);
 		if (cl->err == CL_SUCCESS)
 			ft_printf("\033[31mCompiler error message :%i\033[0m\n%s", len, buffer);
 		else
-			ft_printf("Erreur étonnate\n");
+			cl_check_err(cl->err, "Erreur étonnante : clGetProgramBuildInfo");
 		exit(EXIT_FAILURE);
 	}
 }
