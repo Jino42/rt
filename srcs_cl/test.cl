@@ -351,6 +351,75 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	return (ray_ret);
 }
 
+t_ray_ret		ray_intersection2(__local char *l_mem_obj,
+								unsigned long mem_size_obj,
+								t_vector *dir,
+								t_vector *origin)
+{
+	t_ray_ret			tmp_r;
+	t_ray_ret			ray_ret;
+
+	__local t_obj		*obj;
+	unsigned long		cur;
+
+	float				min_distance;
+
+	t_vector			dir_object;
+	t_vector			origin_object;
+
+	tmp_r.y_axis = vector_construct(0, 1, 0);
+	min_distance = INFINITY;
+	cur = 0;
+	while (cur < mem_size_obj)
+	{
+		tmp_r.distance_intersection = 0;
+		obj = (__local t_obj *)(l_mem_obj + cur);
+
+		dir_object = vector_get_rotate_local(dir, &obj->rot);
+		origin_object = vector_get_sub_local(origin, &obj->position);
+		origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
+
+		if (obj->id == OBJ_SPHERE)
+		{
+			tmp_r.distance_intersection = intersection_sphere((__local t_sphere *)obj, &origin_object, &dir_object, INFINITY);
+			cur += sizeof(t_sphere);
+		}
+		else if (obj->id == OBJ_PLANE)
+		{
+			tmp_r.distance_intersection = intersection_plane((__local t_plan *)obj, origin, dir, INFINITY);
+			cur += sizeof(t_plan);
+		}
+		else if (obj->id == OBJ_ELLIPSOID)
+		{
+			tmp_r.distance_intersection = intersection_ellipsoid((__local t_ellipsoid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			cur += sizeof(t_ellipsoid);
+		}
+		else if (obj->id == OBJ_CONE)
+		{
+			cur += sizeof(t_cone);
+		}
+		else if (obj->id == OBJ_PARABOLOID)
+		{
+			tmp_r.distance_intersection = intersection_paraboloid((__local t_paraboloid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			cur += sizeof(t_paraboloid);
+		}
+		else if (obj->id == OBJ_CYLINDER)
+		{
+			tmp_r.distance_intersection = intersection_cylinder((__local t_cylinder *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			cur += sizeof(t_cylinder);
+		}
+
+		if (fabs(tmp_r.distance_intersection) > EPSILON &&
+				tmp_r.distance_intersection < min_distance)
+		{
+			tmp_r.ptr_obj = obj;
+			min_distance = tmp_r.distance_intersection;
+			ray_ret = tmp_r;
+		}
+	}
+	return (ray_ret);
+}
+
 __kernel void test(__global int *img,
 					__global char *g_mem_obj,
 					unsigned long mem_size_obj,
@@ -383,6 +452,24 @@ __kernel void test(__global int *img,
 	ray_ret.hit_point = vector_get_mult(&dir, ray_ret.distance_intersection);
 	ray_ret.hit_point = vector_get_add(&cam.position, &ray_ret.hit_point);
 
+	//LIGHT
+	t_vector place_light = vector_construct(10, 10, 0);
+	t_vector dir_obj_to_light;
+	t_vector dir_light_to_obj;
+
+	dir_obj_to_light = vector_get_sub(&place_light, &ray_ret.hit_point);
+	dir_light_to_obj = vector_get_sub(&ray_ret.hit_point, &place_light);
+	vector_normalize(&dir_obj_to_light);
+	vector_normalize(&dir_light_to_obj);
+
+	//SHAD
+	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &place_light);
+	if (ray_shad.ptr_obj != ray_ret.ptr_obj)
+	{
+		img[x + y * WIDTH]  = 0;
+		return ;
+	}
+
 	ray_ret.position_obj_to_hit = vector_get_sub_local(&ray_ret.hit_point, &o->position);
 	ray_ret.position_obj_to_hit = vector_get_rotate_local(&ray_ret.position_obj_to_hit, &o->rot);
 
@@ -401,11 +488,7 @@ __kernel void test(__global int *img,
 	vector_normalize(&ray_ret.hit_normal);
 
 	float		ret_dot;
-	t_vector place_light = vector_construct(10, 10, 0);
-	t_vector dir_obj_to_light;
 
-	dir_obj_to_light = vector_get_sub(&place_light, &ray_ret.hit_point);
-	vector_normalize(&dir_obj_to_light);
 
 	ret_dot = vector_dot(&ray_ret.hit_normal, &dir_obj_to_light);
 	if (o->id == OBJ_PLANE && ret_dot < 0)

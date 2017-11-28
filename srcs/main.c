@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/27 21:40:28 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/28 18:53:08 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,14 +183,14 @@ bool 		init_object(t_env *e)
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	s[0] = sphere_construct(vector_construct(0, 0, 0), 0.1, 0x84F15E);
+	s[0] = sphere_construct(vector_construct(9, 9, 9), 0.1, 0x84F15E);
 	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000); // RIGHT WALL
 	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00); // LEFT WALL
 	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF); // BACK WALL
 	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500); // FRONT WALL
 	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF); // TOP WALL
 	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500); // DOWN WALL
-	s[7] = sphere_construct(vector_construct(10, 10, 0), 0.1, 0xFFFFFF);
+	s[7] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF);
 
 	void *tn;
 	t_obj *to;
