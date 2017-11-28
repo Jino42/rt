@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/28 18:53:08 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/28 20:50:51 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,17 @@ t_cylinder	cylinder_construct(const t_vector position,
 	return (obj);
 }
 
+t_light	 	light_construct(uint8_t type, const t_vector position, float intensity, const uint32_t color)
+{
+	t_light		obj;
+
+	obj.type = type;
+	obj.position = position;
+	obj.color = color;
+	obj.intensity = intensity;
+	return (obj);
+}
+
 bool 		init_object(t_env *e)
 {
 	uint32_t	nb_sphere = 8;
@@ -215,9 +226,6 @@ bool 		init_object(t_env *e)
 		to = e->ptr_obj + e->mem_size_obj - sizeof(t_sphere);
 		printf("%llu\n%hhi\n", to->mem_size_obj, to->id);
 	}
-	e->light.position = vector_construct(10, 10, 0);
-	e->light.intensity = 1;
-	e->light.color = 0xFFFFFF;
 
 	/*		TEST PTR OBJ SPHERE 		*/
 
@@ -309,6 +317,22 @@ bool 		init_object(t_env *e)
 	ft_lstinsert(&e->obj, push);
 */
 
+/*|
+**|============================================================================|
+**|								    {LIGHT} 								   |
+**|============================================================================|
+*/
+
+	t_light light;
+	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 1, 0xFFFFFF);
+
+	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
+	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
+
+	e->mem_size_light += sizeof(t_light);
+
+	ft_printf("Size light ; %u\n", e->mem_size_light);
+
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
 }
@@ -371,7 +395,11 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[1], CL_TRUE, 0,
 							e->mem_size_obj,
 							e->ptr_obj, 0, NULL, NULL);
-	cl_check_err(cl->err, "clEnqueueWriteBuffer");
+	cl_check_err(cl->err, "clEnqueueWriteBuffer mem_obj");
+	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[2], CL_TRUE, 0,
+							e->mem_size_light,
+							e->ptr_light, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueWriteBuffer mem_light");
 
 	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->mem[0]);
 	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
@@ -384,6 +412,12 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl->err = clSetKernelArg(cl->kernel, 4, sizeof(t_cam), &(e->cam));
 	cl_check_err(cl->err, "clSetKernelArg | t_cam");
 	cl->err = clSetKernelArg(cl->kernel, 5, e->mem_size_obj, NULL);
+	cl_check_err(cl->err, "clSetKernelArg | Local");
+	cl->err = clSetKernelArg(cl->kernel, 6, sizeof(cl_mem), &cl->mem[2]);
+	cl_check_err(cl->err, "clSetKernelArg | ptr_light");
+	cl->err = clSetKernelArg(cl->kernel, 7, sizeof(uint64_t), &(e->mem_size_light));
+	cl_check_err(cl->err, "clSetKernelArg | mem_size_light");
+	cl->err = clSetKernelArg(cl->kernel, 8, e->mem_size_light, NULL);
 	cl_check_err(cl->err, "clSetKernelArg | Local");
 	/*cl->err = clSetKernelArg(cl->kernel, 6, sizeof(int), &e->flag);
 	cl_check_err(cl->err, "clSetKernelArg | flag");*/
@@ -482,6 +516,7 @@ int main(int argc, char **argv)
 		cl_init(&e.cl, "srcs_cl/test.cl", "test", e.sdl.height * e.sdl.width);
 		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
 		cl_create_buffer(&e.cl, e.mem_size_obj);
+		cl_create_buffer(&e.cl, e.mem_size_light);
 		t_ptr_cl *c = &e.p_cl;
 		c->fov = 66;
 		c->invH = 1 / (float)e.sdl.height;

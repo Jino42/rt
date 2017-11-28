@@ -17,7 +17,7 @@ uint32_t	hex_intensity(uint32_t color, float intensity)
 		b = 255;
 	return ((r << 16) + (g << 8) + b);
 }
-
+/*
 float 		test_light_sphere(const t_env *e, const t_light *light, const t_obj *o, const t_vector *dir, const float ret)
 {
 	float dot;
@@ -41,7 +41,7 @@ float 		test_light_sphere(const t_env *e, const t_light *light, const t_obj *o, 
 		dot = 0;
 	return (dot);
 }
-
+*/
 void 		*foreachpix(void *arg_thread)
 {
 	t_env *e;
@@ -53,9 +53,7 @@ void 		*foreachpix(void *arg_thread)
 	sdl = &e->sdl;
 	t_vector	dir;
 	t_list		*obj;
-	t_light		*light;
 
-	light = &e->light;
 	float invH = 1 / (float)sdl->height;
 	float invW = 1 / (float)sdl->width;
 	float ratio = sdl->width / (float)sdl->height;

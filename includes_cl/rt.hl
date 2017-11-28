@@ -48,6 +48,7 @@ typedef struct	s_cam
 
 typedef struct	s_light
 {
+	uint8_t		type;
 	t_matrix	light_to_world;
 	t_vector	position;
 	float		intensity;

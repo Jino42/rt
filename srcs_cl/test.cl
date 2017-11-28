@@ -26,7 +26,8 @@ void	normal_plan(__local t_plan *obj, t_ray_ret *r);
 
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
-t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_cam *cam);
+t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin);
+t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin);
 
 /*|
 **|
@@ -285,7 +286,7 @@ unsigned int	hex_intensity(unsigned int color, float intensity)
 t_ray_ret		ray_intersection(__local char *l_mem_obj,
 								unsigned long mem_size_obj,
 								t_vector *dir,
-								t_cam *cam)
+								t_vector *origin)
 {
 	t_ray_ret			tmp_r;
 	t_ray_ret			ray_ret;
@@ -307,7 +308,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		obj = (__local t_obj *)(l_mem_obj + cur);
 
 		dir_object = vector_get_rotate_local(dir, &obj->rot);
-		origin_object = vector_get_sub_local(&cam->position, &obj->position);
+		origin_object = vector_get_sub_local(origin, &obj->position);
 		origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
 
 		if (obj->id == OBJ_SPHERE)
@@ -317,7 +318,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		}
 		else if (obj->id == OBJ_PLANE)
 		{
-			tmp_r.distance_intersection = intersection_plane((__local t_plan *)obj, &cam->position, dir, INFINITY);
+			tmp_r.distance_intersection = intersection_plane((__local t_plan *)obj, origin, dir, INFINITY);
 			cur += sizeof(t_plan);
 		}
 		else if (obj->id == OBJ_ELLIPSOID)
@@ -350,7 +351,6 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	}
 	return (ray_ret);
 }
-
 t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 								unsigned long mem_size_obj,
 								t_vector *dir,
@@ -425,7 +425,10 @@ __kernel void test(__global int *img,
 					unsigned long mem_size_obj,
 					t_ptr_cl	p_cl,
 					t_cam		cam,
-					__local char *l_mem_obj)
+					__local char *l_mem_obj,
+					__global char *g_mem_light,
+					unsigned long mem_size_light,
+					__local char *l_mem_light)
 {
 
 	__local t_obj		*o;
@@ -436,6 +439,8 @@ __kernel void test(__global int *img,
 
 	ev = async_work_group_copy(l_mem_obj, g_mem_obj, mem_size_obj, 0);
 	wait_group_events(1, &ev);
+	ev = async_work_group_copy(l_mem_light, g_mem_light, mem_size_light, 0);
+	wait_group_events(1, &ev);
 
 	t_vector dir;
 	float px = (2 * (((float)x + 0.5) * p_cl.invW) - 1) * p_cl.scale * p_cl.ratio;
@@ -445,7 +450,7 @@ __kernel void test(__global int *img,
 	dir = matrix_get_mult_vector(&cam.camera_to_world, &dir);
 	vector_normalize(&dir);
 
-	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam);
+	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam.position);
 
 	//AFTER
 	o = ray_ret.ptr_obj;
@@ -453,17 +458,18 @@ __kernel void test(__global int *img,
 	ray_ret.hit_point = vector_get_add(&cam.position, &ray_ret.hit_point);
 
 	//LIGHT
-	t_vector place_light = vector_construct(10, 10, 0);
+	__local t_light *light = (__local t_light *)l_mem_light;
 	t_vector dir_obj_to_light;
 	t_vector dir_light_to_obj;
 
-	dir_obj_to_light = vector_get_sub(&place_light, &ray_ret.hit_point);
-	dir_light_to_obj = vector_get_sub(&ray_ret.hit_point, &place_light);
+	dir_obj_to_light = local_vector_get_sub(&light->position, &ray_ret.hit_point);
+	dir_light_to_obj = vector_get_sub_local(&ray_ret.hit_point, &light->position);
 	vector_normalize(&dir_obj_to_light);
 	vector_normalize(&dir_light_to_obj);
 
 	//SHAD
-	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &place_light);
+	t_vector light_position = light->position;
+	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
 	if (ray_shad.ptr_obj != ray_ret.ptr_obj)
 	{
 		img[x + y * WIDTH]  = 0;

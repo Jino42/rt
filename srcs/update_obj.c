@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/23 18:18:40 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/28 21:04:59 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,22 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 		ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->mem_size_obj, ((t_obj *)(e->ptr_obj + e->mem_obj_index))->id);
 }
 
+void		update_transform_light(const t_event *ev, t_light *light)
+{
+	t_vector add;
+
+	add = vector_construct(0, 0, 0);
+	if (ev->key[SDL_SCANCODE_U])
+		add = vector_construct(0, 0, 1);
+	if (ev->key[SDL_SCANCODE_J])
+		add = vector_construct(0, 0, -1);
+	if (ev->key[SDL_SCANCODE_H])
+		add = vector_construct(1, 0, 0);
+	if (ev->key[SDL_SCANCODE_K])
+		add = vector_construct(-1, 0, 0);
+	vector_add(&light->position, &add);
+}
+
 void 		update_obj(t_env *e, t_sdl *sdl)
 {
 	t_obj		*o;
@@ -119,4 +135,5 @@ void 		update_obj(t_env *e, t_sdl *sdl)
 
 	update_transform_obj(e, ev, o);
 	update_transform_obj(e, ev, (t_obj *)(e->ptr_obj + e->mem_obj_index));
+	update_transform_light(ev, (t_light*)e->ptr_light);
 }

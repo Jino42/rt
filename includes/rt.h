@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/27 21:33:32 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/28 20:35:27 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@
 # define OBJ_PARABOLOID_HYPERBOLIC 4
 # define OBJ_ELLIPSOID 5
 # define OBJ_CONE 6
+
+# define LIGHT_BASIC (1 << 0)
+# define LIGHT_SPHERE (1 << 1)
+# define LIGHT_DIRECT (1 << 2)
 
 typedef struct	s_ptr_cl
 {
@@ -105,6 +109,7 @@ typedef struct	s_cam
 
 typedef struct	s_light
 {
+	uint8_t		type;
 	t_matrix	light_to_world;
 	t_vector	position;
 	float		intensity;
@@ -307,11 +312,13 @@ typedef struct		s_env
 	t_list			*sphere;
 	t_list			*plan;
 	t_list			*cylinder;
-	t_light			light;
 
 	t_list			*obj;
 	uint64_t		mem_size_obj;
 	void 			*ptr_obj;
+
+	uint64_t		mem_size_light;
+	void			*ptr_light;
 
 	int32_t			obj_len;
 	int32_t			obj_index;
