@@ -97,30 +97,62 @@ t_vector	local_vector_get_cross_product_local(__local t_vector *a, __local t_vec
 
 t_vector	vector_get_rotate_local(const t_vector *this, __local t_vector *rot)
 {
-	t_vector n;
+	t_vector	n;
+	float		tmp;
 
 	n = *this;
 	if (rot->x)
-		vector_rotate_x(&n, rot->x);
+	{
+		tmp = n.y * cos(rot->x) - n.z * sin(rot->x);
+		n.z = n.y * sin(rot->x) + n.z * cos(rot->x);
+		n.y = tmp;
+	//	vector_rotate_x(&n, rot->x);
+	}
 	if (rot->y)
-		vector_rotate_y(&n, rot->y);
+	{
+		tmp = n.x * cos(rot->y) + n.z * sin(rot->y);
+		n.z = n.x * -sin(rot->y) + n.z * cos(rot->y);
+		n.x = tmp;
+	//	vector_rotate_y(&n, rot->y);
+	}
 	if (rot->z)
-		vector_rotate_z(&n, rot->z);
+	{
+		tmp = n.x * cos(rot->z) - n.y * sin(rot->z);
+		n.y = n.x * sin(rot->z) + n.y * cos(rot->z);
+		n.x = tmp;
+	//	vector_rotate_z(&n, rot->z);
+	}
 	return (n);
 }
 
 t_vector	vector_get_inverse_rotate_local(const t_vector *this, __local t_vector *rot)
 {
-	t_vector n;
+	t_vector	n;
+	float		tmp;
 
 	n = *this;
 
 	if (-rot->z)
-		vector_rotate_z(&n, -rot->z);
+	{
+		tmp = n.x * cos(-rot->z) - n.y * sin(-rot->z);
+		n.y = n.x * sin(-rot->z) + n.y * cos(-rot->z);
+		n.x = tmp;
+	//	vector_rotate_z(&n, -rot->z);
+	}
 	if (-rot->y)
-		vector_rotate_y(&n, -rot->y);
+	{
+		tmp = n.x * cos(-rot->y) + n.z * sin(-rot->y);
+		n.z = n.x * -sin(-rot->y) + n.z * cos(-rot->y);
+		n.x = tmp;
+	//	vector_rotate_y(&n, -rot->y);
+	}
 	if (-rot->x)
-		vector_rotate_x(&n, -rot->x);
+	{
+		tmp = n.y * cos(-rot->x) - n.z * sin(-rot->x);
+		n.z = n.y * sin(-rot->x) + n.z * cos(-rot->x);
+		n.y = tmp;
+	//	vector_rotate_x(&n, -rot->x);
+	}
 	return (n);
 }
 

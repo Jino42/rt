@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/29 19:42:27 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:19:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,6 +365,7 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 	while (!sdl_event_exit(sdl))
 	{
 		update_fps(&e->fps);
+		e->count.time = e->fps.delta_time;
 		sdl_update_event(sdl, &sdl->event);
 		event_cam(e, &sdl->event, &e->cam);
 		update_cam(&e->cam);
@@ -400,6 +401,10 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 							e->mem_size_light,
 							e->ptr_light, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueWriteBuffer mem_light");
+	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[3], CL_TRUE, 0,
+							sizeof(t_count),
+							&e->count, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueWriteBuffer struct count");
 
 	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->mem[0]);
 	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
@@ -419,6 +424,8 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clSetKernelArg | mem_size_light");
 	cl->err = clSetKernelArg(cl->kernel, 8, e->mem_size_light, NULL);
 	cl_check_err(cl->err, "clSetKernelArg | Local");
+	cl->err = clSetKernelArg(cl->kernel, 9, sizeof(cl_mem), &cl->mem[3]);
+	cl_check_err(cl->err, "clSetKernelArg | count struct");
 	/*cl->err = clSetKernelArg(cl->kernel, 6, sizeof(int), &e->flag);
 	cl_check_err(cl->err, "clSetKernelArg | flag");*/
 	/* RUN KERNEL     */
@@ -437,7 +444,11 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
 			sizeof(uint32_t) * sdl->width * sdl->height,
 			sdl->pix, 0, NULL, NULL);
-	cl_check_err(cl->err, "clEnqueueReadBuffer");
+	cl_check_err(cl->err, "clEnqueueReadBuffer sdl->pix");
+	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[3], CL_TRUE, 0,
+			sizeof(t_count),
+			&e->count, 0, NULL, NULL);
+	cl_check_err(cl->err, "clEnqueueReadBuffer struct count");
 
 	/*			      */
 }
@@ -449,13 +460,18 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 	{
 		update_fps(&e->fps);
 		sdl_update_event(sdl, &sdl->event);
+		e->count.time = e->fps.delta_time;
 		event_cam(e, &sdl->event, &e->cam);
 		update_cam(&e->cam);
 		update_obj(e, sdl);
 
+		e->count.nb_try = 0;
+		e->count.nb_hit = 0;
 		cl_render(e, &e->cl, sdl);
 		//run_multi_thread(e);
-
+		t_count *c = &e->count;
+		ft_printf("Resultat en [%.2f]\nNb_obj [%li] for [%li] ray\n[%li] / [%li]\n",
+					c->time,c->nb_obj,c->nb_ray,c->nb_hit,c->nb_try);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
 		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
 		SDL_RenderPresent(sdl->render);
@@ -517,12 +533,15 @@ int main(int argc, char **argv)
 		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
 		cl_create_buffer(&e.cl, e.mem_size_obj);
 		cl_create_buffer(&e.cl, e.mem_size_light);
+		cl_create_buffer(&e.cl, sizeof(t_count));
 		t_ptr_cl *c = &e.p_cl;
 		c->fov = 66;
 		c->invH = 1 / (float)e.sdl.height;
 		c->invW = 1 / (float)e.sdl.width;
 		c->ratio = (float)e.sdl.width / (float)e.sdl.height;
 		c->scale = tan(M_PI * 0.5 * c->fov / 180);
+		e.count.nb_obj = e.obj_len;
+		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
 //	e.mem_obj_index = 2136;
 	e.mem_obj_index = 1856;

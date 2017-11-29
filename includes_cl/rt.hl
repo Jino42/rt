@@ -28,6 +28,15 @@ typedef int int32_t;
 # define OBJ_ELLIPSOID 5
 # define OBJ_CONE 6
 
+typedef struct	s_count
+{
+	float		time;
+	uint32_t	nb_obj;
+	uint32_t	nb_ray;
+	uint32_t	nb_try;
+	uint32_t	nb_hit;
+}				t_count;
+
 typedef struct	s_ptr_cl
 {
 	float		invH;

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/28 20:35:27 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/29 22:21:02 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,15 @@
 # define LIGHT_BASIC (1 << 0)
 # define LIGHT_SPHERE (1 << 1)
 # define LIGHT_DIRECT (1 << 2)
+
+typedef struct	s_count
+{
+	float		time;
+	uint32_t	nb_obj;
+	uint32_t	nb_ray;
+	uint32_t	nb_try;
+	uint32_t	nb_hit;
+}				t_count;
 
 typedef struct	s_ptr_cl
 {
@@ -327,8 +336,7 @@ typedef struct		s_env
 	float			temp;
 	int64_t			flag;
 
-	cl_mem			a;
-	cl_mem			b;
+	t_count			count;
 }					t_env;
 
 typedef struct		s_arg_thread
