@@ -60,7 +60,7 @@ typedef struct	s_obj
 	uint64_t	mem_size_obj;
 	float		(*intersect)(void *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
@@ -96,7 +96,7 @@ typedef struct 	s_sphere
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_sphere *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 
@@ -119,7 +119,7 @@ typedef struct 	s_ellipsoid
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_ellipsoid *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 
@@ -143,7 +143,7 @@ typedef struct 	s_cone
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_cone *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 
@@ -166,7 +166,7 @@ typedef struct	s_paraboloid
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
@@ -188,7 +188,7 @@ typedef struct	s_paraboloid_hyperbolic
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid_hyperbolic *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
@@ -210,7 +210,7 @@ typedef struct	s_plan
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_plan *, const t_vector *,
 						const t_vector *, const float);
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
@@ -236,7 +236,7 @@ typedef struct	s_cylinder
 	float		(*intersect)(struct s_cylinder *, const t_vector *,
 						const t_vector *, const float);
 
-//int voider;
+int voider;
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
