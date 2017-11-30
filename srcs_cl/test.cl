@@ -16,6 +16,8 @@ float		intersection_cylinder(const __local t_cylinder *obj, const t_vector *orig
 								const t_vector *dir_object, const float len, t_ray_ret *r);
 float		intersection_paraboloid(const __local t_paraboloid *obj, const t_vector *origin_object,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
+float		intersection_cone(__local t_cone *obj, const t_vector *origin_object,
+								const t_vector *dir_object, const float len, t_ray_ret *r);
 float		calculate_m_value(t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1);
 
 void	normal_ellipsoid(__local t_ellipsoid *obj, t_ray_ret *r);
@@ -30,7 +32,6 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj,
 t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin);
 
 /*|
-**|
 **|
 */
 
@@ -265,6 +266,44 @@ void	normal_plan(__local t_plan *obj, t_ray_ret *r)
 	r->hit_normal = obj->normal;
 }
 
+float		intersection_cone(__local t_cone *obj,
+								const t_vector *origin_object,
+								const t_vector *dir_object,
+								const float len,
+								t_ray_ret *r)
+{
+	float inter0, inter1;
+	float a, b, c;
+
+	a = (dir_object->x * dir_object->x +
+	 	 dir_object->y * dir_object->y -
+	 	 (dir_object->z * dir_object->z) * tan(obj->angle));
+	 b = (2 * origin_object->x * dir_object->x +
+		  2 * origin_object->y * dir_object->y -
+		  2 * (origin_object->z * dir_object->z) * tan(obj->angle));
+	 c = (origin_object->x * origin_object->x +
+		  origin_object->y * origin_object->y -
+		  (origin_object->z * origin_object->z) * tan(obj->angle));
+	if (!solve_quadratic(a, b, c, &inter0, &inter1))
+		return (0);
+	if (inter0 > inter1)
+	{
+		float tmp = inter0;
+		inter0 = inter1;
+		inter1 = tmp;
+	}
+	if (inter0 < 0)
+	{
+		inter0 = inter1;
+		if (inter0 < 0)
+			return (0);
+	}
+	if (inter0 < len)
+		return (inter0);
+	return (0);
+}
+
+
 unsigned int	hex_intensity(unsigned int color, float intensity)
 {
 	int r = (color >> 16) & 0xFF;
@@ -305,7 +344,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	cur = 0;
 	while (cur < mem_size_obj)
 	{
-		atomic_inc(&count->nb_try);
+		//atomic_inc(&count->nb_try);
 		tmp_r.distance_intersection = 0;
 		obj = (__local t_obj *)(l_mem_obj + cur);
 
@@ -330,6 +369,8 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		}
 		else if (obj->id == OBJ_CONE)
 		{
+			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			//tmp_r.distance_intersection = 0;
 			cur += sizeof(t_cone);
 		}
 		else if (obj->id == OBJ_PARABOLOID)
@@ -346,7 +387,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
 		{
-			atomic_inc(&count->nb_hit);
+			//atomic_inc(&count->nb_hit);
 			tmp_r.ptr_obj = obj;
 			min_distance = tmp_r.distance_intersection;
 			ray_ret = tmp_r;
@@ -401,6 +442,7 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 		}
 		else if (obj->id == OBJ_CONE)
 		{
+			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
 			cur += sizeof(t_cone);
 		}
 		else if (obj->id == OBJ_PARABOLOID)
@@ -426,6 +468,18 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 	return (ray_ret);
 }
 
+/*
+**|		TODO
+**|		Sphere ligh;
+**|		Dir Light
+**|		Color light
+**|
+**|		Brillance
+**|		Multi Light
+**|		Cone
+**|
+**|		Triangle ?
+*/
 __kernel void test(__global int *img,
 					__global char *g_mem_obj,
 					unsigned long mem_size_obj,
@@ -508,4 +562,6 @@ __kernel void test(__global int *img,
 	else if (ret_dot < 0)
 		ret_dot = 0;
 	img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot * aza);
+
+	//hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L));
 }

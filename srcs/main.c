@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/29 22:19:22 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/30 21:29:24 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 }
 
 t_cone 	cone_construct(const t_vector position,
+								const float angle,
 								const uint32_t color)
 {
 	t_cone obj;
@@ -68,6 +69,7 @@ t_cone 	cone_construct(const t_vector position,
 	ft_bzero(&obj, sizeof(t_cone));
 	obj.mem_size_obj = sizeof(t_cone);
 	obj.id = OBJ_CONE;
+	obj.angle = angle;
 	obj.color = color;
 	obj.position = position;
 	obj.rotate_speed = 1.5;
@@ -288,6 +290,21 @@ bool 		init_object(t_env *e)
 	ft_lstinsert(&e->obj, push);
 
 
+
+	t_cone cone;
+	cone = cone_construct(vector_construct(0, 0, 0), 0.45f, 0xbe6226);
+	//	matrix_rotation_x(&cone.world_to_object, 40);//CONE
+
+	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
+	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
+		vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	ft_printf("Cone : ID[%i] | Size in mem %li\n", cone.id, e->mem_size_obj);
+	e->mem_size_obj += sizeof(t_cone);
+
+	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
+		return (false);
+	ft_lstinsert(&e->obj, push);
+
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(1, 1, 1), vector_construct(1, 1, 1),1, 0x225be6);
 
@@ -301,21 +318,6 @@ bool 		init_object(t_env *e)
 		return (false);
 	ft_lstinsert(&e->obj, push);
 
-/*
-	t_cone cone;
-	cone = cone_construct(vector_construct(-500, -400, -200), 0xbe6226);
-	matrix_rotation_x(&cone.world_to_object, 40);//CONE
-
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
-	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
-
-	e->mem_size_obj += sizeof(t_cone);
-
-	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-*/
 
 /*|
 **|============================================================================|
@@ -455,7 +457,9 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 
 void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 {
+	t_count *c;
 
+	c = &e->count;
 	while (!sdl_event_exit(sdl))
 	{
 		update_fps(&e->fps);
@@ -469,9 +473,8 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 		e->count.nb_hit = 0;
 		cl_render(e, &e->cl, sdl);
 		//run_multi_thread(e);
-		t_count *c = &e->count;
-		ft_printf("Resultat en [%.2f]\nNb_obj [%li] for [%li] ray\n[%li] / [%li]\n",
-					c->time,c->nb_obj,c->nb_ray,c->nb_hit,c->nb_try);
+		//ft_printf("Resultat en [%.2f]\nNb_obj [%li] for [%li] ray\n[%li] / [%li]\n",
+		//			c->time,c->nb_obj,c->nb_ray,c->nb_hit,c->nb_try);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
 		SDL_RenderCopy(sdl->render, sdl->img, NULL, NULL);
 		SDL_RenderPresent(sdl->render);

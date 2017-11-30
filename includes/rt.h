@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/29 22:21:02 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/30 21:02:14 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,8 +206,7 @@ typedef struct 	s_cone
 	t_vector	hit_point;
 	t_vector	hit_normal;
 
-	float		radius;
-	float		radius2;
+	float		angle;
 }				t_cone;
 
 typedef struct	s_paraboloid

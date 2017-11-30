@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/28 21:04:59 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/11/30 21:34:44 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,10 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 		((t_ellipsoid *)o)->size.y -= 0.1;
 	if (ev->key[SDL_SCANCODE_KP_6] && o->id == OBJ_ELLIPSOID)
 		((t_ellipsoid *)o)->size.z -= 0.1;
+	if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_CONE)
+		((t_cone *)o)->angle -= 0.01;
+	if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_CONE)
+		((t_cone *)o)->angle += 0.01;
 }
 
 void 		update_obj_index(t_env *e, const int32_t incr)
@@ -96,7 +100,9 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 	if (e->obj_index == e->obj_len)
 		e->obj_index = 0;
 	if (e->mem_obj_index + ((t_obj*)e->ptr_obj)->mem_size_obj >= e->mem_size_obj)
+	{
 		e->mem_obj_index = 0;
+	}
 	o = (t_obj *)(ft_lst_index(e->obj, e->obj_index)->content);
 	if (e->flag & F_CPU)
 		ft_printf("%i/%i\n TYPE %i\n", e->obj_index, e->obj_len, o->id);
