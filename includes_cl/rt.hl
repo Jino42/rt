@@ -166,7 +166,7 @@ int voider;
 	t_vector	hit_point;
 	t_vector	hit_normal;
 
-	float		angle
+	float		angle;
 }				t_cone;
 
 typedef struct	s_paraboloid

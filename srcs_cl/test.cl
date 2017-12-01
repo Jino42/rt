@@ -472,6 +472,48 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 	return (ray_ret);
 }
 
+float			ray_light(__local char *l_mem_obj,
+						unsigned long mem_size_obj,
+						__local char *l_mem_light,
+						unsigned long mem_size_light,
+						t_ray_ret *ray_ret)
+{
+	unsigned long cur;
+	__local t_light *light;
+
+	t_vector dir_obj_to_light;
+	t_vector dir_light_to_obj;
+	t_vector light_position;
+	t_ray_ret ray_shad;
+	float		aza, ret_dot, final_color = 0;
+
+	cur = 0;
+	while (cur < mem_size_light)
+	{
+		aza = 1;
+		light = (__local t_light *)(l_mem_light + cur);
+
+		dir_obj_to_light = local_vector_get_sub(&light->position, &ray_ret->hit_point);
+		dir_light_to_obj = vector_get_sub_local(&ray_ret->hit_point, &light->position);
+		vector_normalize(&dir_obj_to_light);
+		vector_normalize(&dir_light_to_obj);
+
+		//SHAD
+
+		light_position = light->position;
+		ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
+		if (ray_shad.ptr_obj != ray_ret->ptr_obj)
+			aza = 0;
+
+		ret_dot = vector_dot(&ray_ret->hit_normal, &dir_obj_to_light);
+		if (ret_dot < 0)
+			ret_dot = 0;
+		final_color += (ret_dot * aza);
+		cur += sizeof(t_light);
+	}
+	return (final_color);
+}
+
 /*
 **|		TODO
 **|		Sphere ligh;
@@ -522,23 +564,10 @@ __kernel void test(__global int *img,
 	ray_ret.hit_point = vector_get_mult(&dir, ray_ret.distance_intersection);
 	ray_ret.hit_point = vector_get_add(&cam.position, &ray_ret.hit_point);
 
-	//LIGHT
-	__local t_light *light = (__local t_light *)l_mem_light;
-	t_vector dir_obj_to_light;
-	t_vector dir_light_to_obj;
 
-	dir_obj_to_light = local_vector_get_sub(&light->position, &ray_ret.hit_point);
-	dir_light_to_obj = vector_get_sub_local(&ray_ret.hit_point, &light->position);
-	vector_normalize(&dir_obj_to_light);
-	vector_normalize(&dir_light_to_obj);
-
-	//SHAD
-
-	t_vector light_position = light->position;
-	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
-	float aza = 1;
-	if (ray_shad.ptr_obj != ray_ret.ptr_obj)
-		aza = 0;
+/*
+**|=======NORMAL=========
+*/
 
 	ray_ret.position_obj_to_hit = vector_get_sub_local(&ray_ret.hit_point, &o->position);
 	ray_ret.position_obj_to_hit = vector_get_rotate_local(&ray_ret.position_obj_to_hit, &o->rot);
@@ -558,17 +587,5 @@ __kernel void test(__global int *img,
 
 	ray_ret.hit_normal = vector_get_inverse_rotate_local(&ray_ret.hit_normal, &o->rot);
 	vector_normalize(&ray_ret.hit_normal);
-
-	float		ret_dot;
-
-
-	ret_dot = vector_dot(&ray_ret.hit_normal, &dir_obj_to_light);
-	if (o->id == OBJ_PLANE && ret_dot < 0)
-		ret_dot = fabs(ret_dot);
-	else if (ret_dot < 0)
-		ret_dot = 0;
-	img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot * aza);
-	//img[x + y * WIDTH]  = o->color;
-
-	//hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L));
+	img[x + y * WIDTH]  = hex_intensity(o->color, ray_light(l_mem_obj, mem_size_obj, l_mem_light, mem_size_light, &ray_ret));
 }

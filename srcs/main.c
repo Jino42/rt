@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 15:37:41 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 15:56:33 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,12 @@ bool 		init_object(t_env *e)
 
 	t_light light;
 	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 1, 0xFFFFFF);
+
+	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
+	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
+
+	e->mem_size_light += sizeof(t_light);
+	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 1, 0xFFFFFF);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
