@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 15:56:33 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 16:28:59 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,6 @@ t_sphere 	sphere_construct(const t_vector position,
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
 
 	obj.intersect = &intersection_sphere;
 	return (obj);
@@ -53,9 +50,6 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 	obj.speed = 5;
 	obj.size = size;
 
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
-
 	obj.intersect = &intersection_ellipsoid;
 	return (obj);
 }
@@ -74,9 +68,6 @@ t_cone 	cone_construct(const t_vector position,
 	obj.position = position;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
 
 	obj.intersect = &intersection_cone;
 	return (obj);
@@ -99,9 +90,6 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
-
 	obj.intersect = &intersection_paraboloid;
 	return (obj);
 }
@@ -122,9 +110,6 @@ t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
-
 	obj.intersect = &intersection_paraboloid_hyperbolic;
 	return (obj);
 }
@@ -143,9 +128,6 @@ t_plan		plan_construct(const t_vector position,
 	obj.len = len;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
 
 	obj.p0 = vector_construct(position.x - len, position.y - len, position.z);
 	obj.p1 = vector_construct(0, 1, 0);
@@ -171,9 +153,6 @@ t_cylinder	cylinder_construct(const t_vector position,
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-
-	obj.world_to_object = matrix_get_identity();
-	obj.translation = matrix_get_identity();
 
 	obj.intersect = &intersection_cylinder;
 	return (obj);

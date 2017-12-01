@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/30 21:02:14 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 16:28:10 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,6 @@ typedef struct	s_obj
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -152,8 +150,6 @@ typedef struct 	s_sphere
 	uint32_t	color;
 
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -174,8 +170,6 @@ typedef struct 	s_ellipsoid
 	uint32_t	color;
 
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -197,8 +191,6 @@ typedef struct 	s_cone
 	uint32_t	color;
 
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -217,8 +209,6 @@ typedef struct	s_paraboloid
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -238,8 +228,6 @@ typedef struct	s_paraboloid_hyperbolic
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -259,8 +247,6 @@ typedef struct	s_plan
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
@@ -284,8 +270,6 @@ typedef struct	s_cylinder
 	uint8_t		id;
 	uint32_t	color;
 	t_vector	position;
-	t_matrix	world_to_object;
-	t_matrix	translation;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;

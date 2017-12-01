@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/12 14:26:28 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/12 14:46:41 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 16:31:15 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,10 @@ float		intersection_paraboloid_hyperbolic(t_paraboloid_hyperbolic *obj,
 	float a, b, c;
 	t_vector	dir_object;
 	t_vector	origin_object;
-
-	dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
-
+	
+	dir_object = vector_get_rotate(dir, &obj->rot);
 	origin_object = vector_get_sub(origin, &obj->position);
-	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
-	origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+	origin_object = vector_get_rotate(&origin_object, &obj->rot);
 
 /*
 **

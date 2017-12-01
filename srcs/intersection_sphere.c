@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/06 09:59:42 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/27 21:30:27 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 16:31:33 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,9 @@ float		intersection_sphere(t_sphere *obj,
 	t_vector	origin_object;
 	t_vector	dir_object;
 
-//	dir_object = matrix_get_mult_dir_vector(&obj->world_to_object, dir);
-	dir_object = *dir;
-
-	origin_object = vector_get_sub(origin, &obj->position); ///////////>
-//	origin_object = matrix_get_mult_vector(&obj->translation, &origin_object);
-	//origin_object = matrix_get_mult_vector(&obj->world_to_object, &origin_object);
+	dir_object = vector_get_rotate(dir, &obj->rot);
+	origin_object = vector_get_sub(origin, &obj->position);
+	origin_object = vector_get_rotate(&origin_object, &obj->rot);
 
 
 	a = 1; //Donc 1
