@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/30 21:29:24 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 15:37:41 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,8 +292,7 @@ bool 		init_object(t_env *e)
 
 
 	t_cone cone;
-	cone = cone_construct(vector_construct(0, 0, 0), 0.45f, 0xbe6226);
-	//	matrix_rotation_x(&cone.world_to_object, 40);//CONE
+	cone = cone_construct(vector_construct(5, 5, 5), 0.45f, 0xbe6226);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));

@@ -276,14 +276,14 @@ float		intersection_cone(__local t_cone *obj,
 	float a, b, c;
 
 	a = (dir_object->x * dir_object->x +
-	 	 dir_object->y * dir_object->y -
-	 	 (dir_object->z * dir_object->z) * tan(obj->angle));
+	 	 dir_object->z * dir_object->z -
+	 	 (dir_object->y * dir_object->y) * tan(obj->angle));
 	 b = (2 * origin_object->x * dir_object->x +
-		  2 * origin_object->y * dir_object->y -
-		  2 * (origin_object->z * dir_object->z) * tan(obj->angle));
+		  2 * origin_object->z * dir_object->z -
+		  2 * (origin_object->y * dir_object->y) * tan(obj->angle));
 	 c = (origin_object->x * origin_object->x +
-		  origin_object->y * origin_object->y -
-		  (origin_object->z * origin_object->z) * tan(obj->angle));
+		  origin_object->z * origin_object->z -
+		  (origin_object->y * origin_object->y) * tan(obj->angle));
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 > inter1)
@@ -299,10 +299,14 @@ float		intersection_cone(__local t_cone *obj,
 			return (0);
 	}
 	if (inter0 < len)
-		return (inter0);
+		return (calculate_m_value(r, origin_object, dir_object, inter0, inter1));
 	return (0);
 }
-
+void	normal_cone(__local t_cone *obj, t_ray_ret *r)
+{
+	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
+	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
+}
 
 unsigned int	hex_intensity(unsigned int color, float intensity)
 {
@@ -531,10 +535,10 @@ __kernel void test(__global int *img,
 	//SHAD
 
 	t_vector light_position = light->position;
-//	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
+	t_ray_ret ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
 	float aza = 1;
-//	if (ray_shad.ptr_obj != ray_ret.ptr_obj)
-//		aza = 0;
+	if (ray_shad.ptr_obj != ray_ret.ptr_obj)
+		aza = 0;
 
 	ray_ret.position_obj_to_hit = vector_get_sub_local(&ray_ret.hit_point, &o->position);
 	ray_ret.position_obj_to_hit = vector_get_rotate_local(&ray_ret.position_obj_to_hit, &o->rot);
@@ -549,6 +553,8 @@ __kernel void test(__global int *img,
 		normal_plan((__local t_plan *)o, &ray_ret);
 	else if (o->id == OBJ_CYLINDER)
 		normal_cylinder((__local t_cylinder *)o, &ray_ret);
+	else if (o->id == OBJ_CONE)
+		normal_cone((__local t_cone *)o, &ray_ret);
 
 	ray_ret.hit_normal = vector_get_inverse_rotate_local(&ray_ret.hit_normal, &o->rot);
 	vector_normalize(&ray_ret.hit_normal);
@@ -562,6 +568,7 @@ __kernel void test(__global int *img,
 	else if (ret_dot < 0)
 		ret_dot = 0;
 	img[x + y * WIDTH]  = hex_intensity(o->color, ret_dot * aza);
+	//img[x + y * WIDTH]  = o->color;
 
 	//hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L));
 }
