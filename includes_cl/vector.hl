@@ -23,6 +23,7 @@ void			vector_div(t_vector *a, const float div);
 void 			vector_rotate_z(t_vector *a, const float angle);
 void 			vector_rotate_y(t_vector *a, const float angle);
 void 			vector_rotate_x(t_vector *a, const float angle);
+void			vector_invert(t_vector *vec);
 
 /* */
 bool			vector_aequals(const t_vector *a, const t_vector *b);
@@ -42,6 +43,7 @@ t_vector		vector_get_abs(const t_vector *a);
 t_vector 		vector_get_rotate_z(const t_vector *a, const float angle);
 t_vector 		vector_get_rotate_y(const t_vector *a, const float angle);
 t_vector 		vector_get_rotate_x(const t_vector *a, const float angle);
+t_vector		vector_get_invert(const t_vector *vec);
 
 t_vector			vector_get_cross_product(const t_vector *a, const t_vector *b);
 void				vector_cross_product(t_vector *a, const t_vector *b);
@@ -50,6 +52,26 @@ t_vector	vector_get_inverse_rotate(const t_vector *this, const t_vector *rot);
 t_vector	vector_get_rotate(const t_vector *this, const t_vector *rot);
 void	vector_inverse_rotate(t_vector *this, const t_vector *rot);
 void	vector_rotate(t_vector *this, const t_vector *rot);
+
+t_vector		vector_get_invert(const t_vector *vec)
+{
+	t_vector new;
+
+	new.x = -vec->x;
+	new.y = -vec->y;
+	new.z = -vec->z;
+	return (new);
+}
+
+void		vector_invert(t_vector *vec)
+{
+	vec->x = -vec->x;
+	vec->y = -vec->y;
+	vec->z = -vec->z;
+
+	return ;
+}
+
 
 t_vector		vector_get_abs(const t_vector *a)
 {

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 17:31:21 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 19:39:09 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,13 +306,13 @@ bool 		init_object(t_env *e)
 */
 
 	t_light light;
-	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 10, 0xFFFFFF, 10);
+	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 0.75, 0xFFFFFF, 10);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
 
 	e->mem_size_light += sizeof(t_light);
-	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 2, 0xFFFFFF, 2);
+	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFFFFFF, 2);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
