@@ -28,6 +28,11 @@ typedef int int32_t;
 # define OBJ_ELLIPSOID 5
 # define OBJ_CONE 6
 
+
+# define LIGHT_BASIC (1 << 0)
+# define LIGHT_SPHERE (1 << 1)
+# define LIGHT_DIRECT (1 << 2)
+
 typedef struct	s_count
 {
 	float		time;
@@ -62,6 +67,8 @@ typedef struct	s_light
 	t_vector	position;
 	float		intensity;
 	uint32_t	color;
+	float		radius;
+	float		radius2;
 }				t_light;
 
 typedef struct	s_obj

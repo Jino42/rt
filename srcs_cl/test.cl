@@ -29,7 +29,7 @@ void	normal_plan(__local t_plan *obj, t_ray_ret *r);
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
 t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, __global t_count *count);
-t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin);
+t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
 
 /*|
 **|
@@ -402,7 +402,8 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 								unsigned long mem_size_obj,
 								t_vector *dir,
-								t_vector *origin)
+								t_vector *origin,
+								float near)
 {
 	t_ray_ret			tmp_r;
 	t_ray_ret			ray_ret;
@@ -431,32 +432,32 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 
 		if (obj->id == OBJ_SPHERE)
 		{
-			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, INFINITY);
+			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
 			cur += sizeof(t_sphere);
 		}
 		else if (obj->id == OBJ_PLANE)
 		{
-			tmp_r.distance_intersection = intersection_plane((const __local t_plan *)obj, origin, dir, INFINITY);
+			tmp_r.distance_intersection = intersection_plane((const __local t_plan *)obj, origin, dir, near);
 			cur += sizeof(t_plan);
 		}
 		else if (obj->id == OBJ_ELLIPSOID)
 		{
-			tmp_r.distance_intersection = intersection_ellipsoid((const __local t_ellipsoid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_ellipsoid((const __local t_ellipsoid *)obj, &origin_object, &dir_object, near, &tmp_r);
 			cur += sizeof(t_ellipsoid);
 		}
 		else if (obj->id == OBJ_CONE)
 		{
-			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, near, &tmp_r);
 			cur += sizeof(t_cone);
 		}
 		else if (obj->id == OBJ_PARABOLOID)
 		{
-			tmp_r.distance_intersection = intersection_paraboloid((const __local t_paraboloid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_paraboloid((const __local t_paraboloid *)obj, &origin_object, &dir_object, near, &tmp_r);
 			cur += sizeof(t_paraboloid);
 		}
 		else if (obj->id == OBJ_CYLINDER)
 		{
-			tmp_r.distance_intersection = intersection_cylinder((const __local t_cylinder *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_cylinder((const __local t_cylinder *)obj, &origin_object, &dir_object, near, &tmp_r);
 			cur += sizeof(t_cylinder);
 		}
 
@@ -495,23 +496,28 @@ float			ray_light(__local char *l_mem_obj,
 
 		dir_obj_to_light = local_vector_get_sub(&light->position, &ray_ret->hit_point);
 		dir_light_to_obj = vector_get_sub_local(&ray_ret->hit_point, &light->position);
+
+		float dist = vector_magnitude(&dir_light_to_obj);
+
 		vector_normalize(&dir_obj_to_light);
 		vector_normalize(&dir_light_to_obj);
-
 		//SHAD
-
 		light_position = light->position;
-		ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position);
+		ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position, dist);
 		if (ray_shad.ptr_obj != ray_ret->ptr_obj)
 			aza = 0;
 
 		ret_dot = vector_dot(&ray_ret->hit_normal, &dir_obj_to_light);
+		float l_inten = 1;
+		if (light->type == LIGHT_SPHERE)
+			l_inten = (1000 / (4 * M_PI * dist));
 		if (ret_dot < 0)
 			ret_dot = 0;
-		final_color += (ret_dot * aza);
+		final_color += (ret_dot * aza * l_inten);
 		cur += sizeof(t_light);
 	}
 	return (final_color);
+	//return (0.18 /M_PI * final_color);
 }
 
 /*

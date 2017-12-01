@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 16:28:59 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:31:21 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ t_cylinder	cylinder_construct(const t_vector position,
 	return (obj);
 }
 
-t_light	 	light_construct(uint8_t type, const t_vector position, float intensity, const uint32_t color)
+t_light	 	light_construct(uint8_t type, const t_vector position, float intensity, const uint32_t color, const float radius)
 {
 	t_light		obj;
 
@@ -166,6 +166,8 @@ t_light	 	light_construct(uint8_t type, const t_vector position, float intensity
 	obj.position = position;
 	obj.color = color;
 	obj.intensity = intensity;
+	obj.radius = radius;
+	obj.radius = radius * radius;
 	return (obj);
 }
 
@@ -304,13 +306,13 @@ bool 		init_object(t_env *e)
 */
 
 	t_light light;
-	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 1, 0xFFFFFF);
+	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 10, 0xFFFFFF, 10);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
 
 	e->mem_size_light += sizeof(t_light);
-	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 1, 0xFFFFFF);
+	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 2, 0xFFFFFF, 2);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
@@ -531,7 +533,7 @@ int main(int argc, char **argv)
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
 //	e.mem_obj_index = 2136;
-	e.mem_obj_index = 1856;
+	e.mem_obj_index = 1000;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else
