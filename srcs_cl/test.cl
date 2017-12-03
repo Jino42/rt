@@ -466,6 +466,7 @@ float			ray_light(__local char *l_mem_obj,
 
 		vector_normalize(&dir_obj_to_light);
 		vector_normalize(&dir_light_to_obj);
+
 		//SHAD
 		light_position = light->position;
 		ray_shad = ray_intersection2(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position, dist);
@@ -476,7 +477,7 @@ float			ray_light(__local char *l_mem_obj,
 		t_vector dir_object = *dir;
 		float flotmp = 2 * vector_dot(&ray_ret->hit_normal, &dir_object);
 		t_vector tmp = vector_get_mult(&ray_ret->hit_normal, flotmp);
-		tmp = vector_get_sub(&tmp, &dir_object);
+		tmp = vector_get_sub(&dir_object, &tmp);
 		//vector_normalize(&tmp);
 		t_vector inv_dir_light_to_obj = vector_get_invert(&dir_light_to_obj);
 		//t_vector inv_dir_light_to_obj = dir_light_to_obj;
@@ -484,6 +485,8 @@ float			ray_light(__local char *l_mem_obj,
 		float specular = pow(reta, 8);
 		if (specular < 0) specular = 0;
 		if (specular > 1) specular = 1;
+		if (vector_dot(&dir_light_to_obj, &ray_ret->hit_normal) > 0)//Only if angle < 45
+			specular = 0;
 
 		ret_dot = vector_dot(&ray_ret->hit_normal, &dir_obj_to_light);
 		float l_inten = 1;

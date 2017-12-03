@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 16:06:40 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 16:54:28 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -536,7 +536,7 @@ int main(int argc, char **argv)
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
 //	e.mem_obj_index = 2136;
-	e.mem_obj_index = 1000;
+	e.mem_obj_index = 1064;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else
