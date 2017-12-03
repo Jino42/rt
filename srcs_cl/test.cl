@@ -20,20 +20,78 @@ float		intersection_cone(__local t_cone *obj, const t_vector *origin_object,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
 float		calculate_m_value(t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1);
 
-void	normal_ellipsoid(__local t_ellipsoid *obj, t_ray_ret *r);
-void	normal_cylinder(__local t_cylinder *obj, t_ray_ret *r);
-void	normal_paraboloid(__local t_paraboloid *obj, t_ray_ret *r);
-void	normal_sphere(__local t_sphere *obj, t_ray_ret *r);
-void	normal_plan(__local t_plan *obj, t_ray_ret *r);
+void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r);
+void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r);
+void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r);
+void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r);
+void	normal_plan(const __local t_plan *obj, t_ray_ret *r);
 
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
 t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, __global t_count *count);
 t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
 
+
+t_vector	vector_get_rotate_obj_local(const t_vector *this, __local t_obj *obj);
+t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, __local t_obj *obj);
+
 /*|
 **|
 */
+
+
+t_vector	vector_get_rotate_obj_local(const t_vector *this, __local t_obj *obj)
+{
+	t_vector	n;
+	float		tmp;
+
+	n = *this;
+	if (obj->rot.x)
+	{
+		tmp = n.y * obj->cos.x - n.z * obj->sin.x;
+		n.z = n.y * obj->sin.x + n.z * obj->cos.x;
+		n.y = tmp;
+	}
+	if (obj->rot.y)
+	{
+		tmp = n.x * obj->cos.y + n.z * obj->sin.y;
+		n.z = n.x * -obj->sin.y + n.z * obj->cos.y;
+		n.x = tmp;
+	}
+	if (obj->rot.z)
+	{
+		tmp = n.x * obj->cos.z - n.y * obj->sin.z;
+		n.y = n.x * obj->sin.z + n.y * obj->cos.z;
+		n.x = tmp;
+	}
+	return (n);
+}
+t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, __local t_obj *obj)
+{
+	t_vector	n;
+	float		tmp;
+
+	n = *this;
+	if (obj->rot.z)
+	{
+		tmp = n.x * -obj->cos.z - n.y * -obj->sin.z;
+		n.y = n.x * -obj->sin.z + n.y * -obj->cos.z;
+		n.x = tmp;
+	}
+	if (obj->rot.y)
+	{
+		tmp = n.x * -obj->cos.y + n.z * -obj->sin.y;
+		n.z = n.x * obj->sin.y + n.z * -obj->cos.y;
+		n.x = tmp;
+	}
+	if (obj->rot.x)
+	{
+		tmp = n.y * -obj->cos.x - n.z * -obj->sin.x;
+		n.z = n.y * -obj->sin.x + n.z * -obj->cos.x;
+		n.y = tmp;
+	}
+	return (n);
+}
 
 bool		solve_quadratic(const float a, const float b, const float c,
 								float *inter0, float *inter1)
@@ -241,27 +299,27 @@ float		intersection_paraboloid(const __local t_paraboloid *obj,
 	return (0);
 }
 
-void	normal_ellipsoid(__local t_ellipsoid *obj, t_ray_ret *r)
+void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r)
 {
 	r->hit_normal.x = r->position_obj_to_hit.x / (obj->size.x * obj->size.x);
 	r->hit_normal.y = r->position_obj_to_hit.y / (obj->size.y * obj->size.y);
 	r->hit_normal.z = r->position_obj_to_hit.z / (obj->size.z * obj->size.z);
 }
-void	normal_cylinder(__local t_cylinder *obj, t_ray_ret *r)
+void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r)
 {
 	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
 	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
 }
-void	normal_paraboloid(__local t_paraboloid *obj, t_ray_ret *r)
+void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r)
 {
 	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
 	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
 }
-void	normal_sphere(__local t_sphere *obj, t_ray_ret *r)
+void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r)
 {
 	r->hit_normal = r->position_obj_to_hit;
 }
-void	normal_plan(__local t_plan *obj, t_ray_ret *r)
+void	normal_plan(const __local t_plan *obj, t_ray_ret *r)
 {
 	r->hit_normal = obj->normal;
 }
@@ -302,7 +360,7 @@ float		intersection_cone(__local t_cone *obj,
 		return (calculate_m_value(r, origin_object, dir_object, inter0, inter1));
 	return (0);
 }
-void	normal_cone(__local t_cone *obj, t_ray_ret *r)
+void	normal_cone(const __local t_cone *obj, t_ray_ret *r)
 {
 	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
 	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
@@ -352,9 +410,9 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		tmp_r.distance_intersection = 0;
 		obj = (__local t_obj *)(l_mem_obj + cur);
 
-		dir_object = vector_get_rotate_local(dir, &obj->rot);
+		dir_object = vector_get_rotate_obj_local(dir, obj);
 		origin_object = vector_get_sub_local(origin, &obj->position);
-		origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
+		origin_object = vector_get_rotate_obj_local(&origin_object, obj);
 
 		if (obj->id == OBJ_SPHERE)
 			tmp_r.distance_intersection = intersection_sphere((__local t_sphere *)obj, &origin_object, &dir_object, INFINITY);
@@ -406,7 +464,7 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 		obj = (__local t_obj *)(l_mem_obj + cur);
 		tmp_r.distance_intersection = 0;
 
-		dir_object = vector_get_rotate_local(dir, &obj->rot);
+		dir_object = vector_get_rotate_obj_local(dir, obj);
 		origin_object = vector_get_sub_local(origin, &obj->position);
 		//origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
 		t_vector taa2t = vector_construct(obj->rot.x, obj->rot.y, obj->rot.z);
@@ -496,19 +554,12 @@ float			ray_light(__local char *l_mem_obj,
 		cur += sizeof(t_light);
 	}
 	return (0.1 + final_color);
-	//return (0.18 /M_PI * final_color);
-	// hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L);
 }
 
 /*
 **|		TODO
-**|		Sphere ligh;
 **|		Dir Light
 **|		Color light
-**|
-**|		Brillance
-**|		Multi Light
-**|		Cone
 **|
 **|		Triangle ?
 */
@@ -556,7 +607,7 @@ __kernel void test(__global int *img,
 */
 
 	ray_ret.position_obj_to_hit = vector_get_sub_local(&ray_ret.hit_point, &o->position);
-	ray_ret.position_obj_to_hit = vector_get_rotate_local(&ray_ret.position_obj_to_hit, &o->rot);
+	ray_ret.position_obj_to_hit = vector_get_rotate_obj_local(&ray_ret.position_obj_to_hit, o);
 
 	if (o->id == OBJ_SPHERE)
 		normal_sphere((__local t_sphere *)o, &ray_ret);

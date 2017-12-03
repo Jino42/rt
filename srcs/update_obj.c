@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 17:32:39 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 20:31:50 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,23 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 	t_vector dir;
 
 	if (ev->key[SDL_SCANCODE_KP_1])
+	{
 		o->rot.x += o->rotate_speed * e->fps.delta_time;
+		o->cos.x = cos(o->rot.x);
+		o->sin.x = sin(o->rot.x);
+	}
 	if (ev->key[SDL_SCANCODE_KP_2])
+	{
 		o->rot.y += o->rotate_speed * e->fps.delta_time;
+		o->cos.y = cos(o->rot.y);
+		o->sin.y = sin(o->rot.y);
+	}
 	if (ev->key[SDL_SCANCODE_KP_3])
+	{
 		o->rot.z += o->rotate_speed * e->fps.delta_time;
+		o->cos.z = cos(o->rot.z);
+		o->sin.z = sin(o->rot.z);
+	}
 	if (ev->key[SDL_SCANCODE_KP_8] && SDL_SCANCODE_LSHIFT)
 	{
 		dir = vector_construct(0, 0, o->speed * e->fps.delta_time);

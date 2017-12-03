@@ -90,6 +90,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -127,6 +129,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -149,6 +153,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -172,6 +178,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -193,6 +201,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -215,6 +225,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -237,6 +249,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -263,6 +277,8 @@ int voider;
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;

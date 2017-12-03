@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 16:06:52 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 20:19:36 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,8 @@ typedef struct	s_obj
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -160,6 +162,8 @@ typedef struct 	s_sphere
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -181,6 +185,8 @@ typedef struct 	s_ellipsoid
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -203,6 +209,8 @@ typedef struct 	s_cone
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -223,6 +231,8 @@ typedef struct	s_paraboloid
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -244,6 +254,8 @@ typedef struct	s_paraboloid_hyperbolic
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -265,6 +277,8 @@ typedef struct	s_plan
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;
@@ -290,6 +304,8 @@ typedef struct	s_cylinder
 	float		rotate_speed;
 	float		speed;
 	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
 
 	t_vector	hit_point;
 	t_vector	hit_normal;

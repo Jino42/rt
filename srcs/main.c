@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 16:54:28 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 20:20:39 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,7 +315,7 @@ bool 		init_object(t_env *e)
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
 
 	e->mem_size_light += sizeof(t_light);
-	/*light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFFFFFF, 2);
+	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFFFFFF, 2);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
@@ -323,7 +323,7 @@ bool 		init_object(t_env *e)
 	e->mem_size_light += sizeof(t_light);
 
 	ft_printf("Size light ; %u\n", e->mem_size_light);
-*/
+
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
 }
@@ -536,7 +536,7 @@ int main(int argc, char **argv)
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
 //	e.mem_obj_index = 2136;
-	e.mem_obj_index = 1064;
+	e.mem_obj_index = 1152;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else

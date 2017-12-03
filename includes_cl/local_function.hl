@@ -156,7 +156,6 @@ t_vector	vector_get_inverse_rotate_local(const t_vector *this, __local t_vector 
 	return (n);
 }
 
-
 void 		vector_div_vector_local(t_vector *a, __local t_vector *b)
 {
 	a->x /= b->x;
