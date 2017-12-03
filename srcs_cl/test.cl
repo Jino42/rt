@@ -74,20 +74,20 @@ t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, __local t_obj
 	n = *this;
 	if (obj->rot.z)
 	{
-		tmp = n.x * -obj->cos.z - n.y * -obj->sin.z;
-		n.y = n.x * -obj->sin.z + n.y * -obj->cos.z;
+		tmp = n.x * obj->cos.z - n.y * -obj->sin.z;
+		n.y = n.x * -obj->sin.z + n.y * obj->cos.z;
 		n.x = tmp;
 	}
 	if (obj->rot.y)
 	{
-		tmp = n.x * -obj->cos.y + n.z * -obj->sin.y;
-		n.z = n.x * obj->sin.y + n.z * -obj->cos.y;
+		tmp = n.x * obj->cos.y + n.z * -obj->sin.y;
+		n.z = n.x * obj->sin.y + n.z * obj->cos.y;
 		n.x = tmp;
 	}
 	if (obj->rot.x)
 	{
-		tmp = n.y * -obj->cos.x - n.z * -obj->sin.x;
-		n.z = n.y * -obj->sin.x + n.z * -obj->cos.x;
+		tmp = n.y * obj->cos.x - n.z * -obj->sin.x;
+		n.z = n.y * -obj->sin.x + n.z * obj->cos.x;
 		n.y = tmp;
 	}
 	return (n);
@@ -166,7 +166,7 @@ float		intersection_plane(const __local t_plan *obj,
 	origin_object = vector_get_sub_local(origin, &obj->position);
 
 	normal = obj->normal;
-	normal = vector_get_inverse_rotate_local(&normal, &obj->rot);
+	normal = vector_get_inverse_rotate_obj_local(&normal, obj);
 
 	float denom = vector_dot(&normal, dir);
 	if (fabs(denom) > EPSILON)
@@ -466,9 +466,7 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 
 		dir_object = vector_get_rotate_obj_local(dir, obj);
 		origin_object = vector_get_sub_local(origin, &obj->position);
-		//origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
-		t_vector taa2t = vector_construct(obj->rot.x, obj->rot.y, obj->rot.z);
-		origin_object = vector_get_rotate(&origin_object, &taa2t);
+		origin_object = vector_get_rotate_obj_local(&origin_object, obj);
 
 		if (obj->id == OBJ_SPHERE && (!obj->flag & F_ISLIGHT))
 			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
@@ -518,7 +516,7 @@ float			ray_light(__local char *l_mem_obj,
 		light = (__local t_light *)(l_mem_light + cur);
 
 		dir_obj_to_light = local_vector_get_sub(&light->position, &ray_ret->hit_point);
-		dir_light_to_obj = vector_get_sub_local(&ray_ret->hit_point, &light->position);
+		dir_light_to_obj = vector_get_invert(&dir_obj_to_light);
 
 		float dist = vector_magnitude(&dir_light_to_obj);
 
@@ -622,7 +620,7 @@ __kernel void test(__global int *img,
 	else if (o->id == OBJ_CONE)
 		normal_cone((__local t_cone *)o, &ray_ret);
 
-	ray_ret.hit_normal = vector_get_inverse_rotate_local(&ray_ret.hit_normal, &o->rot);
+	ray_ret.hit_normal = vector_get_inverse_rotate_obj_local(&ray_ret.hit_normal, o);
 	vector_normalize(&ray_ret.hit_normal);
 	img[x + y * WIDTH]  = hex_intensity(o->color, ray_light(l_mem_obj, mem_size_obj, l_mem_light, mem_size_light, &ray_ret, &dir));
 }
