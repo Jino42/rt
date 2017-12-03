@@ -473,20 +473,16 @@ float			ray_light(__local char *l_mem_obj,
 		if (ray_shad.ptr_obj != ray_ret->ptr_obj)
 			aza = 0;
 
-		//t_vector dir_object = vector_get_rotate_local(dir, &ray_ret->ptr_obj->rot);
-		t_vector dir_object = *dir;
-		float flotmp = 2 * vector_dot(&ray_ret->hit_normal, &dir_object);
-		t_vector tmp = vector_get_mult(&ray_ret->hit_normal, flotmp);
-		tmp = vector_get_sub(&dir_object, &tmp);
-		//vector_normalize(&tmp);
-		t_vector inv_dir_light_to_obj = vector_get_invert(&dir_light_to_obj);
-		//t_vector inv_dir_light_to_obj = dir_light_to_obj;
-		float reta = vector_dot(&inv_dir_light_to_obj, &tmp);
-		float specular = pow(reta, 8);
+		t_vector tmp;
+		float specular = 2 * vector_dot(&dir_light_to_obj, &ray_ret->hit_normal);
+		tmp = vector_get_mult(&ray_ret->hit_normal, specular);
+		t_vector reflec;
+		reflec = vector_get_sub(&dir_light_to_obj, &tmp);
+		vector_normalize(&reflec);
+		specular = -vector_dot(&reflec, dir);
 		if (specular < 0) specular = 0;
 		if (specular > 1) specular = 1;
-		if (vector_dot(&dir_light_to_obj, &ray_ret->hit_normal) > 0)//Only if angle < 45
-			specular = 0;
+		specular = pow(specular, 8);
 
 		ret_dot = vector_dot(&ray_ret->hit_normal, &dir_obj_to_light);
 		float l_inten = 1;
