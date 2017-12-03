@@ -357,36 +357,17 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		origin_object = vector_get_rotate_local(&origin_object, &obj->rot);
 
 		if (obj->id == OBJ_SPHERE)
-		{
 			tmp_r.distance_intersection = intersection_sphere((__local t_sphere *)obj, &origin_object, &dir_object, INFINITY);
-			cur += sizeof(t_sphere);
-		}
 		else if (obj->id == OBJ_PLANE)
-		{
 			tmp_r.distance_intersection = intersection_plane((__local t_plan *)obj, origin, dir, INFINITY);
-			cur += sizeof(t_plan);
-		}
 		else if (obj->id == OBJ_ELLIPSOID)
-		{
 			tmp_r.distance_intersection = intersection_ellipsoid((__local t_ellipsoid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
-			cur += sizeof(t_ellipsoid);
-		}
 		else if (obj->id == OBJ_CONE)
-		{
 			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
-			//tmp_r.distance_intersection = 0;
-			cur += sizeof(t_cone);
-		}
 		else if (obj->id == OBJ_PARABOLOID)
-		{
 			tmp_r.distance_intersection = intersection_paraboloid((__local t_paraboloid *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
-			cur += sizeof(t_paraboloid);
-		}
 		else if (obj->id == OBJ_CYLINDER)
-		{
 			tmp_r.distance_intersection = intersection_cylinder((__local t_cylinder *)obj, &origin_object, &dir_object, INFINITY, &tmp_r);
-			cur += sizeof(t_cylinder);
-		}
 
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
@@ -396,6 +377,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 			min_distance = tmp_r.distance_intersection;
 			ray_ret = tmp_r;
 		}
+		cur += obj->mem_size_obj;
 	}
 	return (ray_ret);
 }
@@ -430,37 +412,18 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 		t_vector taa2t = vector_construct(obj->rot.x, obj->rot.y, obj->rot.z);
 		origin_object = vector_get_rotate(&origin_object, &taa2t);
 
-		if (obj->id == OBJ_SPHERE)
-		{
-			if (!(obj->flag & F_ISLIGHT))
-				tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
-			cur += sizeof(t_sphere);
-		}
+		if (obj->id == OBJ_SPHERE && (!obj->flag & F_ISLIGHT))
+			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
 		else if (obj->id == OBJ_PLANE)
-		{
 			tmp_r.distance_intersection = intersection_plane((const __local t_plan *)obj, origin, dir, near);
-			cur += sizeof(t_plan);
-		}
 		else if (obj->id == OBJ_ELLIPSOID)
-		{
 			tmp_r.distance_intersection = intersection_ellipsoid((const __local t_ellipsoid *)obj, &origin_object, &dir_object, near, &tmp_r);
-			cur += sizeof(t_ellipsoid);
-		}
 		else if (obj->id == OBJ_CONE)
-		{
 			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_object, &dir_object, near, &tmp_r);
-			cur += sizeof(t_cone);
-		}
 		else if (obj->id == OBJ_PARABOLOID)
-		{
 			tmp_r.distance_intersection = intersection_paraboloid((const __local t_paraboloid *)obj, &origin_object, &dir_object, near, &tmp_r);
-			cur += sizeof(t_paraboloid);
-		}
 		else if (obj->id == OBJ_CYLINDER)
-		{
 			tmp_r.distance_intersection = intersection_cylinder((const __local t_cylinder *)obj, &origin_object, &dir_object, near, &tmp_r);
-			cur += sizeof(t_cylinder);
-		}
 
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
@@ -469,7 +432,7 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 			min_distance = tmp_r.distance_intersection;
 			ray_ret = tmp_r;
 		}
-		//cur += obj->mem_size_obj;
+		cur += obj->mem_size_obj;
 	}
 	return (ray_ret);
 }
