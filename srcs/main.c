@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 19:39:09 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 16:06:40 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 t_sphere 	sphere_construct(const t_vector position,
 								const float radius,
-								const uint32_t color)
+								const uint32_t color,
+								const uint32_t flag)
 {
 	t_sphere obj;
 
@@ -27,6 +28,7 @@ t_sphere 	sphere_construct(const t_vector position,
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.flag = flag;
 
 	obj.intersect = &intersection_sphere;
 	return (obj);
@@ -177,14 +179,15 @@ bool 		init_object(t_env *e)
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	s[0] = sphere_construct(vector_construct(9, 9, 9), 0.1, 0x84F15E);
-	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000); // RIGHT WALL
-	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00); // LEFT WALL
-	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF); // BACK WALL
-	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500); // FRONT WALL
-	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF); // TOP WALL
-	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500); // DOWN WALL
-	s[7] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF);
+	s[0] = sphere_construct(vector_construct(20, 20, 0), 0.5, 0x84F15E, 0);
+	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000, 0); // RIGHT WALL
+	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00, 0); // LEFT WALL
+	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF, 0); // BACK WALL
+	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500, 0); // FRONT WALL
+	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF, 0); // TOP WALL
+	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500, 0); // DOWN WALL
+	s[7] = sphere_construct(vector_construct(10, 10, 10), 0.1, 0xFFFFFF, F_ISLIGHT);
+//	s[8] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF, F_ISLIGHT);
 
 	void *tn;
 	t_obj *to;
@@ -306,13 +309,13 @@ bool 		init_object(t_env *e)
 */
 
 	t_light light;
-	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 0.75, 0xFFFFFF, 10);
+	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 0.66, 0xFFFFFF, 10);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
 
 	e->mem_size_light += sizeof(t_light);
-	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFFFFFF, 2);
+	/*light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFFFFFF, 2);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
@@ -320,7 +323,7 @@ bool 		init_object(t_env *e)
 	e->mem_size_light += sizeof(t_light);
 
 	ft_printf("Size light ; %u\n", e->mem_size_light);
-
+*/
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
 }

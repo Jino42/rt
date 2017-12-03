@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/01 17:09:47 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/03 16:06:52 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@
 # define LIGHT_BASIC (1 << 0)
 # define LIGHT_SPHERE (1 << 1)
 # define LIGHT_DIRECT (1 << 2)
+
+# define F_ISLIGHT (1 << 0)
+
 
 typedef struct	s_count
 {
@@ -134,6 +137,7 @@ typedef struct	s_obj
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -150,6 +154,7 @@ typedef struct 	s_sphere
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -170,6 +175,7 @@ typedef struct 	s_ellipsoid
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -191,6 +197,7 @@ typedef struct 	s_cone
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -210,6 +217,8 @@ typedef struct	s_paraboloid
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -229,6 +238,8 @@ typedef struct	s_paraboloid_hyperbolic
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -248,6 +259,8 @@ typedef struct	s_plan
 						const t_vector *, const float);
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -271,6 +284,8 @@ typedef struct	s_cylinder
 
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;

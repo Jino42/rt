@@ -432,7 +432,8 @@ t_ray_ret		ray_intersection2(__local char *l_mem_obj,
 
 		if (obj->id == OBJ_SPHERE)
 		{
-			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
+			if (!(obj->flag & F_ISLIGHT))
+				tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
 			cur += sizeof(t_sphere);
 		}
 		else if (obj->id == OBJ_PLANE)
@@ -512,13 +513,15 @@ float			ray_light(__local char *l_mem_obj,
 		t_vector dir_object = *dir;
 		float flotmp = 2 * vector_dot(&ray_ret->hit_normal, &dir_object);
 		t_vector tmp = vector_get_mult(&ray_ret->hit_normal, flotmp);
-		tmp = vector_get_sub(&dir_object, &tmp);
-		vector_normalize(&tmp);
-		//t_vector inv_dir_light_to_obj = vector_get_invert(&dir_light_to_obj);
-		t_vector inv_dir_light_to_obj = dir_light_to_obj;
-		float specular = pow(vector_dot(&inv_dir_light_to_obj, &tmp), 8);
+		tmp = vector_get_sub(&tmp, &dir_object);
+		//vector_normalize(&tmp);
+		t_vector inv_dir_light_to_obj = vector_get_invert(&dir_light_to_obj);
+		//t_vector inv_dir_light_to_obj = dir_light_to_obj;
+		float reta = vector_dot(&inv_dir_light_to_obj, &tmp);
+		float specular = pow(reta, 8);
 		if (specular < 0) specular = 0;
 		if (specular > 1) specular = 1;
+
 		ret_dot = vector_dot(&ray_ret->hit_normal, &dir_obj_to_light);
 		float l_inten = 1;
 		if (light->type == LIGHT_SPHERE)
@@ -527,10 +530,10 @@ float			ray_light(__local char *l_mem_obj,
 			ret_dot = fabs(ret_dot);
 		if (ret_dot < 0)
 			ret_dot = 0;
-		final_color += (ret_dot * aza * l_inten * light->intensity * specular);
+		final_color += ((ret_dot) * aza * l_inten * light->intensity + specular * aza);
 		cur += sizeof(t_light);
 	}
-	return (0.15 + final_color);
+	return (0.1 + final_color);
 	//return (0.18 /M_PI * final_color);
 	// hitObject->albedo / M_PI * light->intensity * light->color * std::max(0.f, hitNormal.dotProduct(L);
 }

@@ -33,6 +33,11 @@ typedef int int32_t;
 # define LIGHT_SPHERE (1 << 1)
 # define LIGHT_DIRECT (1 << 2)
 
+# define INTER_IN (1 << 1)
+# define INTER_OUT (1 << 2)
+
+# define F_ISLIGHT (1 << 0)
+
 typedef struct	s_count
 {
 	float		time;
@@ -79,6 +84,8 @@ typedef struct	s_obj
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -103,6 +110,7 @@ typedef struct	s_ray_ret
 	t_vector	position_obj_to_hit;
 
 	__local t_obj *ptr_obj;
+	int			inter;
 }				t_ray_ret;
 
 typedef struct 	s_sphere
@@ -113,6 +121,7 @@ typedef struct 	s_sphere
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -134,6 +143,7 @@ typedef struct 	s_ellipsoid
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -156,6 +166,7 @@ typedef struct 	s_cone
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
 
 	t_vector	position;
 	float		rotate_speed;
@@ -176,6 +187,8 @@ typedef struct	s_paraboloid
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -196,6 +209,8 @@ typedef struct	s_paraboloid_hyperbolic
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -216,6 +231,8 @@ typedef struct	s_plan
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
@@ -240,6 +257,8 @@ typedef struct	s_cylinder
 int voider;
 	uint8_t		id;
 	uint32_t	color;
+	uint32_t	flag;
+
 	t_vector	position;
 	float		rotate_speed;
 	float		speed;
