@@ -75,6 +75,7 @@ typedef struct	s_light
 	uint32_t	color;
 	float		radius;
 	float		radius2;
+	t_vector	dir;
 }				t_light;
 
 typedef struct	s_obj

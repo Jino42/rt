@@ -615,7 +615,8 @@ __kernel void test(__global int *img,
 	float py = (1 - 2 * (((float)y + 0.5) * p_cl.invH)) * p_cl.scale;
 
 	dir = vector_construct(px, py, -1);
-	dir = matrix_get_mult_vector(&cam.camera_to_world, &dir);
+	//dir = matrix_get_mult_vector(&cam.camera_to_world, &dir);
+	dir = vector_get_rotate(&dir, &cam.angle);
 	vector_normalize(&dir);
 
 	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam.position, count);

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 17:08:31 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/04 18:15:45 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ typedef struct	s_light
 	uint32_t	color;
 	float		radius;
 	float		radius2;
+	t_vector	dir;
 }				t_light;
 
 typedef struct	s_obj
