@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 20:20:39 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:11:25 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position
 }
 
 t_plan		plan_construct(const t_vector position,
-							const float len,
 							const uint32_t color)
 {
 	t_plan obj;
@@ -127,13 +126,9 @@ t_plan		plan_construct(const t_vector position,
 	obj.id = OBJ_PLANE;
 	obj.color = color;
 	obj.position = position;
-	obj.len = len;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 
-	obj.p0 = vector_construct(position.x - len, position.y - len, position.z);
-	obj.p1 = vector_construct(0, 1, 0);
-	obj.p2 = vector_construct(1, 0, 0);
 	obj.normal = vector_construct(0, 0, 1);
 
 	obj.intersect = &intersection_plane;
@@ -233,7 +228,7 @@ bool 		init_object(t_env *e)
 
 	t_plan p;
 
-	p = plan_construct(vector_construct(1, 1, -30), 1, 0xFF00FF);
+	p = plan_construct(vector_construct(1, 1, -30), 0xFF00FF);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_plan));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&p, e->mem_size_obj, sizeof(t_plan));
@@ -535,8 +530,7 @@ int main(int argc, char **argv)
 		e.count.nb_obj = e.obj_len;
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
-//	e.mem_obj_index = 2136;
-	e.mem_obj_index = 1152;
+	e.mem_obj_index = 0;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else

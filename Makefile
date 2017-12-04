@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/11/15 20:22:33 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/04 15:13:22 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,6 @@ SRC = main.c \
 	  solve_quadratic.c \
 	  intersection_sphere.c \
 	  intersection_plane.c \
-	  intersection_disk.c \
 	  intersection_cylinder.c \
 	  intersection_paraboloid.c \
 	  intersection_paraboloid_hyperbolic.c \

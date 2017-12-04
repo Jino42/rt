@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 20:19:36 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/04 15:14:04 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,6 @@ typedef struct	s_obj
 	t_vector	cos;
 	t_vector	sin;
 
-	t_vector	hit_point;
-	t_vector	hit_normal;
 }				t_obj;
 
 typedef struct 	s_sphere
@@ -164,9 +162,6 @@ typedef struct 	s_sphere
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
-
-	t_vector	hit_point;
-	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
@@ -187,9 +182,6 @@ typedef struct 	s_ellipsoid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
-
-	t_vector	hit_point;
-	t_vector	hit_normal;
 
 	t_vector	size;
 	float		radius;
@@ -212,9 +204,6 @@ typedef struct 	s_cone
 	t_vector	cos;
 	t_vector	sin;
 
-	t_vector	hit_point;
-	t_vector	hit_normal;
-
 	float		angle;
 }				t_cone;
 
@@ -233,9 +222,6 @@ typedef struct	s_paraboloid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
-
-	t_vector	hit_point;
-	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
@@ -257,9 +243,6 @@ typedef struct	s_paraboloid_hyperbolic
 	t_vector	cos;
 	t_vector	sin;
 
-	t_vector	hit_point;
-	t_vector	hit_normal;
-
 	float		radius;
 	float		radius2;
 }				t_paraboloid_hyperbolic;
@@ -280,14 +263,7 @@ typedef struct	s_plan
 	t_vector	cos;
 	t_vector	sin;
 
-	t_vector	hit_point;
-	t_vector	hit_normal;
-
-	t_vector	p0; // Bas gauche
-	t_vector	p1; // haut gauche RELATIVE
-	t_vector	p2; // bas droite RELATIVE
 	t_vector	normal;
-	float		len;
 }				t_plan;
 
 typedef struct	s_cylinder
@@ -306,9 +282,6 @@ typedef struct	s_cylinder
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
-
-	t_vector	hit_point;
-	t_vector	hit_normal;
 
 	float		radius;
 	float		radius2;
@@ -390,7 +363,5 @@ float				intersection_ellipsoid(t_ellipsoid *obj, const t_vector *origin, const 
 float				intersection_cone(t_cone *obj, const t_vector *origin, const t_vector *dir,
 							const float len);
 
-float				intersection_disk(t_env *e, const t_vector *dir,
-							const t_vector *cam, const float len);
 int					end_of_program(t_env *e, char *str, int flag);
 #endif
