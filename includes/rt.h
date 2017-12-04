@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 15:14:04 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/04 17:08:31 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ typedef struct	s_obj
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
-
+	float		m_specular;
 }				t_obj;
 
 typedef struct 	s_sphere
@@ -162,6 +162,7 @@ typedef struct 	s_sphere
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -182,6 +183,7 @@ typedef struct 	s_ellipsoid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	t_vector	size;
 	float		radius;
@@ -203,6 +205,7 @@ typedef struct 	s_cone
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		angle;
 }				t_cone;
@@ -222,6 +225,7 @@ typedef struct	s_paraboloid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -242,6 +246,7 @@ typedef struct	s_paraboloid_hyperbolic
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -262,6 +267,7 @@ typedef struct	s_plan
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	t_vector	normal;
 }				t_plan;
@@ -282,6 +288,7 @@ typedef struct	s_cylinder
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;

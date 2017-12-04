@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 15:11:25 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/04 17:38:37 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 t_sphere 	sphere_construct(const t_vector position,
 								const float radius,
 								const uint32_t color,
-								const uint32_t flag)
+								const uint32_t flag,
+								const float	m_specular)
 {
 	t_sphere obj;
 
@@ -29,6 +30,7 @@ t_sphere 	sphere_construct(const t_vector position,
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 	obj.flag = flag;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_sphere;
 	return (obj);
@@ -37,7 +39,8 @@ t_sphere 	sphere_construct(const t_vector position,
 t_ellipsoid 	ellipsoid_construct(const t_vector position,
 									const t_vector size,
 									const float	   radius,
-									const uint32_t color)
+									const uint32_t color,
+									const float m_specular)
 {
 	t_ellipsoid obj;
 
@@ -51,6 +54,7 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 	obj.size = size;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_ellipsoid;
 	return (obj);
@@ -58,7 +62,8 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 
 t_cone 	cone_construct(const t_vector position,
 								const float angle,
-								const uint32_t color)
+								const uint32_t color,
+								const float m_specular)
 {
 	t_cone obj;
 
@@ -70,6 +75,7 @@ t_cone 	cone_construct(const t_vector position,
 	obj.position = position;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_cone;
 	return (obj);
@@ -78,7 +84,8 @@ t_cone 	cone_construct(const t_vector position,
 
 t_paraboloid 	paraboloid_construct(const t_vector position,
 										const float radius,
-										const uint32_t color)
+										const uint32_t color,
+										const float m_specular)
 {
 	t_paraboloid obj;
 
@@ -91,6 +98,7 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_paraboloid;
 	return (obj);
@@ -98,7 +106,8 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 
 t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position,
 										const float radius,
-										const uint32_t color)
+										const uint32_t color,
+										const float m_specular)
 {
 	t_paraboloid_hyperbolic obj;
 
@@ -111,13 +120,15 @@ t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_paraboloid_hyperbolic;
 	return (obj);
 }
 
 t_plan		plan_construct(const t_vector position,
-							const uint32_t color)
+							const uint32_t color,
+							const float m_specular)
 {
 	t_plan obj;
 
@@ -128,6 +139,7 @@ t_plan		plan_construct(const t_vector position,
 	obj.position = position;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.m_specular = m_specular;
 
 	obj.normal = vector_construct(0, 0, 1);
 
@@ -137,7 +149,8 @@ t_plan		plan_construct(const t_vector position,
 
 t_cylinder	cylinder_construct(const t_vector position,
 								const float radius,
-								const uint32_t color)
+								const uint32_t color,
+								const float m_specular)
 {
 	t_cylinder obj;
 
@@ -150,6 +163,7 @@ t_cylinder	cylinder_construct(const t_vector position,
 	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
+	obj.m_specular = m_specular;
 
 	obj.intersect = &intersection_cylinder;
 	return (obj);
@@ -174,14 +188,14 @@ bool 		init_object(t_env *e)
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	s[0] = sphere_construct(vector_construct(20, 20, 0), 0.5, 0x84F15E, 0);
-	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000, 0); // RIGHT WALL
-	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00, 0); // LEFT WALL
-	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF, 0); // BACK WALL
-	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500, 0); // FRONT WALL
-	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF, 0); // TOP WALL
-	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500, 0); // DOWN WALL
-	s[7] = sphere_construct(vector_construct(10, 10, 10), 0.1, 0xFFFFFF, F_ISLIGHT);
+	s[0] = sphere_construct(vector_construct(20, 20, 0), 0.5, 0x84F15E, 0, 0);
+	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000, 0, 0); // RIGHT WALL
+	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00, 0, 0); // LEFT WALL
+	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF, 0, 0); // BACK WALL
+	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500, 0, 0); // FRONT WALL
+	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF, 0, 0); // TOP WALL
+	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500, 0, 0); // DOWN WALL
+	s[7] = sphere_construct(vector_construct(10, 10, 10), 0.1, 0xFFFFFF, F_ISLIGHT, 0);
 //	s[8] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF, F_ISLIGHT);
 
 	void *tn;
@@ -228,7 +242,7 @@ bool 		init_object(t_env *e)
 
 	t_plan p;
 
-	p = plan_construct(vector_construct(1, 1, -30), 0xFF00FF);
+	p = plan_construct(vector_construct(1, 1, -30), 0xFF00FF, 2);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_plan));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&p, e->mem_size_obj, sizeof(t_plan));
@@ -242,7 +256,7 @@ bool 		init_object(t_env *e)
 
 	t_cylinder c;
 
-	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28);
+	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28, 13);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cylinder));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&c, e->mem_size_obj, sizeof(t_cylinder));
@@ -256,7 +270,7 @@ bool 		init_object(t_env *e)
 
 	t_paraboloid paraboloid;
 
-	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 2, 0xF28FB0);
+	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 2, 0xF28FB0, 7);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_paraboloid));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&paraboloid, e->mem_size_obj, sizeof(t_paraboloid));
@@ -271,7 +285,7 @@ bool 		init_object(t_env *e)
 
 
 	t_cone cone;
-	cone = cone_construct(vector_construct(5, 5, 5), 0.45f, 0xbe6226);
+	cone = cone_construct(vector_construct(5, 5, 5), 0.45f, 0xbe6226, 8);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
@@ -284,7 +298,7 @@ bool 		init_object(t_env *e)
 	ft_lstinsert(&e->obj, push);
 
 	t_ellipsoid ellipsoid;
-	ellipsoid = ellipsoid_construct(vector_construct(1, 1, 1), vector_construct(1, 1, 1),1, 0x225be6);
+	ellipsoid = ellipsoid_construct(vector_construct(1, 1, 1), vector_construct(1, 1, 1),1, 0x225be6, 4);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_ellipsoid));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&ellipsoid, e->mem_size_obj, sizeof(t_ellipsoid));
@@ -530,7 +544,7 @@ int main(int argc, char **argv)
 		e.count.nb_obj = e.obj_len;
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
-	e.mem_obj_index = 0;
+	e.mem_obj_index = 896;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else

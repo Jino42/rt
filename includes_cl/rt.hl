@@ -37,6 +37,7 @@ typedef int int32_t;
 # define INTER_OUT (1 << 2)
 
 # define F_ISLIGHT (1 << 0)
+# define F_ISSPECULAR (1 << 1)
 
 typedef struct	s_count
 {
@@ -92,6 +93,7 @@ typedef struct	s_obj
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 }				t_obj;
 
@@ -129,6 +131,7 @@ typedef struct 	s_sphere
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -150,6 +153,7 @@ typedef struct 	s_ellipsoid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	t_vector	size;
 	float		radius;
@@ -172,6 +176,7 @@ typedef struct 	s_cone
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		angle;
 }				t_cone;
@@ -192,6 +197,7 @@ typedef struct	s_paraboloid
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -213,6 +219,7 @@ typedef struct	s_paraboloid_hyperbolic
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;
@@ -234,6 +241,7 @@ typedef struct	s_plan
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	t_vector	normal;
 }				t_plan;
@@ -255,6 +263,7 @@ typedef struct	s_cylinder
 	t_vector	rot;
 	t_vector	cos;
 	t_vector	sin;
+	float		m_specular;
 
 	float		radius;
 	float		radius2;

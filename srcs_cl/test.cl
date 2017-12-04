@@ -512,7 +512,7 @@ float			light_specular(const __local t_light *light, const t_vector *dir_light_t
 		specular = 0;
 	if (specular > 1)
 		specular = 1;
-	return (pow(specular, 8));
+	return (pow(specular, ray_ret->ptr_obj->m_specular));
 }
 float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_light, const t_ray_ret *ray_ret)
 {
@@ -529,8 +529,7 @@ float			light_sphere(const __local t_light *light, const float dist)
 {
 	float l_inten = 1;
 
-	if (light->type & LIGHT_SPHERE)
-		l_inten = (1000 / (4 * M_PI * dist));
+	l_inten = (1000 / (4 * M_PI * dist));
 	return (l_inten);
 }
 float			ray_light(__local char *l_mem_obj,
@@ -570,8 +569,10 @@ float			ray_light(__local char *l_mem_obj,
 			is_not_shadow = 0;
 
 		diffuse = light_diffuse(light, &dir_obj_to_light, ray_ret);
-		specular = light_specular(light, &dir_light_to_obj, ray_ret, dir);
-		spherical = light_sphere(light, dist);
+		if (ray_ret->ptr_obj->m_specular > EPSILON)
+			specular = light_specular(light, &dir_light_to_obj, ray_ret, dir);
+		if (light->type == LIGHT_SPHERE)
+			spherical = light_sphere(light, dist);
 
 		final_color += ((diffuse + specular) * spherical * light->intensity * is_not_shadow);
 		cur += sizeof(t_light);
