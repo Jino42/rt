@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 23:10:58 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/05 23:13:58 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,6 @@ bool		get_position(char *str, t_vector *vec)
 		!get_float(str_arg_in_arg(str, 2), &vec->y) ||
 		!get_float(str_arg_in_arg(str, 2), &vec->z))
 		return (false);
-	dprintf(2, "%.2f %.2f %.2f\n", vec->x, vec->y, vec->z);
 	return (true);
 }
 
@@ -224,6 +223,7 @@ bool		parse_scene(t_env *e, char *path)
 	if (!parse_name(&scene, fd))
 		return (end_of_program(e, "pars: name error", 0));
 	if (!parse_camera(&scene, fd))
+		return (end_of_program(e, "pars: camera error", 0));
 	close(fd);
 	return (true);
 }

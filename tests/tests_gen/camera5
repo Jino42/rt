@@ -1,0 +1,12 @@
+name:name
+camera(1 1 1.4 1)
+light(position, type, intensité, makeSpherei)
+sphere		(position, couleur, specular, rayon)
+plan		(position, specular, rayon)
+cylinder	(position, couleur, specular, rayon, min, max)
+cone		(position, couleur, specular, angle, min, max)
+paraboloid	(position, couleur, specular, ANNNGGGLLLE, min, max)
+ellipsoid	(origin, couleur, specular, rayon, taillexyz)
+
+add
+tranlate() rotate() scaling()
