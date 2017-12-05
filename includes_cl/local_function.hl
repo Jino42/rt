@@ -3,19 +3,19 @@
 
 #include "matrix.hl"
 
-t_vector		local_matrix_get_mult_dir_vector(__local t_matrix *m, const t_vector *v);
-t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v);
-t_vector		vector_get_sub_local(const t_vector *a, __local t_vector *b);
-void			local_vector_scale(t_vector *a, __local t_vector *b);
-t_vector		local_vector_get_sub(__local t_vector *a, const t_vector *b);
-t_vector		local_vector_get_cross_product_local(__local t_vector *a, __local t_vector *b);
-t_vector		vector_get_rotate_local(const t_vector *this, __local t_vector *rot);
-t_vector		vector_get_inverse_rotate_local(const t_vector *this, __local t_vector *rot);
-void 			vector_div_vector_local(t_vector *a, __local t_vector *b);
-t_vector		vector_get_add_local(const t_vector *a, __local t_vector *b);
+t_vector		local_matrix_get_mult_dir_vector(const __local t_matrix *m, const t_vector *v);
+t_vector		local_matrix_get_mult_vector(const __local t_matrix *m, const t_vector *v);
+t_vector		vector_get_sub_local(const t_vector *a, const __local t_vector *b);
+void			local_vector_scale(t_vector *a, const __local t_vector *b);
+t_vector		local_vector_get_sub(const __local t_vector *a, const t_vector *b);
+t_vector		local_vector_get_cross_product_local(const __local t_vector *a, const __local t_vector *b);
+t_vector		vector_get_rotate_local(const t_vector *this, const __local t_vector *rot);
+t_vector		vector_get_inverse_rotate_local(const t_vector *this, const __local t_vector *rot);
+void 			vector_div_vector_local(t_vector *a, const __local t_vector *b);
+t_vector		vector_get_add_local(const t_vector *a, const __local t_vector *b);
 
 
-t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v)
+t_vector		local_matrix_get_mult_vector(const __local t_matrix *m, const t_vector *v)
 {
 	t_vector	new;
 	float		len;
@@ -32,7 +32,7 @@ t_vector		local_matrix_get_mult_vector(__local t_matrix *m, const t_vector *v)
 	return (new);
 }
 
-t_vector		local_matrix_get_mult_dir_vector(__local t_matrix *m, const t_vector *v)
+t_vector		local_matrix_get_mult_dir_vector(const __local t_matrix *m, const t_vector *v)
 {
 	t_vector	n;
 
@@ -43,7 +43,7 @@ t_vector		local_matrix_get_mult_dir_vector(__local t_matrix *m, const t_vector *
 	return (n);
 }
 
-t_vector		vector_get_sub_local(const t_vector *a, __local t_vector *b)
+t_vector		vector_get_sub_local(const t_vector *a,const  __local t_vector *b)
 {
 	t_vector new;
 
@@ -54,7 +54,7 @@ t_vector		vector_get_sub_local(const t_vector *a, __local t_vector *b)
 	return (new);
 }
 
-t_vector		local_vector_get_sub(__local t_vector *a, const t_vector *b)
+t_vector		local_vector_get_sub(const __local t_vector *a, const t_vector *b)
 {
 	t_vector new;
 
@@ -65,7 +65,7 @@ t_vector		local_vector_get_sub(__local t_vector *a, const t_vector *b)
 	return (new);
 }
 
-t_vector		vector_get_add_local(const t_vector *a, __local t_vector *b)
+t_vector		vector_get_add_local(const t_vector *a, const __local t_vector *b)
 {
 	t_vector new;
 
@@ -76,7 +76,7 @@ t_vector		vector_get_add_local(const t_vector *a, __local t_vector *b)
 	return (new);
 }
 
-void		local_vector_scale(t_vector *a, __local t_vector *b)
+void		local_vector_scale(t_vector *a, const __local t_vector *b)
 {
 	a->x *= b->x;
 	a->y *= b->y;
@@ -85,7 +85,7 @@ void		local_vector_scale(t_vector *a, __local t_vector *b)
 	return ;
 }
 
-t_vector	local_vector_get_cross_product_local(__local t_vector *a, __local t_vector *b)
+t_vector	local_vector_get_cross_product_local(const __local t_vector *a, const __local t_vector *b)
 {
 	t_vector new;
 
@@ -95,7 +95,7 @@ t_vector	local_vector_get_cross_product_local(__local t_vector *a, __local t_vec
 	return (new);
 }
 
-t_vector	vector_get_rotate_local(const t_vector *this, __local t_vector *rot)
+t_vector	vector_get_rotate_local(const t_vector *this, const __local t_vector *rot)
 {
 	t_vector	n;
 	float		tmp;
@@ -125,7 +125,7 @@ t_vector	vector_get_rotate_local(const t_vector *this, __local t_vector *rot)
 	return (n);
 }
 
-t_vector	vector_get_inverse_rotate_local(const t_vector *this, __local t_vector *rot)
+t_vector	vector_get_inverse_rotate_local(const t_vector *this, const __local t_vector *rot)
 {
 	t_vector	n;
 	float		tmp;
@@ -156,7 +156,7 @@ t_vector	vector_get_inverse_rotate_local(const t_vector *this, __local t_vector 
 	return (n);
 }
 
-void 		vector_div_vector_local(t_vector *a, __local t_vector *b)
+void 		vector_div_vector_local(t_vector *a, const __local t_vector *b)
 {
 	a->x /= b->x;
 	a->y /= b->y;

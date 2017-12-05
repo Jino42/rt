@@ -6,17 +6,17 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 19:21:42 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/05 16:51:10 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
 t_sphere 	sphere_construct(const t_vector position,
-								const float radius,
 								const uint32_t color,
-								const uint32_t flag,
-								const float	m_specular)
+								const float	m_specular,
+								const float radius,
+								const uint32_t flag)
 {
 	t_sphere obj;
 
@@ -83,9 +83,9 @@ t_cone 	cone_construct(const t_vector position,
 
 
 t_paraboloid 	paraboloid_construct(const t_vector position,
-										const float radius,
 										const uint32_t color,
-										const float m_specular)
+										const float m_specular,
+										const float option)
 {
 	t_paraboloid obj;
 
@@ -94,11 +94,10 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 	obj.id = OBJ_PARABOLOID;
 	obj.color = color;
 	obj.position = position;
-	obj.radius = radius;
-	obj.radius2 = radius * radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 	obj.m_specular = m_specular;
+	obj.option = option;
 
 	obj.intersect = &intersection_paraboloid;
 	return (obj);
@@ -169,7 +168,7 @@ t_cylinder	cylinder_construct(const t_vector position,
 	return (obj);
 }
 
-t_light	 	light_construct(uint8_t type, const t_vector position, float intensity, const uint32_t color, const float radius)
+t_light	 	light_construct(const t_vector position, const uint8_t type, float intensity, const uint32_t color, const float radius)
 {
 	t_light		obj;
 
@@ -183,63 +182,54 @@ t_light	 	light_construct(uint8_t type, const t_vector position, float intensity
 	return (obj);
 }
 
+void 		obj_set_limit(t_obj *obj, float limit)
+{
+	char *li = ft_itoa_base(OBJ_LIMIT, 2);
+	char *my = ft_itoa_base(obj->id, 2);
+	ft_printf("ID : %s | FLAG : %s\n", my, li);
+	if (obj->id & OBJ_LIMIT)
+	{
+		((t_obj_limit *)obj)->limit = limit;
+		ft_printf("IN FUNCTION : %.2f\n", ((t_obj_limit *)(obj))->limit);
+	}
+	return ;
+}
+
 bool 		init_object(t_env *e)
 {
 	uint32_t	nb_sphere = 8;
 	t_sphere	s[nb_sphere];
 	t_list		*push;
 
-	s[0] = sphere_construct(vector_construct(20, 20, 0), 0.5, 0x84F15E, 0, 0);
-	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 1e5, 0xFF0000, 0, 0); // RIGHT WALL
-	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 1e5, 0x00FF00, 0, 0); // LEFT WALL
-	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 1e5, 0x0000FF, 0, 0); // BACK WALL
-	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 1e5, 0x005500, 0, 0); // FRONT WALL
-	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 1e5, 0x55F0FF, 0, 0); // TOP WALL
-	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 1e5, 0xFF5500, 0, 0); // DOWN WALL
-	s[7] = sphere_construct(vector_construct(10, 10, 10), 0.1, 0xFFFFFF, F_ISLIGHT, 0);
+	s[0] = sphere_construct(vector_construct(20, 20, 0), 0x84F15E, 0, 0.5, 0);
+	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 0xFF0000, 0, 1e5, 0); // RIGHT WALL
+	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 0x00FF00, 0, 1e5, 0); // LEFT WALL
+	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 0x0000FF, 0, 1e5, 0); // BACK WALL
+	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 0x005500, 0, 1e5, 0); // FRONT WALL
+	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 0x55F0FF, 0, 1e5, 0); // TOP WALL
+	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 0xFF5500, 0, 1e5, 0); // DOWN WALL
+	s[7] = sphere_construct(vector_construct(10, 10, 10), 0xFFFFFF, 0, 0.1, F_ISLIGHT);
 //	s[8] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF, F_ISLIGHT);
 
-	void *tn;
 	t_obj *to;
-	int ti;
 
 	while (nb_sphere-- != 0)
 	{
 		//e->mem_size_obj += sizeof(t_sphere);
-		ft_printf("Avant realloc\n");
 		if (!(e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_sphere))))
 		//if (!(e->ptr_obj = realloc(e->ptr_obj, e->mem_size_obj)))
 			return (end_of_program(e, "malloc failed", 0));
-		ft_printf("Avant Copy %llu\n", e->mem_size_obj);
 		if (!(e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&s[nb_sphere], e->mem_size_obj, sizeof(t_sphere))))
 			return (end_of_program(e, "memcpy return Null", 0));
 		e->mem_size_obj += sizeof(t_sphere);
 
-		ft_printf("Apres copy\n");
 		if (!(push = ft_lstnew(&s[nb_sphere], sizeof(t_sphere))))
 			return (false);
 		ft_lstinsert(&e->obj, push);
 		to = e->ptr_obj + e->mem_size_obj - sizeof(t_sphere);
-		printf("%llu\n%hhi\n", to->mem_size_obj, to->id);
 	}
 
 	/*		TEST PTR OBJ SPHERE 		*/
-
-	tn = e->ptr_obj;
-	ti = 0;
-	while (ti < 8)
-	{
-		to=tn;
-		vector_string(&to->position);
-		printf("Size obj : %llu\n", to->mem_size_obj);
-		printf("Id   obj : %i\n", to->id);
-		printf("Colorobj : %i\n", to->color);
-		printf("WTF! ! ! ! : %lu\n", sizeof(to->intersect));
-		tn+=to->mem_size_obj;
-		ti++;
-	}
-	printf("Sizeof t_sphere : %lu\n", sizeof(t_sphere));
-	printf("Sizeof t_obj    : %lu\n", sizeof(t_obj));
 
 	t_plan p;
 
@@ -247,7 +237,7 @@ bool 		init_object(t_env *e)
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_plan));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&p, e->mem_size_obj, sizeof(t_plan));
-	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 
 	e->mem_size_obj += sizeof(t_plan);
 
@@ -258,10 +248,11 @@ bool 		init_object(t_env *e)
 	t_cylinder c;
 
 	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28, 13);
+	obj_set_limit((t_obj *)&c, 10);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cylinder));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&c, e->mem_size_obj, sizeof(t_cylinder));
-	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 
 	e->mem_size_obj += sizeof(t_cylinder);
 
@@ -271,11 +262,12 @@ bool 		init_object(t_env *e)
 
 	t_paraboloid paraboloid;
 
-	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 2, 0xF28FB0, 7);
+	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 0xF28FB0, 3, 0.1);
+	obj_set_limit((t_obj *)&paraboloid, 2);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_paraboloid));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&paraboloid, e->mem_size_obj, sizeof(t_paraboloid));
-	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 
 	e->mem_size_obj += sizeof(t_paraboloid);
 
@@ -287,10 +279,12 @@ bool 		init_object(t_env *e)
 
 	t_cone cone;
 	cone = cone_construct(vector_construct(5, 5, 5), 0.45f, 0xbe6226, 8);
+	obj_set_limit((t_obj *)&cone, 5);
+	ft_printf("\n______________Cone limit = %.2f\n", cone.limit);
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
-		vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+		//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 	ft_printf("Cone : ID[%i] | Size in mem %li\n", cone.id, e->mem_size_obj);
 	e->mem_size_obj += sizeof(t_cone);
 
@@ -303,7 +297,7 @@ bool 		init_object(t_env *e)
 
 	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_ellipsoid));
 	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&ellipsoid, e->mem_size_obj, sizeof(t_ellipsoid));
-	vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
 
 	e->mem_size_obj += sizeof(t_ellipsoid);
 
@@ -319,13 +313,13 @@ bool 		init_object(t_env *e)
 */
 
 	t_light light;
-	light = light_construct(LIGHT_BASIC, vector_construct(10, 10, 10), 0.66, 0xFFFFFF, 10);
+	light = light_construct(vector_construct(10, 10, 10), LIGHT_BASIC, 0.66, 0xFFFFFF, 10);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
 
 	e->mem_size_light += sizeof(t_light);
-	light = light_construct(LIGHT_BASIC, vector_construct(-10, 10, 10), 0.33, 0xFF0000, 2);
+	light = light_construct(vector_construct(-10, 10, 10),LIGHT_BASIC,  0.33, 0xFF0000, 2);
 
 	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
 	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
@@ -491,10 +485,6 @@ bool		flag(int64_t *f, int argc, char **argv)
 	{
 		if (ft_strequ(argv[i], "-cpu"))
 			*f |= F_CPU;
-		else if (ft_strequ(argv[i], "-debug"))
-			*f |= F_DEBUG;
-		else if (ft_strequ(argv[i], "-debug_cl"))
-			*f |= F_DEBUG_CL;
 		else if (ft_strequ(argv[i], "-debug_s"))
 			*f |= F_DEBUG_SIZE_STRUCT;
 		else
@@ -513,19 +503,22 @@ int main(int argc, char **argv)
 	ft_bzero(&e, sizeof(t_env));
 	if (!flag(&e.flag, argc, argv))
 		return (end_of_program(&e, "usage: ./rt [-cpu]", 0));
+	if (!parse_scene(&e, "scenes/base"))
+		return (end_of_program(&e, "Erreur lors du parsing\n", 0));
 	if (!init_object(&e))
 		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
 	if (e.flag & F_DEBUG_SIZE_STRUCT)
 	{
-		printf("Size t_obj        : %lu\n", sizeof(t_obj));
-		printf("Size t_sphere     : %lu\n", sizeof(t_sphere));
-		printf("Size t_plan       : %lu\n", sizeof(t_plan));
-		printf("Size t_ellipsoid  : %lu\n", sizeof(t_ellipsoid));
-			printf("Size t_cone       : %lu\n", sizeof(t_cone));
-		printf("Size t_paraboloid : %lu\n", sizeof(t_paraboloid));
-		printf("Size t_cylinder   : %lu\n", sizeof(t_cylinder));
+		ft_printf("Size t_obj        : %lu\n", sizeof(t_obj));
+		ft_printf("Size t_sphere     : %lu\n", sizeof(t_sphere));
+		ft_printf("Size t_plan       : %lu\n", sizeof(t_plan));
+		ft_printf("Size t_ellipsoid  : %lu\n", sizeof(t_ellipsoid));
+		ft_printf("Size t_cone       : %lu\n", sizeof(t_cone));
+		ft_printf("Size t_paraboloid : %lu\n", sizeof(t_paraboloid));
+		ft_printf("Size t_cylinder   : %lu\n", sizeof(t_cylinder));
+		ft_printf("Size t_light  	 : %lu\n", sizeof(t_light));
 	}
 	e.cam.speed_rotate = 4;
 	e.cam.speed = 32;

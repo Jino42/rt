@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/03 20:31:50 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/05 16:57:55 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,44 +46,58 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 		o->cos.z = cos(o->rot.z);
 		o->sin.z = sin(o->rot.z);
 	}
-	if (ev->key[SDL_SCANCODE_KP_8] && SDL_SCANCODE_LSHIFT)
+	if (ev->key[SDL_SCANCODE_KP_8] && ev->key[SDL_SCANCODE_LSHIFT])
 	{
 		dir = vector_construct(0, 0, o->speed * e->fps.delta_time);
 		vector_add(&o->position, &dir);
 	}
-	if (ev->key[SDL_SCANCODE_KP_5] && SDL_SCANCODE_LSHIFT)
+	if (ev->key[SDL_SCANCODE_KP_5] && ev->key[SDL_SCANCODE_LSHIFT])
 	{
 		dir = vector_construct(0, 0, -o->speed * e->fps.delta_time);
 		vector_add(&o->position, &dir);
 	}
-	if (ev->key[SDL_SCANCODE_KP_4] && SDL_SCANCODE_LSHIFT)
+	if (ev->key[SDL_SCANCODE_KP_4] && ev->key[SDL_SCANCODE_LSHIFT])
 	{
 		dir = vector_construct(o->speed * e->fps.delta_time, 0, 0);
 		vector_add(&o->position, &dir);
 	}
-	if (ev->key[SDL_SCANCODE_KP_6] && SDL_SCANCODE_LSHIFT)
+	if (ev->key[SDL_SCANCODE_KP_6] && ev->key[SDL_SCANCODE_LSHIFT])
 	{
 		dir = vector_construct(-o->speed * e->fps.delta_time, 0, 0);
 		vector_add(&o->position, &dir);
 	}
-	if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.x += 0.1;
-	if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.y += 0.1;
-	if (ev->key[SDL_SCANCODE_KP_9] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.z += 0.1;
-	if (ev->key[SDL_SCANCODE_KP_4] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.x -= 0.1;
-	if (ev->key[SDL_SCANCODE_KP_5] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.y -= 0.1;
-	if (ev->key[SDL_SCANCODE_KP_6] && o->id == OBJ_ELLIPSOID)
-		((t_ellipsoid *)o)->size.z -= 0.1;
-	if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_CONE)
-		((t_cone *)o)->angle -= 0.01;
-	if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_CONE)
-		((t_cone *)o)->angle += 0.01;
-	if (ev->key[SDL_SCANCODE_Z])
-		((t_light*)e->ptr_light)->intensity++;
+	if (!ev->key[SDL_SCANCODE_LSHIFT])
+	{
+		if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.x += 0.1;
+		if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.y += 0.1;
+		if (ev->key[SDL_SCANCODE_KP_9] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.z += 0.1;
+		if (ev->key[SDL_SCANCODE_KP_4] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.x -= 0.1;
+		if (ev->key[SDL_SCANCODE_KP_5] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.y -= 0.1;
+		if (ev->key[SDL_SCANCODE_KP_6] && o->id == OBJ_ELLIPSOID)
+			((t_ellipsoid *)o)->size.z -= 0.1;
+		if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_CONE)
+			((t_cone *)o)->angle -= 0.01;
+		if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_CONE)
+			((t_cone *)o)->angle += 0.01;
+		if (ev->key[SDL_SCANCODE_Z])
+			((t_light*)e->ptr_light)->intensity++;
+		if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_PARABOLOID)
+			((t_paraboloid *)o)->option += 0.01;
+		if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_PARABOLOID)
+			((t_paraboloid *)o)->option -= 0.01;
+		if (ev->key[SDL_SCANCODE_KP_9] && o->id & OBJ_LIMIT)
+		{
+			((t_obj_limit *)o)->limit += 0.1;
+			ft_printf("UP \n");
+		}
+		if (ev->key[SDL_SCANCODE_KP_6] && o->id & OBJ_LIMIT)
+			((t_obj_limit *)o)->limit -= 0.1;
+	}
 }
 
 void 		update_obj_index(t_env *e, const int32_t incr)

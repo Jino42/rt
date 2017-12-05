@@ -16,35 +16,37 @@ float		intersection_cylinder(const __local t_cylinder *obj, const t_vector *orig
 								const t_vector *dir_object, const float len, t_ray_ret *r);
 float		intersection_paraboloid(const __local t_paraboloid *obj, const t_vector *origin_object,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
-float		intersection_cone(__local t_cone *obj, const t_vector *origin_object,
+float		intersection_cone(const __local t_cone *obj, const t_vector *origin_object,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
-float		calculate_m_value(t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1);
+float		intersection_plane(const __local t_plan *obj, const t_vector *origin, const t_vector *dir, const float len);
+float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1);
 
 void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r);
 void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r);
 void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r);
 void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r);
 void	normal_plan(const __local t_plan *obj, t_ray_ret *r);
+void	normal_cone(const __local t_cone *obj, t_ray_ret *r);
 
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
 t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, __global t_count *count);
-t_ray_ret		ray_intersection2(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
+t_ray_ret		ray_shadow(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
 
 float			ray_light(__local char *l_mem_obj, unsigned long mem_size_obj, __local char *l_mem_light, unsigned long mem_size_light, t_ray_ret *ray_ret, t_vector *dir);
 float			light_specular(const __local t_light *light, const t_vector *dir_light_to_obj, const t_ray_ret *ray_ret, const t_vector *dir);
 float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_light, const t_ray_ret *ray_ret);
 float			light_sphere(const __local t_light *light, const float dist);
 
-t_vector	vector_get_rotate_obj_local(const t_vector *this, __local t_obj *obj);
-t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, __local t_obj *obj);
+t_vector	vector_get_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
+t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
 
 /*|
 **|
 */
 
 
-t_vector	vector_get_rotate_obj_local(const t_vector *this, __local t_obj *obj)
+t_vector	vector_get_rotate_obj_local(const t_vector *this, const __local t_obj *obj)
 {
 	t_vector	n;
 	float		tmp;
@@ -70,7 +72,7 @@ t_vector	vector_get_rotate_obj_local(const t_vector *this, __local t_obj *obj)
 	}
 	return (n);
 }
-t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, __local t_obj *obj)
+t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, const __local t_obj *obj)
 {
 	t_vector	n;
 	float		tmp;
@@ -170,7 +172,7 @@ float		intersection_plane(const __local t_plan *obj,
 	origin_object = vector_get_sub_local(origin, &obj->position);
 
 	normal = obj->normal;
-	normal = vector_get_inverse_rotate_obj_local(&normal, obj);
+	normal = vector_get_inverse_rotate_obj_local(&normal, (const __local t_obj *)obj);
 
 	float denom = vector_dot(&normal, dir);
 	if (fabs(denom) > EPSILON)
@@ -224,13 +226,13 @@ float		intersection_ellipsoid(const __local t_ellipsoid *obj,
 	return (0);
 }
 
-float		calculate_m_value(t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1)
+float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1)
 {
 	r->m = vector_dot(dir_object, &r->y_axis) * inter0  + vector_dot(origin_object, &r->y_axis);
-	if (r->m > 10 || r->m < -10)
+	if (r->m > obj->limit || r->m <  -obj->limit)
 	{
 		r->m = vector_dot(dir_object, &r->y_axis) * inter1 + vector_dot(origin_object, &r->y_axis);
-		if (r->m > 10 || r->m < -10)
+		if (r->m > obj->limit || r->m <  -obj->limit)
 			return (0);
 		return (inter1);
 	}
@@ -266,7 +268,7 @@ float		intersection_cylinder(const __local t_cylinder *obj,
 			return (0);
 	}
 	if (inter0 < len)
-		return (calculate_m_value(r, origin_object, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_object, dir_object, inter0, inter1));
 	return (0);
 }
 
@@ -281,9 +283,9 @@ float		intersection_paraboloid(const __local t_paraboloid *obj,
 
 	a = (dir_object->x * dir_object->x + dir_object->z * dir_object->z);
 	b = (2 * origin_object->x * dir_object->x +
-		2 * origin_object->z * dir_object->z) - (dir_object->y);
+		2 * origin_object->z * dir_object->z) - (dir_object->y) * obj->option;
 	c = (origin_object->x * origin_object->x +
-		origin_object->z * origin_object->z) - (origin_object->y);
+		origin_object->z * origin_object->z) - (origin_object->y) * obj->option;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 > inter1)
@@ -299,7 +301,7 @@ float		intersection_paraboloid(const __local t_paraboloid *obj,
 			return (0);
 	}
 	if (inter0 < len)
-		return (calculate_m_value(r, origin_object, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_object, dir_object, inter0, inter1));
 	return (0);
 }
 
@@ -328,7 +330,7 @@ void	normal_plan(const __local t_plan *obj, t_ray_ret *r)
 	r->hit_normal = obj->normal;
 }
 
-float		intersection_cone(__local t_cone *obj,
+float		intersection_cone(const __local t_cone *obj,
 								const t_vector *origin_object,
 								const t_vector *dir_object,
 								const float len,
@@ -361,7 +363,7 @@ float		intersection_cone(__local t_cone *obj,
 			return (0);
 	}
 	if (inter0 < len)
-		return (calculate_m_value(r, origin_object, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_object, dir_object, inter0, inter1));
 	return (0);
 }
 void	normal_cone(const __local t_cone *obj, t_ray_ret *r)

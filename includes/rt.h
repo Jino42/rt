@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 18:15:45 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/05 16:51:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@
 # include <pthread.h>
 
 # define F_CPU (1 << 1)
-# define F_DEBUG (1 << 2)
-# define F_DEBUG_CL (1 << 3)
-# define F_DEBUG_SIZE_STRUCT (1 << 4)
+# define F_DEBUG_SIZE_STRUCT (1 << 2)
 
 # define ERROR_SDL (1 << 1)
 
@@ -39,13 +37,15 @@
 
 # define NB_THREAD 4
 
-# define OBJ_SPHERE 0
-# define OBJ_PLANE 1
-# define OBJ_CYLINDER 2
-# define OBJ_PARABOLOID 3
-# define OBJ_PARABOLOID_HYPERBOLIC 4
-# define OBJ_ELLIPSOID 5
-# define OBJ_CONE 6
+
+# define OBJ_SPHERE (1 << 0)
+# define OBJ_PLANE (1 << 1)
+# define OBJ_CYLINDER (1 << 2)
+# define OBJ_PARABOLOID (1 << 3)
+# define OBJ_PARABOLOID_HYPERBOLIC (1 << 4)
+# define OBJ_ELLIPSOID (1 << 5)
+# define OBJ_CONE (1 << 6)
+# define OBJ_LIMIT (OBJ_PARABOLOID | OBJ_CYLINDER | OBJ_CONE)
 
 # define LIGHT_BASIC (1 << 0)
 # define LIGHT_SPHERE (1 << 1)
@@ -94,7 +94,7 @@ typedef struct		s_sdl
 	SDL_Texture		*img;
 	SDL_Event		ev;
 	t_event			event;
-	const uint8_t	*key;
+	const uint32_t	*key;
 	uint32_t		*pix;
 }					t_sdl;
 
@@ -121,7 +121,7 @@ typedef struct	s_cam
 
 typedef struct	s_light
 {
-	uint8_t		type;
+	uint32_t		type;
 	t_matrix	light_to_world;
 	t_vector	position;
 	float		intensity;
@@ -136,7 +136,7 @@ typedef struct	s_obj
 	uint64_t	mem_size_obj;
 	float		(*intersect)(void *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 	t_vector	position;
@@ -147,13 +147,32 @@ typedef struct	s_obj
 	t_vector	sin;
 	float		m_specular;
 }				t_obj;
+typedef struct	s_obj_limit
+{
+	uint64_t	mem_size_obj;
+	float		(*intersect)(void *, const t_vector *,
+						const t_vector *, const float);
+	uint32_t		id;
+	uint32_t	color;
+	uint32_t	flag;
+
+	t_vector	position;
+	float		rotate_speed;
+	float		speed;
+	t_vector	rot;
+	t_vector	cos;
+	t_vector	sin;
+	float		m_specular;
+	float		limit;
+
+}				t_obj_limit;
 
 typedef struct 	s_sphere
 {
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_sphere *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -174,7 +193,7 @@ typedef struct 	s_ellipsoid
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_ellipsoid *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -196,7 +215,7 @@ typedef struct 	s_cone
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_cone *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -207,6 +226,8 @@ typedef struct 	s_cone
 	t_vector	cos;
 	t_vector	sin;
 	float		m_specular;
+
+	float		limit;
 
 	float		angle;
 }				t_cone;
@@ -216,7 +237,7 @@ typedef struct	s_paraboloid
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -228,8 +249,9 @@ typedef struct	s_paraboloid
 	t_vector	sin;
 	float		m_specular;
 
-	float		radius;
-	float		radius2;
+	float		limit;
+
+	float		option;
 }				t_paraboloid;
 
 typedef struct	s_paraboloid_hyperbolic
@@ -237,7 +259,7 @@ typedef struct	s_paraboloid_hyperbolic
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_paraboloid_hyperbolic *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -258,7 +280,7 @@ typedef struct	s_plan
 	uint64_t	mem_size_obj;
 	float		(*intersect)(struct s_plan *, const t_vector *,
 						const t_vector *, const float);
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -279,7 +301,7 @@ typedef struct	s_cylinder
 	float		(*intersect)(struct s_cylinder *, const t_vector *,
 						const t_vector *, const float);
 
-	uint8_t		id;
+	uint32_t		id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -290,6 +312,8 @@ typedef struct	s_cylinder
 	t_vector	cos;
 	t_vector	sin;
 	float		m_specular;
+
+	float		limit;
 
 	float		radius;
 	float		radius2;
@@ -343,6 +367,7 @@ typedef struct		s_arg_thread
 	uint32_t		end_y;
 }					t_arg_thread;
 
+bool				parse_scene(t_env *e, char *path);
 void 				*foreachpix(void *arg_thread);
 
 void				update_fps(t_fps *fps);
