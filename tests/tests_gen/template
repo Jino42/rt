@@ -1,5 +1,6 @@
 name:name
-size:XXXX*XXXX
+width:XXXX
+height:XXXX
 camera		(position)
 light		(position, type, intensité, makeSpherei)
 sphere		(position, couleur, specular, rayon)

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 16:51:10 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/05 20:27:48 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -487,11 +487,13 @@ bool		flag(int64_t *f, int argc, char **argv)
 			*f |= F_CPU;
 		else if (ft_strequ(argv[i], "-debug_s"))
 			*f |= F_DEBUG_SIZE_STRUCT;
+		else if (ft_strequ(argv[i], "-debug_p"))
+			*f |= F_DEBUG_PARSING;
 		else
-			return (false);
+			return (i);
 		i++;
 	}
-	return (true);
+	return (i);
 }
 
 int main(int argc, char **argv)
@@ -500,11 +502,13 @@ int main(int argc, char **argv)
 
 	t_env e;
 
+	int index;
 	ft_bzero(&e, sizeof(t_env));
-	if (!flag(&e.flag, argc, argv))
-		return (end_of_program(&e, "usage: ./rt [-cpu]", 0));
-	if (!parse_scene(&e, "scenes/base"))
-		return (end_of_program(&e, "Erreur lors du parsing\n", 0));
+	index = flag(&e.flag, argc, argv);
+	if (!parse_scene(&e, argv[index + 1]))
+		return (0);
+	if (e.flag & F_DEBUG_PARSING)
+		return (EXIT_SUCCESS);
 	if (!init_object(&e))
 		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
