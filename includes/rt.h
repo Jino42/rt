@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 19:29:38 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 21:04:12 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,6 +331,19 @@ typedef struct		s_fps
 	unsigned int	fps;
 	unsigned int	ret_fps;
 }					t_fps;
+
+typedef struct	s_scene
+{
+	char		*name;
+	t_cam		cam;
+	t_light		light;
+
+	uint64_t		mem_size_obj;
+	void 			*ptr_obj;
+
+	uint64_t		mem_size_light;
+	void			*ptr_light;
+}				t_scene;
 
 typedef struct		s_env
 {

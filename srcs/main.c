@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 17:54:59 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 20:59:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ t_sphere 	sphere_construct(const t_vector position,
 	obj.intersect = &intersection_sphere;
 	return (obj);
 }
-
 t_ellipsoid 	ellipsoid_construct(const t_vector position,
 									const t_vector size,
 									const float	   radius,
@@ -59,7 +58,6 @@ t_ellipsoid 	ellipsoid_construct(const t_vector position,
 	obj.intersect = &intersection_ellipsoid;
 	return (obj);
 }
-
 t_cone 	cone_construct(const t_vector position,
 								const float angle,
 								const uint32_t color,
@@ -80,8 +78,6 @@ t_cone 	cone_construct(const t_vector position,
 	obj.intersect = &intersection_cone;
 	return (obj);
 }
-
-
 t_paraboloid 	paraboloid_construct(const t_vector position,
 										const uint32_t color,
 										const float m_specular,
@@ -102,7 +98,6 @@ t_paraboloid 	paraboloid_construct(const t_vector position,
 	obj.intersect = &intersection_paraboloid;
 	return (obj);
 }
-
 t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position,
 										const float radius,
 										const uint32_t color,
@@ -124,7 +119,6 @@ t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position
 	obj.intersect = &intersection_paraboloid_hyperbolic;
 	return (obj);
 }
-
 t_plan		plan_construct(const t_vector position,
 							const uint32_t color,
 							const float m_specular)
@@ -145,7 +139,6 @@ t_plan		plan_construct(const t_vector position,
 	obj.intersect = &intersection_plane;
 	return (obj);
 }
-
 t_cylinder	cylinder_construct(const t_vector position,
 								const float radius,
 								const uint32_t color,
@@ -167,7 +160,6 @@ t_cylinder	cylinder_construct(const t_vector position,
 	obj.intersect = &intersection_cylinder;
 	return (obj);
 }
-
 t_light	 	light_construct(const t_vector position, const uint8_t type, float intensity, const uint32_t color, const float radius)
 {
 	t_light		obj;

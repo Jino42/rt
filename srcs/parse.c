@@ -6,19 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 20:50:39 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 21:06:38 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-typedef struct	s_scene
-{
-	char		*name;
-	t_cam		cam;
-	t_light		light;
-}				t_scene;
-
 
 ///////////////////////TOOLS
 bool			ft_strequ_max(const char *cmp, const char *to, int offset)
@@ -261,6 +253,18 @@ bool		parse_ptr_obj(char *line_fd, t_obj *obj)
 	//[3]  ||  COULEUR
 	if (!get_float(strchr_arg(line_fd, 3), &obj->m_specular))
 		return (false);
+	return (true);
+}
+
+
+bool		parse_push_obj(t_scene *scene, const void * obj, const uint32_t size_obj)
+{
+	if (!(scene->ptr_obj = ft_memrealloc(scene->ptr_obj, scene->mem_size_obj,
+									scene->mem_size_obj + size_obj)) ||
+		!(scene->ptr_obj = ft_memcpy_offset(scene->ptr_obj, obj,
+									scene->mem_size_obj, size_obj)))
+		return (false);
+	scene->mem_size_obj += size_obj;
 	return (true);
 }
 
