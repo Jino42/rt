@@ -1,0 +1,12 @@
+name:name
+camera(1 1 1)
+light(1 1 1, BASIC, 0.5, AFF)
+cylinder(0.00 1 1546, 0x90FFEG, 0, 15, 6)
+cone(0.00 1 1546, 0x90FFEG, 0, 15, 6)
+paraboloid(0.00 1 1546, 0x90FFEG, 0, 15, 6)
+plan(position, couleur, specular, rayon)
+sphere(position, couleur, specular, rayon)
+ellipsoid(origin, couleur, specular, rayon, taillexyz)
+
+add
+tranlate() rotate() scaling()

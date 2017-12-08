@@ -1,0 +1,4 @@
+name:name
+camera(1 1 1)
+light(1 1 1, BASIC, 0.5, AFF)
+cylinder(1 1 1,90ffee,0,15,6,6)

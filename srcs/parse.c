@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 18:35:35 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 20:29:29 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,10 @@ bool		is_encaps(const char *str, int nb_param) // if fun is ()
 	{
 		if (str[i] == ',')
 			param++;
+		if (str[i] == ')' && str[i + 1])
+			return (false);
+		if (str[i] == '(' && i)
+			return (false);
 		i++;
 	}
 	if (param != nb_param - 1)
@@ -188,6 +192,11 @@ bool		get_float(char *str, float *nb) // Get Float from STR //ONLY X PRECI ?
 	}
 	return (true);
 }
+bool		get_hexa(char *str, uint32_t *nb) // Get Float from STR //ONLY X PRECI ?
+{
+	*nb = ft_atoi_base(str, 16);
+	return (true);
+}
 bool		get_vec(char *str, t_vector *vec)
 {
 	if (!str)
@@ -259,8 +268,94 @@ bool		parse_light(t_scene *scene, char *line_fd)
 	if (!get_float(strchr_arg(line_fd, 3), &scene->light.intensity))
 		return (false);
 	//[4]  ||  MAKE SPHERE
-	if (ft_strequ_max(strchr_arg(line_fd, 4), "AFF", 3))
+	if (ft_strequ_arg(strchr_arg(line_fd, 4), "AFF", 3))
 		;//CREATE SPHERE !!!!!!!!!!!!!
+	else
+		return (false);
+	return (true);
+}
+bool		parse_ptr_obj(char *line_fd, t_obj *obj)
+{
+	//[1]  ||  POSITION
+	if (!get_vec(strchr_arg(line_fd, 1), &obj->position))
+		return (false);
+	//[2]  ||  COULEUR
+	if (!get_hexa(strchr_arg(line_fd, 2), &obj->color))
+		return (false);
+	//[3]  ||  COULEUR
+	if (!get_float(strchr_arg(line_fd, 3), &obj->m_specular))
+		return (false);
+	return (true);
+}
+
+bool		parse_cone(t_scene *scene, char *line_fd)
+{
+	t_cone obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_cone));
+	if (!is_encaps(line_fd, 5))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	//[4]  ||  ANGLE
+	if (!get_float(strchr_arg(line_fd, 4), &obj.angle))
+		return (false);
+	//[5]  ||  LIMIT
+	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
+		return (false);
+	return (true);
+}
+bool		parse_paraboloid(t_scene *scene, char *line_fd)
+{
+	t_paraboloid obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_paraboloid));
+	if (!is_encaps(line_fd, 5))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	//[4]  ||  ANGLE
+	if (!get_float(strchr_arg(line_fd, 4), &obj.option))
+		return (false);
+	//[5]  ||  LIMIT
+	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
+		return (false);
+	return (true);
+}
+bool		parse_cylinder(t_scene *scene, char *line_fd)
+{
+	t_cylinder obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_cylinder));
+	if (!is_encaps(line_fd, 5))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	//[4]  ||  ANGLE
+	if (!get_float(strchr_arg(line_fd, 4), &obj.radius))
+		return (false);
+	//[5]  ||  LIMIT
+	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
+		return (false);
+	return (true);
+}
+
+bool		parse_sphere(t_scene *scene, char *line_fd)
+{
+	t_sphere obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_sphere));
+	if (!is_encaps(line_fd, 4))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	//[4]  ||  RADIUS
+	if (!get_float(strchr_arg(line_fd, 4), &obj.radius))
+		return (false);
 	return (true);
 }
 
@@ -288,6 +383,26 @@ bool		parse_scene(t_env *e, char *path)
 			{
 				if (!parse_light(&scene, line_fd))
 					return (end_of_program(e, "pars: light error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "cone", 4) && line_fd[5])
+			{
+				if (!parse_cone(&scene, line_fd + 4))
+					return (end_of_program(e, "pars: cone error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "paraboloid", 10) && line_fd[11])
+			{
+				if (!parse_paraboloid(&scene, line_fd + 10))
+					return (end_of_program(e, "pars: paraboloid error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "cylinder", 8) && line_fd[9])
+			{
+				if (!parse_cylinder(&scene, line_fd + 8))
+					return (end_of_program(e, "pars: cylinder error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "sphere", 6) && line_fd[7])
+			{
+				if (!parse_cylinder(&scene, line_fd + 6))
+					return (end_of_program(e, "pars: sphere error", 0));
 			}
 			else
 			{

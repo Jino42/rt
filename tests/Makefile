@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/08 16:44:52 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/08 18:59:36 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,8 @@ SRC_DIR =
 SRC = main.c \
 tests_gen/00_tests_gen_launcher.c \
 tests_camera/00_tests_camera_launcher.c \
-tests_light/00_tests_light_launcher.c
+tests_light/00_tests_light_launcher.c \
+tests_obj_ccp/00_tests_obj_ccp_launcher.c
 
 OBJ_DIR = objs/
 
@@ -59,6 +60,7 @@ $(OBJ_DIR) :
 	@mkdir $(OBJ_DIR)tests_gen
 	@mkdir $(OBJ_DIR)tests_camera
 	@mkdir $(OBJ_DIR)tests_light
+	@mkdir $(OBJ_DIR)tests_obj_ccp
 
 $(OBJ_DIR)%.o: $(addprefix $(SRC_DIR), %.c) $(CPPFLAGS_FILES)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<

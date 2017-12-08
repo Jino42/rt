@@ -38,7 +38,7 @@ static int tests_light9(void)
 }
 static int tests_light10(void)
 {
-	RUN_RT("tests_light/light10", "pars: light error\n", 1)
+	RUN_RT("tests_light/light10", "pars: light error\n", 0)
 }
 int	tests_light_launcher(void)
 {
@@ -54,8 +54,8 @@ int	tests_light_launcher(void)
 	load_test(&testlist, "light5 one virgul more", 0, &tests_light5);
 	load_test(&testlist, "light6 SPHERE0.5", 0, &tests_light6);
 	load_test(&testlist, "light7 light0.5", 0, &tests_light7);
-	load_test(&testlist, "light8", 0, &tests_light8);
-	load_test(&testlist, "light9", 0, &tests_light9);
-	load_test(&testlist, "light10", 0, &tests_light10);
+	load_test(&testlist, "light8 EAFF arg 4", 0, &tests_light8);
+	load_test(&testlist, "light9 (1,2,)3,4)", 0, &tests_light9);
+	load_test(&testlist, "light10 (1,2,(3,4)", 0, &tests_light10);
 	return (launch_tests(&testlist));
 }

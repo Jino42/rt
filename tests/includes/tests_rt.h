@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 18:45:53 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 16:42:14 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 19:00:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,11 @@
 	else \
 		return (-1);
 
-# define NB_TEST 3
+# define NB_TEST 4
 
 int				tests_gen_launcher(void);
 int				tests_camera_launcher(void);
 int				tests_light_launcher(void);
+int				tests_obj_ccp_launcher(void);
 
 #endif

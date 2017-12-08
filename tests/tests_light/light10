@@ -1,8 +1,8 @@
 name:name
 camera(1 1 1)
-light(1 1 1, BASIC, 0.5, AFF)
+light(1 1 1, BASIC, 0.5(, AFF)
 sphere		(position, couleur, specular, rayon)
-plan		(position, specular, rayon)
+plan		(position, couleur, specular, rayon)
 cylinder	(position, couleur, specular, rayon, min, max)
 cone		(position, couleur, specular, angle, min, max)
 paraboloid	(position, couleur, specular, ANNNGGGLLLE, min, max)

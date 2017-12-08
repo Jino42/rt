@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/25 17:16:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 16:42:27 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 18:57:36 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static char *g_test[] = {""};
 
 static int (*g_fun[])(void) = {&tests_gen_launcher,
 								&tests_camera_launcher,
-								&tests_light_launcher};
+								&tests_light_launcher,
+								&tests_obj_ccp_launcher};
 
 static int		check_tab(char *arg)
 {
