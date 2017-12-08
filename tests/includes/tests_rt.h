@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 18:45:53 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 20:37:54 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 16:42:14 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define RUN_RT(file_tested, diff, flag) int pid = 0, fd[2], status = 0; \
 	char	buffer[UT_SIZE + 1]; \
-	char	path_rt[200] = "/Users/ntoniolo/base/rt/tests/tests_gen/";\
+	char	path_rt[200] = "/Users/ntoniolo/base/rt/tests/";\
 	if (file_tested) \
 		strcat(path_rt, file_tested); \
 	bzero(buffer, UT_SIZE + 1); \
@@ -55,8 +55,10 @@
 	else \
 		return (-1);
 
-# define NB_TEST 1
+# define NB_TEST 3
 
 int				tests_gen_launcher(void);
+int				tests_camera_launcher(void);
+int				tests_light_launcher(void);
 
 #endif

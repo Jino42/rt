@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 22:56:40 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 19:56:06 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 16:32:13 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int		print_normal_return(char *name, int res)
 	len = 0;
 	while (name[len])
 		len++;
-	write(2, name, len % 25);
+	write(2, name, (len > 25 ? 25: len));
 	while (len++ < 25)
 		write(2, " ", 1);
 	write(2, " : ", 3);
@@ -53,7 +53,7 @@ static int		test_signaled(t_unit_test *test, int status)
 		len = 0;
 		while (test->name[len])
 			len++;
-		write(2, test->name, len % 25);
+		write(2, test->name, (len > 25 ? 25: len));
 		while (len++ < 25)
 			write(2, " ", 1);
 		write(2, " : ", 3);
