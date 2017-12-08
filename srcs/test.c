@@ -71,13 +71,13 @@ void 		*foreachpix(void *arg_thread)
 			float px = (2 * (((float)x + 0.5) * invW) - 1) * scale * ratio;
 			float py = (1 - 2 * (((float)y + 0.5) * invH)) * scale;
 			dir = vector_construct(px, py, -1);
-			dir = matrix_get_mult_vector(&e->cam.camera_to_world, &dir);
+			dir = matrix_get_mult_vector(&e->scene.cam.camera_to_world, &dir);
 			vector_normalize(&dir);
 			obj = e->obj;
 			while (obj)
 			{
 				t_obj *o = obj->content;
-				ret = o->intersect(obj->content, &e->cam.position, &dir, INFINITY);
+				ret = o->intersect(obj->content, &e->scene.cam.position, &dir, INFINITY);
 				if (ret && ret < min_distance)
 				{
 				/*	if (o->id == OBJ_SPHERE || o->id == OBJ_ELLIPSOID)

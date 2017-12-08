@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 21:04:12 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 22:48:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,7 +336,6 @@ typedef struct	s_scene
 {
 	char		*name;
 	t_cam		cam;
-	t_light		light;
 
 	uint64_t		mem_size_obj;
 	void 			*ptr_obj;
@@ -352,17 +351,9 @@ typedef struct		s_env
 	t_sdl			sdl;
 	t_fps			fps;
 
-	t_cam			cam;
-	t_list			*sphere;
-	t_list			*plan;
-	t_list			*cylinder;
-
 	t_list			*obj;
-	uint64_t		mem_size_obj;
-	void 			*ptr_obj;
 
-	uint64_t		mem_size_light;
-	void			*ptr_light;
+	t_scene			scene;
 
 	int32_t			obj_len;
 	int32_t			obj_index;

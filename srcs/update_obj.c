@@ -6,23 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/05 17:07:33 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 22:35:50 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-t_list		*ft_lst_index(t_list *l, uint32_t index)
-{
-	while (l)
-	{
-		if (!index)
-			return (l);
-		l = l->next;
-		index--;
-	}
-	return (NULL);
-}
 
 static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 {
@@ -85,7 +73,7 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 		if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_CONE)
 			((t_cone *)o)->angle += 0.01;
 		if (ev->key[SDL_SCANCODE_Z])
-			((t_light*)e->ptr_light)->intensity++;
+			((t_light*)e->scene.ptr_light)->intensity++;
 		if (ev->key[SDL_SCANCODE_KP_8] && o->id == OBJ_PARABOLOID)
 			((t_paraboloid *)o)->option += 0.01;
 		if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_PARABOLOID)
@@ -109,20 +97,20 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 		return ;
 	save = e->fps.cur.tv_sec;
 	if (!(e->flag & F_CPU) && incr > 0)
-		e->mem_obj_index += ((t_obj *)(e->ptr_obj + e->mem_obj_index))->mem_size_obj;
+		e->mem_obj_index += ((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->mem_size_obj;
 	else
 		e->obj_index += incr;
 	if (e->obj_index < 0)
 		e->obj_index = e->obj_len - 1;
 	if (e->obj_index == e->obj_len)
 		e->obj_index = 0;
-	if (e->mem_obj_index + ((t_obj*)e->ptr_obj)->mem_size_obj >= e->mem_size_obj)
+	if (e->mem_obj_index == e->scene.mem_size_obj)
 		e->mem_obj_index = 0;
-	o = (t_obj *)(ft_lst_index(e->obj, e->obj_index)->content);
+	o = (t_obj *)(e->scene.ptr_obj + e->mem_obj_index);
 	if (e->flag & F_CPU)
 		ft_printf("%i/%i\n TYPE %i\n", e->obj_index, e->obj_len, o->id);
 	else
-		ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->mem_size_obj, ((t_obj *)(e->ptr_obj + e->mem_obj_index))->id);
+		ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->scene.mem_size_obj, ((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->id);
 }
 
 void		update_transform_light(const t_event *ev, t_light *light)
@@ -151,10 +139,9 @@ void 		update_obj(t_env *e, t_sdl *sdl)
 		update_obj_index(e, 1);
 	if (ev->key[SDL_SCANCODE_KP_MINUS])
 		update_obj_index(e, -1);
-
-	o = (t_obj *)(ft_lst_index(e->obj, e->obj_index)->content);
+	o = (t_obj *)(e->scene.ptr_obj + e->mem_obj_index);
 
 	update_transform_obj(e, ev, o);
-	update_transform_obj(e, ev, (t_obj *)(e->ptr_obj + e->mem_obj_index));
-	update_transform_light(ev, (t_light*)e->ptr_light);
+	update_transform_obj(e, ev, (t_obj *)(e->scene.ptr_obj + e->mem_obj_index));
+	update_transform_light(ev, (t_light*)e->scene.ptr_light);
 }

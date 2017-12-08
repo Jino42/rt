@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 20:59:22 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 23:09:15 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,21 +204,22 @@ bool 		init_object(t_env *e)
 //	s[8] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF, F_ISLIGHT);
 
 	t_obj *to;
-
-	while (nb_sphere-- != 0)
+	uint32_t a = 0;
+	while (a < nb_sphere)
 	{
-		//e->mem_size_obj += sizeof(t_sphere);
-		if (!(e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_sphere))))
-		//if (!(e->ptr_obj = realloc(e->ptr_obj, e->mem_size_obj)))
+		//e->scene.mem_size_obj += sizeof(t_sphere);
+		if (!(e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_sphere))))
+		//if (!(e->scene.ptr_obj = realloc(e->scene.ptr_obj, e->scene.mem_size_obj)))
 			return (end_of_program(e, "malloc failed", 0));
-		if (!(e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&s[nb_sphere], e->mem_size_obj, sizeof(t_sphere))))
+		if (!(e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&s[a], e->scene.mem_size_obj, sizeof(t_sphere))))
 			return (end_of_program(e, "memcpy return Null", 0));
-		e->mem_size_obj += sizeof(t_sphere);
+		e->scene.mem_size_obj += sizeof(t_sphere);
 
-		if (!(push = ft_lstnew(&s[nb_sphere], sizeof(t_sphere))))
+		if (!(push = ft_lstnew(&s[a], sizeof(t_sphere))))
 			return (false);
 		ft_lstinsert(&e->obj, push);
-		to = e->ptr_obj + e->mem_size_obj - sizeof(t_sphere);
+		to = e->scene.ptr_obj + e->scene.mem_size_obj - sizeof(t_sphere);
+		a++;
 	}
 
 	/*		TEST PTR OBJ SPHERE 		*/
@@ -227,11 +228,11 @@ bool 		init_object(t_env *e)
 
 	p = plan_construct(vector_construct(1, 1, -30), 0xFF00FF, 2);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_plan));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&p, e->mem_size_obj, sizeof(t_plan));
-	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_plan));
+	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&p, e->scene.mem_size_obj, sizeof(t_plan));
+	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
 
-	e->mem_size_obj += sizeof(t_plan);
+	e->scene.mem_size_obj += sizeof(t_plan);
 
 	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
 		return (false);
@@ -242,11 +243,11 @@ bool 		init_object(t_env *e)
 	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28, 13);
 	obj_set_limit((t_obj *)&c, 10);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cylinder));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&c, e->mem_size_obj, sizeof(t_cylinder));
-	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_cylinder));
+	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&c, e->scene.mem_size_obj, sizeof(t_cylinder));
+	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
 
-	e->mem_size_obj += sizeof(t_cylinder);
+	e->scene.mem_size_obj += sizeof(t_cylinder);
 
 	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
 		return (false);
@@ -257,11 +258,11 @@ bool 		init_object(t_env *e)
 	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 0xF28FB0, 3, 0.1);
 	obj_set_limit((t_obj *)&paraboloid, 2);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_paraboloid));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&paraboloid, e->mem_size_obj, sizeof(t_paraboloid));
-	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_paraboloid));
+	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&paraboloid, e->scene.mem_size_obj, sizeof(t_paraboloid));
+	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
 
-	e->mem_size_obj += sizeof(t_paraboloid);
+	e->scene.mem_size_obj += sizeof(t_paraboloid);
 
 	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
 		return (false);
@@ -274,11 +275,11 @@ bool 		init_object(t_env *e)
 	obj_set_limit((t_obj *)&cone, 5);
 	ft_printf("\n______________Cone limit = %.2f\n", cone.limit);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_cone));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&cone, e->mem_size_obj, sizeof(t_cone));
-		//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
-	ft_printf("Cone : ID[%i] | Size in mem %li\n", cone.id, e->mem_size_obj);
-	e->mem_size_obj += sizeof(t_cone);
+	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_cone));
+	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&cone, e->scene.mem_size_obj, sizeof(t_cone));
+		//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
+	ft_printf("Cone : ID[%i] | Size in mem %li\n", cone.id, e->scene.mem_size_obj);
+	e->scene.mem_size_obj += sizeof(t_cone);
 
 	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
 		return (false);
@@ -287,11 +288,11 @@ bool 		init_object(t_env *e)
 	t_ellipsoid ellipsoid;
 	ellipsoid = ellipsoid_construct(vector_construct(1, 1, 1), vector_construct(1, 1, 1),1, 0x225be6, 4);
 
-	e->ptr_obj = ft_memrealloc(e->ptr_obj, e->mem_size_obj, e->mem_size_obj + sizeof(t_ellipsoid));
-	e->ptr_obj = ft_memcpy_offset(e->ptr_obj, (void *)&ellipsoid, e->mem_size_obj, sizeof(t_ellipsoid));
-	//vector_string(&((t_obj*)(e->ptr_obj + e->mem_size_obj))->position);
+	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_ellipsoid));
+	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&ellipsoid, e->scene.mem_size_obj, sizeof(t_ellipsoid));
+	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
 
-	e->mem_size_obj += sizeof(t_ellipsoid);
+	e->scene.mem_size_obj += sizeof(t_ellipsoid);
 
 	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
 		return (false);
@@ -307,18 +308,18 @@ bool 		init_object(t_env *e)
 	t_light light;
 	light = light_construct(vector_construct(10, 10, 10), LIGHT_BASIC, 0.66, 0xFFFFFF, 10);
 
-	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
-	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
+	e->scene.ptr_light = ft_memrealloc(e->scene.ptr_light, e->scene.mem_size_light, e->scene.mem_size_light + sizeof(t_light));
+	e->scene.ptr_light = ft_memcpy_offset(e->scene.ptr_light, (void *)&light, e->scene.mem_size_light, sizeof(t_light));
 
-	e->mem_size_light += sizeof(t_light);
+	e->scene.mem_size_light += sizeof(t_light);
 	light = light_construct(vector_construct(-10, 10, 10), LIGHT_BASIC,  0.33, 0xFF0000, 2);
 
-	e->ptr_light = ft_memrealloc(e->ptr_light, e->mem_size_light, e->mem_size_light + sizeof(t_light));
-	e->ptr_light = ft_memcpy_offset(e->ptr_light, (void *)&light, e->mem_size_light, sizeof(t_light));
+	e->scene.ptr_light = ft_memrealloc(e->scene.ptr_light, e->scene.mem_size_light, e->scene.mem_size_light + sizeof(t_light));
+	e->scene.ptr_light = ft_memcpy_offset(e->scene.ptr_light, (void *)&light, e->scene.mem_size_light, sizeof(t_light));
 
-	e->mem_size_light += sizeof(t_light);
+	e->scene.mem_size_light += sizeof(t_light);
 
-	ft_printf("Size light ; %u\n", e->mem_size_light);
+	ft_printf("Size light ; %u\n", e->scene.mem_size_light);
 
 	e->obj_len = ft_lstlen(e->obj);
 	return (true);
@@ -354,8 +355,8 @@ void		sdl_loop(t_env *e, t_sdl *sdl)
 		update_fps(&e->fps);
 		e->count.time = e->fps.delta_time;
 		sdl_update_event(sdl, &sdl->event);
-		event_cam(e, &sdl->event, &e->cam);
-		update_cam(&e->cam);
+		event_cam(e, &sdl->event, &e->scene.cam);
+		update_cam(&e->scene.cam);
 		update_obj(e, sdl);
 
 		run_multi_thread(e);
@@ -381,12 +382,12 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 
 			//------------>Write OBJ
 	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[1], CL_TRUE, 0,
-							e->mem_size_obj,
-							e->ptr_obj, 0, NULL, NULL);
+							e->scene.mem_size_obj,
+							e->scene.ptr_obj, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueWriteBuffer mem_obj");
 	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[2], CL_TRUE, 0,
-							e->mem_size_light,
-							e->ptr_light, 0, NULL, NULL);
+							e->scene.mem_size_light,
+							e->scene.ptr_light, 0, NULL, NULL);
 	cl_check_err(cl->err, "clEnqueueWriteBuffer mem_light");
 	cl->err = clEnqueueWriteBuffer(cl->cq, cl->mem[3], CL_TRUE, 0,
 							sizeof(t_count),
@@ -397,19 +398,19 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
 	cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &cl->mem[1]);
 	cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
-	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->mem_size_obj));
+	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->scene.mem_size_obj));
 	cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
 	cl->err = clSetKernelArg(cl->kernel, 3, sizeof(t_ptr_cl), &(e->p_cl));
 	cl_check_err(cl->err, "clSetKernelArg | p_cl");
-	cl->err = clSetKernelArg(cl->kernel, 4, sizeof(t_cam), &(e->cam));
+	cl->err = clSetKernelArg(cl->kernel, 4, sizeof(t_cam), &(e->scene.cam));
 	cl_check_err(cl->err, "clSetKernelArg | t_cam");
-	cl->err = clSetKernelArg(cl->kernel, 5, e->mem_size_obj, NULL);
+	cl->err = clSetKernelArg(cl->kernel, 5, e->scene.mem_size_obj, NULL);
 	cl_check_err(cl->err, "clSetKernelArg | Local");
 	cl->err = clSetKernelArg(cl->kernel, 6, sizeof(cl_mem), &cl->mem[2]);
 	cl_check_err(cl->err, "clSetKernelArg | ptr_light");
-	cl->err = clSetKernelArg(cl->kernel, 7, sizeof(uint64_t), &(e->mem_size_light));
+	cl->err = clSetKernelArg(cl->kernel, 7, sizeof(uint64_t), &(e->scene.mem_size_light));
 	cl_check_err(cl->err, "clSetKernelArg | mem_size_light");
-	cl->err = clSetKernelArg(cl->kernel, 8, e->mem_size_light, NULL);
+	cl->err = clSetKernelArg(cl->kernel, 8, e->scene.mem_size_light, NULL);
 	cl_check_err(cl->err, "clSetKernelArg | Local");
 	cl->err = clSetKernelArg(cl->kernel, 9, sizeof(cl_mem), &cl->mem[3]);
 	cl_check_err(cl->err, "clSetKernelArg | count struct");
@@ -450,8 +451,8 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 		update_fps(&e->fps);
 		sdl_update_event(sdl, &sdl->event);
 		e->count.time = e->fps.delta_time;
-		event_cam(e, &sdl->event, &e->cam);
-		update_cam(&e->cam);
+		event_cam(e, &sdl->event, &e->scene.cam);
+		update_cam(&e->scene.cam);
 		update_obj(e, sdl);
 
 		e->count.nb_try = 0;
@@ -501,10 +502,20 @@ int main(int argc, char **argv)
 		return (0);
 	if (e.flag & F_DEBUG_PARSING)
 		return (EXIT_SUCCESS);
-	if (!init_object(&e))
-		return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
+	//if (!init_object(&e))
+	//	return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
+	t_sphere *sphere;
+	int i = 0;
+	while (i < 7)
+	{
+		sphere = e.scene.ptr_obj + (i * sizeof(t_sphere));
+		ft_printf("Sphere : %i\n", i);
+		vector_string(&sphere->position);
+		printf("Raypn %.2f\n", sphere->radius);
+		i++;
+	}
 	if (e.flag & F_DEBUG_SIZE_STRUCT)
 	{
 		ft_printf("Size t_obj        : %lu\n", sizeof(t_obj));
@@ -516,14 +527,14 @@ int main(int argc, char **argv)
 		ft_printf("Size t_cylinder   : %lu\n", sizeof(t_cylinder));
 		ft_printf("Size t_light  	 : %lu\n", sizeof(t_light));
 	}
-	e.cam.speed_rotate = 4;
-	e.cam.speed = 32;
+	e.scene.cam.speed_rotate = 4;
+	e.scene.cam.speed = 32;
 	if (!(e.flag & F_CPU))
 	{
 		cl_init(&e.cl, "srcs_cl/test.cl", "test", e.sdl.height * e.sdl.width);
 		cl_create_buffer(&e.cl, e.sdl.height * e.sdl.width * 4);
-		cl_create_buffer(&e.cl, e.mem_size_obj);
-		cl_create_buffer(&e.cl, e.mem_size_light);
+		cl_create_buffer(&e.cl, e.scene.mem_size_obj);
+		cl_create_buffer(&e.cl, e.scene.mem_size_light);
 		cl_create_buffer(&e.cl, sizeof(t_count));
 		t_ptr_cl *c = &e.p_cl;
 		c->fov = 66;
@@ -534,7 +545,7 @@ int main(int argc, char **argv)
 		e.count.nb_obj = e.obj_len;
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
-	e.mem_obj_index = 896;
+//	e.mem_obj_index = 896;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else
