@@ -22,11 +22,11 @@ static int tests_obj_ccp5(void)
 }
 static int tests_obj_ccp6(void)
 {
-	RUN_RT("tests_obj_ccp/ccp6", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp6", "pars: plan error\n", 0)
 }
 static int tests_obj_ccp7(void)
 {
-	RUN_RT("tests_obj_ccp/ccp7", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp7", "pars: ellipsoid error\n", 0)
 }
 static int tests_obj_ccp8(void)
 {
@@ -92,8 +92,8 @@ int	tests_obj_ccp_launcher(void)
 	load_test(&testlist, "ccp3 sphere", 0, &tests_obj_ccp3);
 	load_test(&testlist, "ccp4 paraboloid", 0, &tests_obj_ccp4);
 	load_test(&testlist, "ccp5 cone", 0, &tests_obj_ccp5);
-	load_test(&testlist, "ccp6", 0, &tests_obj_ccp6);
-	load_test(&testlist, "ccp7", 0, &tests_obj_ccp7);
+	load_test(&testlist, "ccp6 plan", 0, &tests_obj_ccp6);
+	load_test(&testlist, "ccp7 ellipsoid", 0, &tests_obj_ccp7);
 	load_test(&testlist, "ccp8", 0, &tests_obj_ccp8);
 	load_test(&testlist, "ccp9", 0, &tests_obj_ccp9);
 	load_test(&testlist, "ccp10", 0, &tests_obj_ccp10);

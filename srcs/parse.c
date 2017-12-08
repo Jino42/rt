@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 20:29:29 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/08 20:50:39 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct	s_scene
 
 
 ///////////////////////TOOLS
-bool		ft_strequ_max(const char *cmp, const char *to, int offset)
+bool			ft_strequ_max(const char *cmp, const char *to, int offset)
 {
 	int i;
 
@@ -36,7 +36,7 @@ bool		ft_strequ_max(const char *cmp, const char *to, int offset)
 		return (false);
 	return (true);
 }
-bool		ft_strequ_arg(const char *cmp, const char *to, int offset)
+bool			ft_strequ_arg(const char *cmp, const char *to, int offset)
 {
 	int i;
 
@@ -55,7 +55,7 @@ bool		ft_strequ_arg(const char *cmp, const char *to, int offset)
 		return (true);
 	return (false);
 }
-bool		ft_isstralpha(const char *cmp)
+bool			ft_isstralpha(const char *cmp)
 {
 	int i;
 
@@ -68,7 +68,7 @@ bool		ft_isstralpha(const char *cmp)
 	}
 	return (true);
 }
-bool		is_encaps(const char *str, int nb_param) // if fun is ()
+bool			is_encaps(const char *str, int nb_param) // if fun is ()
 {
 	int i;
 	int param;
@@ -91,7 +91,7 @@ bool		is_encaps(const char *str, int nb_param) // if fun is ()
 		return (false);
 	return (true);
 }
-int		nb_of_arg(const char *str, char c_count, char *c_stop) // nb arg
+int				nb_of_arg(const char *str, char c_count, char *c_stop) // nb arg
 {
 	int i;
 	int count;
@@ -159,7 +159,7 @@ char			*strchr_arg_vec(char *str, int arg)
 	}
 	return (NULL);
 }
-int	count_number_preci(long int n)
+int				count_number_preci(long int n)
 {
 	int i;
 
@@ -171,7 +171,7 @@ int	count_number_preci(long int n)
 	}
 	return (i);
 }
-bool		get_float(char *str, float *nb) // Get Float from STR //ONLY X PRECI ?
+bool			get_float(char *str, float *nb) // Get Float from STR //ONLY X PRECI ?
 {
 	int i = 0;
 	int	preci = 0;
@@ -192,12 +192,12 @@ bool		get_float(char *str, float *nb) // Get Float from STR //ONLY X PRECI ?
 	}
 	return (true);
 }
-bool		get_hexa(char *str, uint32_t *nb) // Get Float from STR //ONLY X PRECI ?
+bool			get_hexa(char *str, uint32_t *nb) // Get Float from STR //ONLY X PRECI ?
 {
 	*nb = ft_atoi_base(str, 16);
 	return (true);
 }
-bool		get_vec(char *str, t_vector *vec)
+bool			get_vec(char *str, t_vector *vec)
 {
 	if (!str)
 		return (false);
@@ -250,30 +250,6 @@ bool		parse_camera(t_scene *scene, const int fd)
 	ft_strdel(&line_fd);
 	return (true);
 }
-bool		parse_light(t_scene *scene, char *line_fd)
-{
-	if (!is_encaps(line_fd + 5, 4))
-		return (false);
-	//[1]  ||  POSITION
-	if (!get_vec(strchr_arg(line_fd, 1), &scene->light.position))
-		return (false);
-	//[2]  ||  TYPE LIGHT
-	if (ft_strequ_arg(strchr_arg(line_fd, 2), "BASIC", 5))
-		scene->light.type = LIGHT_BASIC;
-	else if (ft_strequ_arg(strchr_arg(line_fd, 2), "SPHERE", 6))
-		scene->light.type = LIGHT_SPHERE;
-	else
-		return (false);
-	//[3]  ||  INTENSITY
-	if (!get_float(strchr_arg(line_fd, 3), &scene->light.intensity))
-		return (false);
-	//[4]  ||  MAKE SPHERE
-	if (ft_strequ_arg(strchr_arg(line_fd, 4), "AFF", 3))
-		;//CREATE SPHERE !!!!!!!!!!!!!
-	else
-		return (false);
-	return (true);
-}
 bool		parse_ptr_obj(char *line_fd, t_obj *obj)
 {
 	//[1]  ||  POSITION
@@ -304,6 +280,10 @@ bool		parse_cone(t_scene *scene, char *line_fd)
 	//[5]  ||  LIMIT
 	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
 		return (false);
+	obj.mem_size_obj = sizeof(t_cone);
+	obj.id = OBJ_CONE;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
 	return (true);
 }
 bool		parse_paraboloid(t_scene *scene, char *line_fd)
@@ -322,6 +302,10 @@ bool		parse_paraboloid(t_scene *scene, char *line_fd)
 	//[5]  ||  LIMIT
 	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
 		return (false);
+	obj.mem_size_obj = sizeof(t_paraboloid);
+	obj.id = OBJ_PARABOLOID;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
 	return (true);
 }
 bool		parse_cylinder(t_scene *scene, char *line_fd)
@@ -340,10 +324,14 @@ bool		parse_cylinder(t_scene *scene, char *line_fd)
 	//[5]  ||  LIMIT
 	if (!get_float(strchr_arg(line_fd, 5), &obj.limit))
 		return (false);
+	obj.mem_size_obj = sizeof(t_cylinder);
+	obj.id = OBJ_CYLINDER;
+	obj.radius2 = obj.radius * obj.radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
 	return (true);
 }
-
-bool		parse_sphere(t_scene *scene, char *line_fd)
+bool		parse_sphere(t_scene *scene, char *line_fd, const uint32_t flag)
 {
 	t_sphere obj;
 
@@ -355,6 +343,76 @@ bool		parse_sphere(t_scene *scene, char *line_fd)
 		return (false);
 	//[4]  ||  RADIUS
 	if (!get_float(strchr_arg(line_fd, 4), &obj.radius))
+		return (false);
+	obj.mem_size_obj = sizeof(t_sphere);
+	obj.id = OBJ_SPHERE;
+	obj.radius2 = obj.radius * obj.radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+	obj.flag = flag;
+	return (true);
+}
+bool		parse_plan(t_scene *scene, char *line_fd)
+{
+	t_plan obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_sphere));
+	if (!is_encaps(line_fd, 3))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	obj.mem_size_obj = sizeof(t_plan);
+	obj.id = OBJ_PLANE;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+	obj.normal = vector_construct(0, 0, 1);
+	return (true);
+}
+bool		parse_ellipsoid(t_scene *scene, char *line_fd)
+{
+	t_ellipsoid obj;
+
+	(void)scene;
+	ft_bzero(&obj, sizeof(t_ellipsoid));
+	if (!is_encaps(line_fd, 5))
+		return (false);
+	if (!parse_ptr_obj(line_fd, (t_obj *)&obj))
+		return (false);
+	//[4]  ||  ANGLE
+	if (!get_float(strchr_arg(line_fd, 4), &obj.radius))
+		return (false);
+	//[5]  ||  SIZE XYZ
+	if (!get_vec(strchr_arg(line_fd, 5), &obj.size))
+		return (false);
+	obj.mem_size_obj = sizeof(t_ellipsoid);
+	obj.id = OBJ_ELLIPSOID;
+	obj.radius2 = obj.radius * obj.radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+	return (true);
+}
+bool		parse_light(t_scene *scene, char *line_fd)
+{
+	if (!is_encaps(line_fd + 5, 4))
+		return (false);
+	//[1]  ||  POSITION
+	if (!get_vec(strchr_arg(line_fd, 1), &scene->light.position))
+		return (false);
+	//[2]  ||  TYPE LIGHT
+	if (ft_strequ_arg(strchr_arg(line_fd, 2), "BASIC", 5))
+		scene->light.type = LIGHT_BASIC;
+	else if (ft_strequ_arg(strchr_arg(line_fd, 2), "SPHERE", 6))
+		scene->light.type = LIGHT_SPHERE;
+	else
+		return (false);
+	//[3]  ||  INTENSITY
+	if (!get_float(strchr_arg(line_fd, 3), &scene->light.intensity))
+		return (false);
+	//[4]  ||  MAKE SPHERE
+	if (ft_strequ_arg(strchr_arg(line_fd, 4), "AFF", 3))
+		;//light_sphere_position_construct();//CREATE SPHERE !!!!!!!!!!!!!
+	else
 		return (false);
 	return (true);
 }
@@ -401,8 +459,18 @@ bool		parse_scene(t_env *e, char *path)
 			}
 			else if (ft_strequ_max(line_fd, "sphere", 6) && line_fd[7])
 			{
-				if (!parse_cylinder(&scene, line_fd + 6))
+				if (!parse_sphere(&scene, line_fd + 6, 0))
 					return (end_of_program(e, "pars: sphere error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "plan", 4) && line_fd[5])
+			{
+				if (!parse_plan(&scene, line_fd + 4))
+					return (end_of_program(e, "pars: plan error", 0));
+			}
+			else if (ft_strequ_max(line_fd, "ellipsoid", 9) && line_fd[10])
+			{
+				if (!parse_ellipsoid(&scene, line_fd + 9))
+					return (end_of_program(e, "pars: ellipsoid error", 0));
 			}
 			else
 			{
