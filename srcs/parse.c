@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 23:00:28 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/09 18:28:07 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,8 @@ bool		parse_cone(t_scene *scene, char *line_fd)
 	obj.id = OBJ_CONE;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
 bool		parse_paraboloid(t_scene *scene, char *line_fd)
@@ -320,7 +321,8 @@ bool		parse_paraboloid(t_scene *scene, char *line_fd)
 	obj.id = OBJ_PARABOLOID;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
 bool		parse_cylinder(t_scene *scene, char *line_fd)
@@ -344,14 +346,14 @@ bool		parse_cylinder(t_scene *scene, char *line_fd)
 	obj.radius2 = obj.radius * obj.radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
 bool		parse_sphere(t_scene *scene, char *line_fd, const uint32_t flag)
 {
 	t_sphere obj;
 
-	(void)scene;
 	ft_bzero(&obj, sizeof(t_sphere));
 	if (!is_encaps(line_fd, 4))
 		return (false);
@@ -366,7 +368,8 @@ bool		parse_sphere(t_scene *scene, char *line_fd, const uint32_t flag)
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 	obj.flag = flag;
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
 bool		parse_plan(t_scene *scene, char *line_fd)
@@ -384,7 +387,8 @@ bool		parse_plan(t_scene *scene, char *line_fd)
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
 	obj.normal = vector_construct(0, 0, 1);
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
 bool		parse_ellipsoid(t_scene *scene, char *line_fd)
@@ -408,9 +412,29 @@ bool		parse_ellipsoid(t_scene *scene, char *line_fd)
 	obj.radius2 = obj.radius * obj.radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-	parse_push_obj(scene, (void *)&obj, obj.mem_size_obj);
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
 	return (true);
 }
+bool 		sphere_aff_light(t_scene *scene, const t_light *light)
+{
+	t_sphere obj;
+	ft_bzero(&obj, sizeof(t_sphere));
+	obj.position = light->position;
+	obj.radius = 0.3;
+	obj.color = 0xFFFFFF;
+	obj.m_specular = 0;
+	obj.mem_size_obj = sizeof(t_sphere);
+	obj.id = OBJ_SPHERE;
+	obj.radius2 = obj.radius * obj.radius;
+	obj.rotate_speed = 1.5;
+	obj.speed = 5;
+	obj.flag |= F_ISLIGHT;
+	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
+		return (false);
+	return (true);
+}
+
 bool		parse_light(t_scene *scene, char *line_fd)
 {
 	t_light		light;
@@ -433,10 +457,14 @@ bool		parse_light(t_scene *scene, char *line_fd)
 		return (false);
 	//[4]  ||  MAKE SPHERE
 	if (ft_strequ_arg(strchr_arg(line_fd, 4), "AFF", 3))
-		;//light_sphere_position_construct();//CREATE SPHERE !!!!!!!!!!!!!
+	{
+		if (!sphere_aff_light(scene, &light))
+			return (false);
+	}
 	else
 		return (false);
-	parse_push_light(scene, (void *)&light);
+	if (!parse_push_light(scene, (void *)&light))
+		return (false);
 	return (true);
 }
 
