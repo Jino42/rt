@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/05 15:37:10 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/09 18:28:07 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/09 19:12:31 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,7 +350,7 @@ bool		parse_cylinder(t_scene *scene, char *line_fd)
 		return (false);
 	return (true);
 }
-bool		parse_sphere(t_scene *scene, char *line_fd, const uint32_t flag)
+bool		parse_sphere(t_scene *scene, char *line_fd)
 {
 	t_sphere obj;
 
@@ -367,7 +367,6 @@ bool		parse_sphere(t_scene *scene, char *line_fd, const uint32_t flag)
 	obj.radius2 = obj.radius * obj.radius;
 	obj.rotate_speed = 1.5;
 	obj.speed = 5;
-	obj.flag = flag;
 	if (!parse_push_obj(scene, (void *)&obj, obj.mem_size_obj))
 		return (false);
 	return (true);
@@ -440,7 +439,7 @@ bool		parse_light(t_scene *scene, char *line_fd)
 	t_light		light;
 
 	ft_bzero(&light, sizeof(t_light));
-	if (!is_encaps(line_fd + 5, 4))
+	if (!is_encaps(line_fd, 4))
 		return (false);
 	//[1]  ||  POSITION
 	if (!get_vec(strchr_arg(line_fd, 1), &light.position))
@@ -468,6 +467,45 @@ bool		parse_light(t_scene *scene, char *line_fd)
 	return (true);
 }
 
+typedef struct	s_pars
+{
+	char	name[20];
+	bool	(*parse_obj)(t_scene *, char *);
+	int		offset;
+	char	msg_error[100];
+}				t_pars;
+
+# define NB_OBJ 7
+t_pars	g_tab[7] =
+{
+	{"light", &parse_light, 5, "pars: light error"},
+	{"cone", &parse_cone, 4, "pars: cone error"},
+	{"paraboloid", &parse_paraboloid, 10, "pars: paraboloid error"},
+	{"cylinder", &parse_cylinder, 8, "pars: cylinder error"},
+	{"sphere", &parse_sphere, 6, "pars: sphere error"},
+	{"plan", &parse_plan, 4, "pars: plan error"},
+	{"ellipsoid", &parse_ellipsoid, 9, "pars: ellipsoid error"}
+};
+
+bool		parse_obj(t_env *e, t_scene *scene, char *line_fd)
+{
+	uint32_t index;
+
+	index = 0;
+	while (index < NB_OBJ)
+	{
+		if (ft_strequ_max(line_fd, g_tab[index].name, g_tab[index].offset)
+					&& line_fd[g_tab[index].offset + 1])
+		{
+			if (!g_tab[index].parse_obj(scene, line_fd + g_tab[index].offset))
+				return (end_of_program(e, g_tab[index].msg_error, 0));
+			return (true);
+		}
+		index++;
+	}
+	return (end_of_program(e, "pars: name fun error", 0));
+}
+
 bool		parse_scene(t_env *e, char *path)
 {
 	t_scene	*scene;
@@ -487,45 +525,10 @@ bool		parse_scene(t_env *e, char *path)
 	{
 		if (line_fd)
 		{
-			if (ft_strequ_max(line_fd, "light", 5) && line_fd[6])
-			{
-				if (!parse_light(scene, line_fd))
-					return (end_of_program(e, "pars: light error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "cone", 4) && line_fd[5])
-			{
-				if (!parse_cone(scene, line_fd + 4))
-					return (end_of_program(e, "pars: cone error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "paraboloid", 10) && line_fd[11])
-			{
-				if (!parse_paraboloid(scene, line_fd + 10))
-					return (end_of_program(e, "pars: paraboloid error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "cylinder", 8) && line_fd[9])
-			{
-				if (!parse_cylinder(scene, line_fd + 8))
-					return (end_of_program(e, "pars: cylinder error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "sphere", 6) && line_fd[7])
-			{
-				if (!parse_sphere(scene, line_fd + 6, 0))
-					return (end_of_program(e, "pars: sphere error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "plan", 4) && line_fd[5])
-			{
-				if (!parse_plan(scene, line_fd + 4))
-					return (end_of_program(e, "pars: plan error", 0));
-			}
-			else if (ft_strequ_max(line_fd, "ellipsoid", 9) && line_fd[10])
-			{
-				if (!parse_ellipsoid(scene, line_fd + 9))
-					return (end_of_program(e, "pars: ellipsoid error", 0));
-			}
-			else
+			if (!parse_obj(e, scene, line_fd))
 			{
 				ft_strdel(&line_fd);
-				return (end_of_program(e, "parse: function name error", 0));
+				return (false);
 			}
 			ft_strdel(&line_fd);
 		}

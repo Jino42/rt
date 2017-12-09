@@ -30,7 +30,7 @@ static int tests_obj_ccp7(void)
 }
 static int tests_obj_ccp8(void)
 {
-	RUN_RT("tests_obj_ccp/ccp8", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp8", "pars: name fun error\n", 0)
 }
 static int tests_obj_ccp9(void)
 {
