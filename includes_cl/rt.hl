@@ -212,25 +212,6 @@ typedef struct	s_paraboloid
 	float		option;
 }				t_paraboloid;
 
-typedef struct	s_paraboloid_hyperbolic
-{
-	uint64_t	mem_size_obj;
-	uint32_t		id;
-	uint32_t	color;
-	uint32_t	flag;
-
-	t_vector	position;
-	float		rotate_speed;
-	float		speed;
-	t_vector	rot;
-	t_vector	cos;
-	t_vector	sin;
-	float		m_specular;
-
-	float		radius;
-	float		radius2;
-}				t_paraboloid_hyperbolic;
-
 typedef struct	s_plan
 {
 	uint64_t	mem_size_obj;

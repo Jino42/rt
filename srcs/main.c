@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 18:52:49 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 19:32:28 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
 	e.count.nb_obj = e.obj_len;
 	e.count.nb_ray = e.sdl.height * e.sdl.width;
 
-	e.mem_obj_index = 1048;
+	e.mem_obj_index = 0;
 
 	sdl_loop_gpu(&e, &e.sdl);
 
