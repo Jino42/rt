@@ -1,4 +1,4 @@
-#include "rt.h"
+#include "rt_parse.h"
 
 static bool sphere_aff_light(t_scene *scene, const t_light *light)
 {

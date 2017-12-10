@@ -1,4 +1,4 @@
-#include "rt.h"
+#include "rt_parse.h"
 
 static void 		tab_put_param(t_pars *tab, const char *name,
 					bool (*f)(t_scene *, char *), const char *msg_error)

@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/10 16:37:46 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/10 16:56:26 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-INC_FILES = includes/rt.h includes/rt_cl.h includes/matrix.h
+INC_FILES = includes/rt.h includes/rt_cl.h includes/matrix.h includes/rt_obj.h includes/rt_sdl.h includes/rt_parse.h
 
-INC = includes/
+INC = -I includes/ -I libft/includes -I vector/includes/ -I SDL2-2.0.5/include
 
 SRC_DIR = srcs/
 
@@ -86,7 +86,7 @@ DIR_LIB = libs/
 all: $(NAME)
 
 $(NAME): $(OBJ_DIR) lib $(addprefix $(OBJ_DIR), $(OBJET))
-	@$(CC) -I $(INC) $(addprefix $(OBJ_DIR), $(OBJET)) -L./$(DIR_LIB) $(FLAG_LIB) $(SDL_FLAG) $(FRAMEWORK) -o $(NAME)
+	@$(CC) $(INC) $(addprefix $(OBJ_DIR), $(OBJET)) -L./$(DIR_LIB) $(FLAG_LIB) $(SDL_FLAG) $(FRAMEWORK) -o $(NAME)
 
 lib:
 	@(cd $(DIR_LFT) && $(MAKE))
@@ -103,8 +103,8 @@ $(OBJ_DIR) :
 	@mkdir $(OBJ_DIR)$/parsing
 
 $(OBJ_DIR)%.o: $(addprefix $(SRC_DIR), %.c) $(INC_FILES)
-	@echo "a"
-	$(CC) $(CFLAGS) -I ./$(INC) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@echo "build $<"
 
 clean:
 	@echo "Clean rt"

@@ -1,4 +1,4 @@
-#include "rt.h"
+#include "rt_parse.h"
 
 bool		parse_camera(t_scene *scene, const int fd)
 {

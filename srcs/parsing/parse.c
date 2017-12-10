@@ -1,3 +1,4 @@
+#include "rt_parse.h"
 #include "rt.h"
 
 static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd, const t_pars *tab)
@@ -19,7 +20,7 @@ static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd, const t_pars *ta
 	return (end_of_program(e, "pars: name fun error", 0));
 }
 
-static bool		run_parse(t_env *e, const int fd, t_scene *scene, const t_pars *tab)
+bool		run_parse(t_env *e, const int fd, t_scene *scene, const t_pars *tab)
 {
 	char	*line_fd;
 

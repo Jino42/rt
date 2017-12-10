@@ -1,4 +1,4 @@
-#include "rt.h"
+#include "rt_parse.h"
 
 bool		parse_cone(t_scene *scene, char *line_fd)
 {

@@ -6,11 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/29 15:37:01 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/29 15:40:25 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 16:44:04 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include "rt_sdl.h"
 
 void		sdl_update_event(t_sdl *sdl, t_event *event)
 {

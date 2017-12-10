@@ -6,11 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/29 15:37:20 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/10/29 15:39:45 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 16:43:39 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include "rt_sdl.h"
 
 bool		sdl_event_exit(t_sdl *sdl)
 {

@@ -6,11 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/29 15:34:32 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/15 19:33:04 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 16:43:51 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include "rt_sdl.h"
 
 bool		sdl_init(t_sdl *sdl)
 {
