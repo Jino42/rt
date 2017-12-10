@@ -24,10 +24,6 @@ static int tests_camera6(void)
 {
 	RUN_RT("tests_camera/camera6", "pars: camera error\n", 0)
 }
-static int tests_camera7(void)
-{
-	RUN_RT("tests_camera/camera7", "pars: camera error\n", 0)
-}
 static int tests_camera8(void)
 {
 	RUN_RT("tests_camera/camera8", "pars: camera error\n", 0)
@@ -50,7 +46,6 @@ int	tests_camera_launcher(void)
 	load_test(&testlist, "camera4 void", 0, &tests_camera4);
 	load_test(&testlist, "camera5 4 vec param", 0, &tests_camera5);
 	load_test(&testlist, "camera6 2 basic vec param", 0, &tests_camera6);
-	load_test(&testlist, "camera7 space before vec.x", 0, &tests_camera7);
 	load_test(&testlist, "camera8 space betwin cam & deb param", 0, &tests_camera8);
 	load_test(&testlist, "camera9 space after vec.z", 0, &tests_camera9);
 	return (launch_tests(&testlist));

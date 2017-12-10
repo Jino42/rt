@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/05 18:43:38 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/10 16:37:46 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,22 @@ SRC = main.c \
 	  intersection_paraboloid_hyperbolic.c \
 	  intersection_ellipsoid.c \
 	  intersection_cone.c \
+	  parsing/parse.c \
+	  parsing/parse_camera.c \
+	  parsing/parse_cone.c \
+	  parsing/parse_cylinder.c \
+	  parsing/parse_ellipsoid.c \
+	  parsing/parse_light.c \
+	  parsing/parse_name.c \
+	  parsing/parse_paraboloid.c \
+	  parsing/parse_plan.c \
+	  parsing/parse_push.c \
+	  parsing/parse_sphere.c \
+	  parsing/parse_tab.c \
+	  parsing/parse_tools_1.c \
+	  parsing/parse_tools_2.c \
+	  parsing/parse_gen.c \
+	  parsing/parse_get.c \
 	  cl/cl_init.c \
 	  cl/cl_end.c \
 	  cl/cl_create_buffer.c \
@@ -84,6 +100,7 @@ $(OBJ_DIR) :
 	@mkdir $(OBJ_DIR)$(SRC_DIR)
 	@mkdir $(OBJ_DIR)$/sdl
 	@mkdir $(OBJ_DIR)$/cl
+	@mkdir $(OBJ_DIR)$/parsing
 
 $(OBJ_DIR)%.o: $(addprefix $(SRC_DIR), %.c) $(INC_FILES)
 	@echo "a"

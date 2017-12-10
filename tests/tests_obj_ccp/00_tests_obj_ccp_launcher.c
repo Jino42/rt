@@ -94,7 +94,7 @@ int	tests_obj_ccp_launcher(void)
 	load_test(&testlist, "ccp5 cone", 0, &tests_obj_ccp5);
 	load_test(&testlist, "ccp6 plan", 0, &tests_obj_ccp6);
 	load_test(&testlist, "ccp7 ellipsoid", 0, &tests_obj_ccp7);
-	load_test(&testlist, "ccp8", 0, &tests_obj_ccp8);
+	load_test(&testlist, "ccp8 name error", 0, &tests_obj_ccp8);
 	load_test(&testlist, "ccp9", 0, &tests_obj_ccp9);
 	load_test(&testlist, "ccp10", 0, &tests_obj_ccp10);
 	load_test(&testlist, "ccp11", 0, &tests_obj_ccp11);
