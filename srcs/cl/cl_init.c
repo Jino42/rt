@@ -6,13 +6,14 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:08:30 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/27 22:44:52 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 23:00:40 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void		cl_load_src(t_cl *cl, const char *path, char *k_src, size_t *src_size)
+static void		cl_load_src(t_cl *cl, const char *path, char *k_src,
+													size_t *src_size)
 {
 	int		fd;
 
@@ -56,25 +57,26 @@ static void		cl_create_base(t_cl *cl, const char *path)
 
 static void		cl_compile_kernel(t_cl *cl)
 {
-	size_t		len_buffer = 17000;
-	char		buffer[len_buffer];
+	char		buffer[CL_ERROR_LEN_BUFFER];
 	size_t		len;
 
-	cl->err = clBuildProgram(cl->program, 0, NULL, "-I includes_cl/", NULL, NULL);
+	cl->err = clBuildProgram(cl->program, 0, NULL,
+								"-I includes_cl/", NULL, NULL);
 	if (cl->err != CL_SUCCESS)
 	{
-		ft_bzero(buffer, len_buffer);
+		ft_bzero(buffer, CL_ERROR_LEN_BUFFER);
 		cl->err = clGetProgramBuildInfo(cl->program, cl->device_id,
-				CL_PROGRAM_BUILD_LOG, len_buffer, buffer, &len);
+				CL_PROGRAM_BUILD_LOG, CL_ERROR_LEN_BUFFER, buffer, &len);
 		if (cl->err == CL_SUCCESS)
-			ft_printf("\033[31mCompiler error message :%i\033[0m\n%s", len, buffer);
+			ft_printf("\033[31mCompiler error :%i\033[0m\n%s", len, buffer);
 		else
 			cl_check_err(cl->err, "Erreur étonnante : clGetProgramBuildInfo");
 		exit(EXIT_FAILURE);
 	}
 }
 
-int				cl_init(t_cl *cl, const char *path, const char *name, const size_t global_item_size)
+int				cl_init(t_cl *cl, const char *path, const char *name,
+												const size_t global_item_size)
 {
 	cl_create_base(cl, path);
 	cl_compile_kernel(cl);
@@ -86,7 +88,8 @@ int				cl_init(t_cl *cl, const char *path, const char *name, const size_t global
 									&cl->local_item_size, NULL);
 	if (cl->global_item_size % cl->local_item_size)
 	{
-		ft_dprintf(2, "Global_item_size %% Local item size != 0\n(%zu) %% (%zu) = %i\n",
+		ft_dprintf(2, "Global_item_size %% Local item size != 0 \
+				\n(%zu) %% (%zu) = %i\n",
 				cl->global_item_size, cl->local_item_size,
 				cl->global_item_size % cl->local_item_size);
 		exit(EXIT_FAILURE);

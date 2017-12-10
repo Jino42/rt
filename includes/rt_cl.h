@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:10:34 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/27 22:37:18 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 23:00:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <OpenCL/opencl.h>
 
 # define MAX_SOURCE_SIZE (30000)
+# define CL_ERROR_LEN_BUFFER 17000
 
 typedef struct	s_cl
 {

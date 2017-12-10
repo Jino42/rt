@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:59:04 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/11/14 15:51:51 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 23:01:23 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool		cl_create_buffer(t_cl *cl, size_t size)
 					sizeof(cl_mem) * (cl->nb_mem + 1))))
 		return (false);
 	cl->mem[cl->nb_mem] = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
-			size,  NULL, &(cl->err));
+			size, NULL, &(cl->err));
 	cl_check_err(cl->err, "clCreateBuffer");
 	cl->nb_mem++;
 	return (true);
