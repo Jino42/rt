@@ -6,324 +6,11 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 23:09:15 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 18:20:18 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-t_sphere 	sphere_construct(const t_vector position,
-								const uint32_t color,
-								const float	m_specular,
-								const float radius,
-								const uint32_t flag)
-{
-	t_sphere obj;
-
-	ft_bzero(&obj, sizeof(t_sphere));
-	obj.mem_size_obj = sizeof(t_sphere);
-	obj.id = OBJ_SPHERE;
-	obj.color = color;
-	obj.position = position;
-	obj.radius = radius;
-	obj.radius2 = radius * radius;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.flag = flag;
-	obj.m_specular = m_specular;
-
-	obj.intersect = &intersection_sphere;
-	return (obj);
-}
-t_ellipsoid 	ellipsoid_construct(const t_vector position,
-									const t_vector size,
-									const float	   radius,
-									const uint32_t color,
-									const float m_specular)
-{
-	t_ellipsoid obj;
-
-	ft_bzero(&obj, sizeof(t_ellipsoid));
-	obj.mem_size_obj = sizeof(t_ellipsoid);
-	obj.id = OBJ_ELLIPSOID;
-	obj.color = color;
-	obj.position = position;
-	obj.radius = radius;
-	obj.radius2 = radius * radius;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.size = size;
-	obj.m_specular = m_specular;
-
-	obj.intersect = &intersection_ellipsoid;
-	return (obj);
-}
-t_cone 	cone_construct(const t_vector position,
-								const float angle,
-								const uint32_t color,
-								const float m_specular)
-{
-	t_cone obj;
-
-	ft_bzero(&obj, sizeof(t_cone));
-	obj.mem_size_obj = sizeof(t_cone);
-	obj.id = OBJ_CONE;
-	obj.angle = angle;
-	obj.color = color;
-	obj.position = position;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.m_specular = m_specular;
-
-	obj.intersect = &intersection_cone;
-	return (obj);
-}
-t_paraboloid 	paraboloid_construct(const t_vector position,
-										const uint32_t color,
-										const float m_specular,
-										const float option)
-{
-	t_paraboloid obj;
-
-	ft_bzero(&obj, sizeof(t_paraboloid));
-	obj.mem_size_obj = sizeof(t_paraboloid);
-	obj.id = OBJ_PARABOLOID;
-	obj.color = color;
-	obj.position = position;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.m_specular = m_specular;
-	obj.option = option;
-
-	obj.intersect = &intersection_paraboloid;
-	return (obj);
-}
-t_paraboloid_hyperbolic 	paraboloid_hyperbolic_construct(const t_vector position,
-										const float radius,
-										const uint32_t color,
-										const float m_specular)
-{
-	t_paraboloid_hyperbolic obj;
-
-	ft_bzero(&obj, sizeof(t_paraboloid_hyperbolic));
-	obj.mem_size_obj = sizeof(t_paraboloid_hyperbolic);
-	obj.id = OBJ_PARABOLOID_HYPERBOLIC;
-	obj.color = color;
-	obj.position = position;
-	obj.radius = radius;
-	obj.radius2 = radius * radius;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.m_specular = m_specular;
-
-	obj.intersect = &intersection_paraboloid_hyperbolic;
-	return (obj);
-}
-t_plan		plan_construct(const t_vector position,
-							const uint32_t color,
-							const float m_specular)
-{
-	t_plan obj;
-
-	ft_bzero(&obj, sizeof(t_plan));
-	obj.mem_size_obj = sizeof(t_plan);
-	obj.id = OBJ_PLANE;
-	obj.color = color;
-	obj.position = position;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.m_specular = m_specular;
-
-	obj.normal = vector_construct(0, 0, 1);
-
-	obj.intersect = &intersection_plane;
-	return (obj);
-}
-t_cylinder	cylinder_construct(const t_vector position,
-								const float radius,
-								const uint32_t color,
-								const float m_specular)
-{
-	t_cylinder obj;
-
-	ft_bzero(&obj, sizeof(t_cylinder));
-	obj.mem_size_obj = sizeof(t_cylinder);
-	obj.id = OBJ_CYLINDER;
-	obj.color = color;
-	obj.position = position;
-	obj.radius = radius;
-	obj.radius2 = radius * radius;
-	obj.rotate_speed = 1.5;
-	obj.speed = 5;
-	obj.m_specular = m_specular;
-
-	obj.intersect = &intersection_cylinder;
-	return (obj);
-}
-t_light	 	light_construct(const t_vector position, const uint8_t type, float intensity, const uint32_t color, const float radius)
-{
-	t_light		obj;
-
-	obj.type = type;
-	obj.position = position;
-	obj.color = color;
-	obj.intensity = intensity;
-	obj.radius = radius;
-	obj.radius = radius * radius;
-	obj.dir = vector_construct(0, 0, 1);
-	return (obj);
-}
-
-void 		obj_set_limit(t_obj *obj, float limit)
-{
-	char *li = ft_itoa_base(OBJ_LIMIT, 2);
-	char *my = ft_itoa_base(obj->id, 2);
-	ft_printf("ID : %s | FLAG : %s\n", my, li);
-	if (obj->id & OBJ_LIMIT)
-	{
-		((t_obj_limit *)obj)->limit = limit;
-		ft_printf("IN FUNCTION : %.2f\n", ((t_obj_limit *)(obj))->limit);
-	}
-	return ;
-}
-
-bool 		init_object(t_env *e)
-{
-	uint32_t	nb_sphere = 8;
-	t_sphere	s[nb_sphere];
-	t_list		*push;
-
-	s[0] = sphere_construct(vector_construct(20, 20, 0), 0x84F15E, 0, 0.5, 0);
-	s[1] = sphere_construct(vector_construct(1e5, 0, -2500), 0xFF0000, 0, 1e5, 0); // RIGHT WALL
-	s[2] = sphere_construct(vector_construct(-1e5, 0, -2500), 0x00FF00, 0, 1e5, 0); // LEFT WALL
-	s[3] = sphere_construct(vector_construct(0, 0, 1e5 + 100), 0x0000FF, 0, 1e5, 0); // BACK WALL
-	s[4] = sphere_construct(vector_construct(0, 0, -1e5 - 100), 0x005500, 0, 1e5, 0); // FRONT WALL
-	s[5] = sphere_construct(vector_construct(0, 1e5, 2500), 0x55F0FF, 0, 1e5, 0); // TOP WALL
-	s[6] = sphere_construct(vector_construct(0, -1e5, -2500), 0xFF5500, 0, 1e5, 0); // DOWN WALL
-	s[7] = sphere_construct(vector_construct(10, 10, 10), 0xFFFFFF, 0, 0.1, F_ISLIGHT);
-//	s[8] = sphere_construct(vector_construct(20, 20, 0), 0.1, 0xFFFFFF, F_ISLIGHT);
-
-	t_obj *to;
-	uint32_t a = 0;
-	while (a < nb_sphere)
-	{
-		//e->scene.mem_size_obj += sizeof(t_sphere);
-		if (!(e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_sphere))))
-		//if (!(e->scene.ptr_obj = realloc(e->scene.ptr_obj, e->scene.mem_size_obj)))
-			return (end_of_program(e, "malloc failed", 0));
-		if (!(e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&s[a], e->scene.mem_size_obj, sizeof(t_sphere))))
-			return (end_of_program(e, "memcpy return Null", 0));
-		e->scene.mem_size_obj += sizeof(t_sphere);
-
-		if (!(push = ft_lstnew(&s[a], sizeof(t_sphere))))
-			return (false);
-		ft_lstinsert(&e->obj, push);
-		to = e->scene.ptr_obj + e->scene.mem_size_obj - sizeof(t_sphere);
-		a++;
-	}
-
-	/*		TEST PTR OBJ SPHERE 		*/
-
-	t_plan p;
-
-	p = plan_construct(vector_construct(1, 1, -30), 0xFF00FF, 2);
-
-	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_plan));
-	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&p, e->scene.mem_size_obj, sizeof(t_plan));
-	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
-
-	e->scene.mem_size_obj += sizeof(t_plan);
-
-	if (!(push = ft_lstnew(&p, sizeof(t_plan))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-
-	t_cylinder c;
-
-	c = cylinder_construct(vector_construct(5, 5, 5), 2, 0x0BFF28, 13);
-	obj_set_limit((t_obj *)&c, 10);
-
-	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_cylinder));
-	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&c, e->scene.mem_size_obj, sizeof(t_cylinder));
-	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
-
-	e->scene.mem_size_obj += sizeof(t_cylinder);
-
-	if (!(push = ft_lstnew(&c, sizeof(t_cylinder))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-
-	t_paraboloid paraboloid;
-
-	paraboloid = paraboloid_construct(vector_construct(-5, -4, -8), 0xF28FB0, 3, 0.1);
-	obj_set_limit((t_obj *)&paraboloid, 2);
-
-	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_paraboloid));
-	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&paraboloid, e->scene.mem_size_obj, sizeof(t_paraboloid));
-	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
-
-	e->scene.mem_size_obj += sizeof(t_paraboloid);
-
-	if (!(push = ft_lstnew(&paraboloid, sizeof(t_paraboloid))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-
-
-
-	t_cone cone;
-	cone = cone_construct(vector_construct(5, 5, 5), 0.45f, 0xbe6226, 8);
-	obj_set_limit((t_obj *)&cone, 5);
-	ft_printf("\n______________Cone limit = %.2f\n", cone.limit);
-
-	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_cone));
-	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&cone, e->scene.mem_size_obj, sizeof(t_cone));
-		//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
-	ft_printf("Cone : ID[%i] | Size in mem %li\n", cone.id, e->scene.mem_size_obj);
-	e->scene.mem_size_obj += sizeof(t_cone);
-
-	if (!(push = ft_lstnew(&cone, sizeof(t_cone))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-
-	t_ellipsoid ellipsoid;
-	ellipsoid = ellipsoid_construct(vector_construct(1, 1, 1), vector_construct(1, 1, 1),1, 0x225be6, 4);
-
-	e->scene.ptr_obj = ft_memrealloc(e->scene.ptr_obj, e->scene.mem_size_obj, e->scene.mem_size_obj + sizeof(t_ellipsoid));
-	e->scene.ptr_obj = ft_memcpy_offset(e->scene.ptr_obj, (void *)&ellipsoid, e->scene.mem_size_obj, sizeof(t_ellipsoid));
-	//vector_string(&((t_obj*)(e->scene.ptr_obj + e->scene.mem_size_obj))->position);
-
-	e->scene.mem_size_obj += sizeof(t_ellipsoid);
-
-	if (!(push = ft_lstnew(&ellipsoid, sizeof(t_ellipsoid))))
-		return (false);
-	ft_lstinsert(&e->obj, push);
-
-
-/*|
-**|============================================================================|
-**|								    {LIGHT} 								   |
-**|============================================================================|
-*/
-
-	t_light light;
-	light = light_construct(vector_construct(10, 10, 10), LIGHT_BASIC, 0.66, 0xFFFFFF, 10);
-
-	e->scene.ptr_light = ft_memrealloc(e->scene.ptr_light, e->scene.mem_size_light, e->scene.mem_size_light + sizeof(t_light));
-	e->scene.ptr_light = ft_memcpy_offset(e->scene.ptr_light, (void *)&light, e->scene.mem_size_light, sizeof(t_light));
-
-	e->scene.mem_size_light += sizeof(t_light);
-	light = light_construct(vector_construct(-10, 10, 10), LIGHT_BASIC,  0.33, 0xFF0000, 2);
-
-	e->scene.ptr_light = ft_memrealloc(e->scene.ptr_light, e->scene.mem_size_light, e->scene.mem_size_light + sizeof(t_light));
-	e->scene.ptr_light = ft_memcpy_offset(e->scene.ptr_light, (void *)&light, e->scene.mem_size_light, sizeof(t_light));
-
-	e->scene.mem_size_light += sizeof(t_light);
-
-	ft_printf("Size light ; %u\n", e->scene.mem_size_light);
-
-	e->obj_len = ft_lstlen(e->obj);
-	return (true);
-}
 
 void 		run_multi_thread(t_env *e)
 {
@@ -396,10 +83,29 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 
 	cl->err = clSetKernelArg(cl->kernel, 0, sizeof(cl_mem), &cl->mem[0]);
 	cl_check_err(cl->err, "clSetKernelArg | SDL_Pix");
-	cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &cl->mem[1]);
-	cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
-	cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->scene.mem_size_obj));
-	cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
+	cl_mem mem = 0;
+	if (e->flag & F_FOCUS)
+	{
+		uint64_t size_obj = ((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->mem_size_obj;
+		mem = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
+				size_obj,  NULL, &(cl->err));
+		cl_check_err(cl->err, "clCreateBuffer");
+		cl->err = clEnqueueWriteBuffer(cl->cq, mem, CL_TRUE, 0,
+								size_obj,
+								e->scene.ptr_obj + e->mem_obj_index, 0, NULL, NULL);
+		cl_check_err(cl->err, "clEnqueueWriteBuffer mem_obj");
+		cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &mem);
+		cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
+		cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &size_obj);
+		cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
+	}
+	else
+	{
+		cl->err = clSetKernelArg(cl->kernel, 1, sizeof(cl_mem), &cl->mem[1]);
+		cl_check_err(cl->err, "clSetKernelArg | ptr_obj");
+		cl->err = clSetKernelArg(cl->kernel, 2, sizeof(uint64_t), &(e->scene.mem_size_obj));
+		cl_check_err(cl->err, "clSetKernelArg | mem_size_obj");
+	}
 	cl->err = clSetKernelArg(cl->kernel, 3, sizeof(t_ptr_cl), &(e->p_cl));
 	cl_check_err(cl->err, "clSetKernelArg | p_cl");
 	cl->err = clSetKernelArg(cl->kernel, 4, sizeof(t_cam), &(e->scene.cam));
@@ -414,6 +120,8 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clSetKernelArg | Local");
 	cl->err = clSetKernelArg(cl->kernel, 9, sizeof(cl_mem), &cl->mem[3]);
 	cl_check_err(cl->err, "clSetKernelArg | count struct");
+	cl->err = clSetKernelArg(cl->kernel, 10, sizeof(int), &(e->flag));
+	cl_check_err(cl->err, "clSetKernelArg | flag");
 	/*cl->err = clSetKernelArg(cl->kernel, 6, sizeof(int), &e->flag);
 	cl_check_err(cl->err, "clSetKernelArg | flag");*/
 	/* RUN KERNEL     */
@@ -428,6 +136,8 @@ void 		cl_render(t_env *e, t_cl *cl, t_sdl *sdl)
 	cl_check_err(cl->err, "clFlush");
 	clReleaseEvent(event);
 
+	if (e->flag & F_FOCUS)
+		clReleaseMemObject(mem);
 	/* GET RET        */
 	cl->err = clEnqueueReadBuffer(cl->cq, cl->mem[0], CL_TRUE, 0,
 			sizeof(uint32_t) * sdl->width * sdl->height,
@@ -458,7 +168,6 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 		e->count.nb_try = 0;
 		e->count.nb_hit = 0;
 		cl_render(e, &e->cl, sdl);
-		//run_multi_thread(e);
 		//ft_printf("Resultat en [%.2f]\nNb_obj [%li] for [%li] ray\n[%li] / [%li]\n",
 		//			c->time,c->nb_obj,c->nb_ray,c->nb_hit,c->nb_try);
 		SDL_UpdateTexture(sdl->img, NULL, sdl->pix, sdl->width * sizeof(uint32_t));
@@ -502,8 +211,6 @@ int main(int argc, char **argv)
 		return (0);
 	if (e.flag & F_DEBUG_PARSING)
 		return (EXIT_SUCCESS);
-	//if (!init_object(&e))
-	//	return (end_of_program(&e, "Problème a l'initialisation des objets", 0));
 	if (!sdl_init(&e.sdl))
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
 	t_sphere *sphere;
@@ -545,7 +252,7 @@ int main(int argc, char **argv)
 		e.count.nb_obj = e.obj_len;
 		e.count.nb_ray = e.sdl.height * e.sdl.width;
 	}
-//	e.mem_obj_index = 896;
+	e.mem_obj_index = 1128;
 	if (e.flag & F_CPU)
 		sdl_loop(&e, &e.sdl);
 	else

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 22:35:50 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 18:13:15 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,7 @@ static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
 		if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_PARABOLOID)
 			((t_paraboloid *)o)->option -= 0.01;
 		if (ev->key[SDL_SCANCODE_KP_9] && o->id & OBJ_LIMIT)
-		{
 			((t_obj_limit *)o)->limit += 0.1;
-			ft_printf("UP \n");
-		}
 		if (ev->key[SDL_SCANCODE_KP_6] && o->id & OBJ_LIMIT)
 			((t_obj_limit *)o)->limit -= 0.1;
 	}
@@ -95,22 +92,20 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 
 	if (save == e->fps.cur.tv_sec)
 		return ;
+	o = (t_obj *)(e->scene.ptr_obj + e->mem_obj_index);
+	if (o->flag & OBJ_ISFOCUS)
+		o->flag ^= OBJ_ISFOCUS;
 	save = e->fps.cur.tv_sec;
-	if (!(e->flag & F_CPU) && incr > 0)
-		e->mem_obj_index += ((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->mem_size_obj;
-	else
-		e->obj_index += incr;
-	if (e->obj_index < 0)
-		e->obj_index = e->obj_len - 1;
-	if (e->obj_index == e->obj_len)
-		e->obj_index = 0;
+	if (incr > 0)
+		e->mem_obj_index +=
+				((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->mem_size_obj;
 	if (e->mem_obj_index == e->scene.mem_size_obj)
 		e->mem_obj_index = 0;
 	o = (t_obj *)(e->scene.ptr_obj + e->mem_obj_index);
-	if (e->flag & F_CPU)
-		ft_printf("%i/%i\n TYPE %i\n", e->obj_index, e->obj_len, o->id);
-	else
-		ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->scene.mem_size_obj, ((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->id);
+	ft_printf("%i/%i\n TYPE %i\n", e->mem_obj_index, e->scene.mem_size_obj,
+					((t_obj *)(e->scene.ptr_obj + e->mem_obj_index))->id);
+	if (o->flag & OBJ_ISFOCUS)
+		o->flag ^= OBJ_ISFOCUS;
 }
 
 void		update_transform_light(const t_event *ev, t_light *light)
@@ -144,4 +139,12 @@ void 		update_obj(t_env *e, t_sdl *sdl)
 	update_transform_obj(e, ev, o);
 	update_transform_obj(e, ev, (t_obj *)(e->scene.ptr_obj + e->mem_obj_index));
 	update_transform_light(ev, (t_light*)e->scene.ptr_light);
+	if (ev->key[SDL_SCANCODE_TAB])
+		e->flag & F_SHADOW ? (e->flag ^= F_SHADOW) : 0;
+	else
+		e->flag |= F_SHADOW;
+	if (ev->key[SDL_SCANCODE_F])
+		e->flag |= F_FOCUS;
+	else
+		e->flag & F_FOCUS ? (e->flag ^= F_FOCUS) : 0;
 }

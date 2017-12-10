@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 17:02:26 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 17:53:08 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@
 # define F_CPU (1 << 1)
 # define F_DEBUG_SIZE_STRUCT (1 << 2)
 # define F_DEBUG_PARSING (1 << 3)
+# define F_SHADOW (1 << 15)
+# define F_FOCUS (1 << 16)
 
 # define ERROR_SDL (1 << 1)
+
 
 # define NB_THREAD 4
 

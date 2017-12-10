@@ -20,7 +20,8 @@
 # define LIGHT_SPHERE (1 << 1)
 # define LIGHT_DIRECT (1 << 2)
 
-# define F_ISLIGHT (1 << 0)
+# define OBJ_ISLIGHT (1 << 0)
+# define OBJ_ISFOCUS (1 << 1)
 
 typedef struct	s_cam
 {

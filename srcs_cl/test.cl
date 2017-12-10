@@ -33,7 +33,7 @@ unsigned int	hex_intensity(unsigned int color, float intensity);
 t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, __global t_count *count);
 t_ray_ret		ray_shadow(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
 
-float			ray_light(__local char *l_mem_obj, unsigned long mem_size_obj, __local char *l_mem_light, unsigned long mem_size_light, t_ray_ret *ray_ret, t_vector *dir);
+float			ray_light(__local char *l_mem_obj, unsigned long mem_size_obj, __local char *l_mem_light, unsigned long mem_size_light, t_ray_ret *ray_ret, t_vector *dir, int shadow);
 float			light_specular(const __local t_light *light, const t_vector *dir_light_to_obj, const t_ray_ret *ray_ret, const t_vector *dir);
 float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_light, const t_ray_ret *ray_ret);
 float			light_sphere(const __local t_light *light, const float dist);
@@ -407,8 +407,10 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	t_vector			dir_object;
 	t_vector			origin_object;
 
+	ray_ret.hit = 0;
 	tmp_r.y_axis = vector_construct(0, 1, 0);
 	min_distance = INFINITY;
+	tmp_r.distance_intersection = INFINITY;
 	cur = 0;
 	while (cur < mem_size_obj)
 	{
@@ -438,6 +440,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		{
 			//atomic_inc(&count->nb_hit);
 			tmp_r.ptr_obj = obj;
+			tmp_r.hit = 1;
 			min_distance = tmp_r.distance_intersection;
 			ray_ret = tmp_r;
 		}
@@ -474,7 +477,7 @@ t_ray_ret		ray_shadow(__local char *l_mem_obj,
 		origin_object = vector_get_sub_local(origin, &obj->position);
 		origin_object = vector_get_rotate_obj_local(&origin_object, obj);
 
-		if (obj->id == OBJ_SPHERE && (!obj->flag & F_ISLIGHT))
+		if (obj->id == OBJ_SPHERE && (!obj->flag & OBJ_ISLIGHT))
 			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_object, &dir_object, near);
 		else if (obj->id == OBJ_PLANE)
 			tmp_r.distance_intersection = intersection_plane((const __local t_plan *)obj, origin, dir, near);
@@ -527,22 +530,17 @@ float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_l
 		ret_dot = 0;
 	return (ret_dot);
 }
-float			light_sphere(const __local t_light *light, const float dist)
-{
-	float l_inten = 1;
-
-	l_inten = (1000 / (4 * M_PI * dist));
-	return (l_inten);
-}
 float			ray_light(__local char *l_mem_obj,
 						unsigned long mem_size_obj,
 						__local char *l_mem_light,
 						unsigned long mem_size_light,
 						t_ray_ret *ray_ret,
-						t_vector *dir)
+						t_vector *dir,
+						int flag)
 {
 	unsigned long cur;
 	__local t_light *light;
+	__local t_obj *obj;
 
 	t_vector dir_obj_to_light;
 	t_vector dir_light_to_obj;
@@ -551,6 +549,7 @@ float			ray_light(__local char *l_mem_obj,
 	float		is_not_shadow, final_color = 0, specular = 0, diffuse = 1, spherical = 1;
 
 	cur = 0;
+	obj = ray_ret->ptr_obj;
 	while (cur < mem_size_light)
 	{
 		is_not_shadow = 1;
@@ -566,16 +565,16 @@ float			ray_light(__local char *l_mem_obj,
 
 		//SHAD
 		light_position = light->position;
-		ray_shad = ray_shadow(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position, dist);
-		if (ray_shad.ptr_obj != ray_ret->ptr_obj)
+		if (flag & F_SHADOW)
+			ray_shad = ray_shadow(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position, dist);
+		else
+			ray_shad .ptr_obj = 0;
+		if (ray_shad.ptr_obj != ray_ret->ptr_obj && flag & F_SHADOW)
 			is_not_shadow = 0;
 
 		diffuse = light_diffuse(light, &dir_obj_to_light, ray_ret);
-		if (ray_ret->ptr_obj->m_specular > EPSILON)
+		if (obj->m_specular > EPSILON)
 			specular = light_specular(light, &dir_light_to_obj, ray_ret, dir);
-		if (light->type == LIGHT_SPHERE)
-			spherical = light_sphere(light, dist);
-
 		final_color += ((diffuse + specular) * spherical * light->intensity * is_not_shadow);
 		cur += sizeof(t_light);
 	}
@@ -598,7 +597,8 @@ __kernel void test(__global int *img,
 					__global char *g_mem_light,
 					unsigned long mem_size_light,
 					__local char *l_mem_light,
-					__global t_count *count)
+					__global t_count *count,
+					int	flag)
 {
 
 	__local t_obj		*o;
@@ -622,7 +622,11 @@ __kernel void test(__global int *img,
 	vector_normalize(&dir);
 
 	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam.position, count);
-
+	if (!ray_ret.hit)
+	{
+		img[x + y * WIDTH] = 0x123123;
+		return ;
+	}
 	//AFTER
 	o = ray_ret.ptr_obj;
 	ray_ret.hit_point = vector_get_mult(&dir, ray_ret.distance_intersection);
@@ -651,5 +655,5 @@ __kernel void test(__global int *img,
 
 	ray_ret.hit_normal = vector_get_inverse_rotate_obj_local(&ray_ret.hit_normal, o);
 	vector_normalize(&ray_ret.hit_normal);
-	img[x + y * WIDTH]  = hex_intensity(o->color, ray_light(l_mem_obj, mem_size_obj, l_mem_light, mem_size_light, &ray_ret, &dir));
+	img[x + y * WIDTH] = hex_intensity(o->color, ray_light(l_mem_obj, mem_size_obj, l_mem_light, mem_size_light, &ray_ret, &dir, flag));
 }

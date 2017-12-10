@@ -29,7 +29,6 @@ typedef int int32_t;
 # define OBJ_CONE (1 << 6)
 # define OBJ_DECOUPE (OBJ_PARABOLOID | OBJ_CYLINDER | OBJ_CONE)
 
-
 # define LIGHT_BASIC (1 << 0)
 # define LIGHT_SPHERE (1 << 1)
 # define LIGHT_DIRECT (1 << 2)
@@ -37,8 +36,11 @@ typedef int int32_t;
 # define INTER_IN (1 << 1)
 # define INTER_OUT (1 << 2)
 
-# define F_ISLIGHT (1 << 0)
-# define F_ISSPECULAR (1 << 1)
+# define OBJ_ISLIGHT (1 << 0)
+# define OBJ_ISFOCUS (1 << 1)
+# define F_SHADOW (1 << 15)
+# define F_FOCUS (1 << 16)
+
 
 typedef struct	s_count
 {
@@ -135,6 +137,7 @@ typedef struct	s_ray_ret
 
 	__local t_obj *ptr_obj;
 	int			inter;
+	int			hit;
 }				t_ray_ret;
 
 typedef struct 	s_sphere
