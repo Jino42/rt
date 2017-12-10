@@ -6,16 +6,16 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/08 14:05:48 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 23:39:39 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/11 00:02:22 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void 	update_transform_light(const t_env *e, const t_vector *dir)
+static void		update_transform_light(const t_env *e, const t_vector *dir)
 {
-	t_light	*light;
-	t_obj	*obj;
+	t_light		*light;
+	t_obj		*obj;
 	uint64_t	cur;
 	uint64_t	cur_light;
 
@@ -55,41 +55,28 @@ static void		update_rotation_obj(const t_env *e, const t_event *ev, t_obj *o)
 	}
 }
 
-static void		update_translate_obj(const t_env *e, const t_event *ev, t_obj *o)
+static void		update_translate_obj(const t_env *e, const t_event *ev,
+																	t_obj *o)
 {
 	t_vector dir;
 
-	if (ev->key[SDL_SCANCODE_KP_8] && ev->key[SDL_SCANCODE_LSHIFT])
-	{
+	if (ev->key[SDL_SCANCODE_KP_8])
 		dir = vector_construct(0, 0, o->speed * e->fps.delta_time);
-		if (o->flag & OBJ_ISLIGHT)
-			update_transform_light(e, &dir);
-		vector_add(&o->position, &dir);
-	}
-	if (ev->key[SDL_SCANCODE_KP_5] && ev->key[SDL_SCANCODE_LSHIFT])
-	{
+	if (ev->key[SDL_SCANCODE_KP_5])
 		dir = vector_construct(0, 0, -o->speed * e->fps.delta_time);
-		if (o->flag & OBJ_ISLIGHT)
-			update_transform_light(e, &dir);
-		vector_add(&o->position, &dir);
-	}
-	if (ev->key[SDL_SCANCODE_KP_4] && ev->key[SDL_SCANCODE_LSHIFT])
-	{
+	if (ev->key[SDL_SCANCODE_KP_4])
 		dir = vector_construct(o->speed * e->fps.delta_time, 0, 0);
-		if (o->flag & OBJ_ISLIGHT)
-			update_transform_light(e, &dir);
-		vector_add(&o->position, &dir);
-	}
-	if (ev->key[SDL_SCANCODE_KP_6] && ev->key[SDL_SCANCODE_LSHIFT])
-	{
+	if (ev->key[SDL_SCANCODE_KP_6])
 		dir = vector_construct(-o->speed * e->fps.delta_time, 0, 0);
-		if (o->flag & OBJ_ISLIGHT)
-			update_transform_light(e, &dir);
+	if (o->flag & OBJ_ISLIGHT)
+		update_transform_light(e, &dir);
+	if (ev->key[SDL_SCANCODE_KP_6] || ev->key[SDL_SCANCODE_KP_4] ||
+			ev->key[SDL_SCANCODE_KP_5] || ev->key[SDL_SCANCODE_KP_8])
 		vector_add(&o->position, &dir);
-	}
 }
 
-static void 	update_scaling_obj_radius(const t_env *e, const t_event *ev, t_obj *o)
+static void		update_scaling_obj_radius(const t_env *e, const t_event *ev,
+																	t_obj *o)
 {
 	if (ev->key[SDL_SCANCODE_KP_7] && o->id & OBJ_SPHERE)
 		((t_sphere *)o)->radius -= o->speed * e->fps.delta_time;
@@ -115,7 +102,8 @@ static void 	update_scaling_obj_radius(const t_env *e, const t_event *ev, t_obj 
 		((t_sphere *)o)->radius2 = ((t_sphere *)o)->radius *
 										((t_sphere *)o)->radius;
 }
-static void 	update_scaling_obj(const t_env *e, const t_event *ev, t_obj *o)
+
+static void		update_scaling_obj(const t_env *e, const t_event *ev, t_obj *o)
 {
 	if (ev->key[SDL_SCANCODE_KP_7] && o->id == OBJ_ELLIPSOID)
 		((t_ellipsoid *)o)->size.x += o->speed * e->fps.delta_time * 0.1;
@@ -141,24 +129,13 @@ static void 	update_scaling_obj(const t_env *e, const t_event *ev, t_obj *o)
 		((t_obj_limit *)o)->limit += o->speed * e->fps.delta_time;
 	if (ev->key[SDL_SCANCODE_KP_6] && o->id & OBJ_LIMIT)
 		((t_obj_limit *)o)->limit -= o->speed * e->fps.delta_time;
-	if ((ev->key[SDL_SCANCODE_KP_7] || ev->key[SDL_SCANCODE_KP_8]) &&
-	(o->id == OBJ_CYLINDER || o->id == OBJ_ELLIPSOID || o->id == OBJ_SPHERE))
-		update_scaling_obj_radius(e, ev, o);
+	update_scaling_obj_radius(e, ev, o);
 }
 
-
-static void 	update_transform_obj(const t_env *e, const t_event *ev, t_obj *o)
+void			update_obj_index(t_env *e, const int32_t incr)
 {
-	update_rotation_obj(e, ev, o);
-	update_translate_obj(e, ev, o);
-	if (!ev->key[SDL_SCANCODE_LSHIFT])
-		update_scaling_obj(e, ev, o);
-}
-
-void 		update_obj_index(t_env *e, const int32_t incr)
-{
-	t_obj	*o;
-	static time_t save = 0;
+	t_obj			*o;
+	static time_t	save = 0;
 
 	if (save == e->fps.cur.tv_sec)
 		return ;
@@ -178,17 +155,22 @@ void 		update_obj_index(t_env *e, const int32_t incr)
 		o->flag ^= OBJ_ISFOCUS;
 }
 
-void 		update_obj(t_env *e, t_sdl *sdl)
+void			update_obj(t_env *e, t_sdl *sdl)
 {
 	t_event		*ev;
+	t_obj		*o;
 
 	ev = &sdl->event;
 	if (ev->key[SDL_SCANCODE_KP_PLUS])
 		update_obj_index(e, 1);
 	if (ev->key[SDL_SCANCODE_KP_MINUS])
 		update_obj_index(e, -1);
-
-	update_transform_obj(e, ev, (t_obj *)(e->scene.ptr_obj + e->mem_obj_index));
+	o = (t_obj *)(e->scene.ptr_obj + e->mem_obj_index);
+	update_rotation_obj(e, ev, o);
+	if (ev->key[SDL_SCANCODE_LSHIFT])
+		update_translate_obj(e, ev, o);
+	if (!ev->key[SDL_SCANCODE_LSHIFT])
+		update_scaling_obj(e, ev, o);
 	if (ev->key[SDL_SCANCODE_TAB])
 		e->flag & F_SHADOW ? (e->flag ^= F_SHADOW) : 0;
 	else
