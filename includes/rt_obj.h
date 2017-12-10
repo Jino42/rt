@@ -128,9 +128,9 @@ typedef struct 	s_ellipsoid
 	t_vector	sin;
 	float		m_specular;
 
-	t_vector	size;
 	float		radius;
 	float		radius2;
+	t_vector	size;
 }				t_ellipsoid;
 
 typedef struct 	s_cone

@@ -6,13 +6,13 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/02 15:21:51 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/04 18:10:13 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 23:02:43 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void 		event_cam(t_env *e, t_event *event, t_cam *cam)
+void		event_cam(t_env *e, t_event *event, t_cam *cam)
 {
 	t_vector	dir;
 
