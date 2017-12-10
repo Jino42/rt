@@ -581,13 +581,6 @@ float			ray_light(__local char *l_mem_obj,
 	return (0.1 + final_color);
 }
 
-/*
-**|		TODO
-**|		Dir Light
-**|		Color light
-**|
-**|		Triangle ?
-*/
 __kernel void test(__global int *img,
 					__global char *g_mem_obj,
 					unsigned long mem_size_obj,

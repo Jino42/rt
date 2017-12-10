@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 17:53:08 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 18:45:03 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <stdint.h>
 # include <pthread.h>
 
-# define F_CPU (1 << 1)
 # define F_DEBUG_SIZE_STRUCT (1 << 2)
 # define F_DEBUG_PARSING (1 << 3)
 # define F_SHADOW (1 << 15)
@@ -86,17 +85,8 @@ typedef struct		s_env
 	t_count			count;
 }					t_env;
 
-typedef struct		s_arg_thread
-{
-	t_env 			*e;
-	uint32_t		start_y;
-	uint32_t		end_y;
-}					t_arg_thread;
-
-
 bool				flag(int64_t *f, int argc, char **argv);
 bool				parse_scene(t_env *e, char *path);
-void 				*foreachpix(void *arg_thread);
 void				update_fps(t_fps *fps);
 void 				update_cam(t_cam *cam);
 void 				update_obj(t_env *e, t_sdl *sdl);

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 21:32:50 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/08 22:50:00 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/10 18:43:14 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ int		end_of_program(t_env *e, char *str, int flag)
 		ft_dprintf(2, "%s\n", str);
 	if (flag)
 		ft_dprintf(2, "%s\n", SDL_GetError());
-	if (!(e->flag & F_CPU))
-		cl_end(&e->cl);
+	cl_end(&e->cl);
 	end_sdl(&e->sdl);
 	return (0);
 }

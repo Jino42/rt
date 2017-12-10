@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/10 16:56:26 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/10 18:49:48 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,16 +30,7 @@ SRC = main.c \
 	  update_obj.c \
 	  end_of_program.c \
 	  matrix.c \
-	  test.c \
 	  event_cam.c \
-	  solve_quadratic.c \
-	  intersection_sphere.c \
-	  intersection_plane.c \
-	  intersection_cylinder.c \
-	  intersection_paraboloid.c \
-	  intersection_paraboloid_hyperbolic.c \
-	  intersection_ellipsoid.c \
-	  intersection_cone.c \
 	  parsing/parse.c \
 	  parsing/parse_camera.c \
 	  parsing/parse_cone.c \
