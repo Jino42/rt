@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/10 18:49:48 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/10 21:11:28 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra
 
-INC_FILES = includes/rt.h includes/rt_cl.h includes/matrix.h includes/rt_obj.h includes/rt_sdl.h includes/rt_parse.h
+INC_FILES = includes/rt.h includes/rt_cl.h includes/rt_obj.h includes/rt_sdl.h includes/rt_parse.h
 
-INC = -I includes/ -I libft/includes -I vector/includes/ -I SDL2-2.0.5/include
+INC = -I includes/ -I libft/includes -I vector/includes/ -I matrix/includes/ -I SDL2-2.0.5/include
 
 SRC_DIR = srcs/
 
@@ -29,7 +29,6 @@ SRC = main.c \
 	  update_cam.c \
 	  update_obj.c \
 	  end_of_program.c \
-	  matrix.c \
 	  event_cam.c \
 	  parsing/parse.c \
 	  parsing/parse_camera.c \
@@ -67,8 +66,9 @@ FRAMEWORK = -framework OpenGL -framework AppKit -framework Opencl
 
 DIR_LFT = libft/
 DIR_VEC = vector/
+DIR_MATRIX = matrix/
 
-FLAG_LIB = -lft -lvector
+FLAG_LIB = -lft -lvector -lmatrix
 
 DIR_LIB = libs/
 
@@ -82,8 +82,10 @@ $(NAME): $(OBJ_DIR) lib $(addprefix $(OBJ_DIR), $(OBJET))
 lib:
 	@(cd $(DIR_LFT) && $(MAKE))
 	@(cd $(DIR_VEC) && $(MAKE))
+	@(cd $(DIR_MATRIX) && $(MAKE))
 	@(cp $(DIR_LFT)libft.a $(DIR_LIB))
 	@(cp $(DIR_VEC)libvector.a $(DIR_LIB))
+	@(cp $(DIR_MATRIX)libmatrix.a $(DIR_LIB))
 
 $(OBJ_DIR) :
 	@mkdir $(DIR_LIB)
@@ -101,6 +103,7 @@ clean:
 	@echo "Clean rt"
 	@(cd $(DIR_LFT) && $(MAKE) clean)
 	@(cd $(DIR_VEC) && $(MAKE) clean)
+	@(cd $(DIR_MATRIX) && $(MAKE) clean)
 	@/bin/rm -rf $(OBJ_DIR)
 	@/bin/rm -rf $(DIR_LIB)
 
@@ -109,6 +112,7 @@ fclean:
 	@/bin/rm -rf $(OBJ_DIR)
 	@(cd $(DIR_LFT) && $(MAKE) fclean)
 	@(cd $(DIR_VEC) && $(MAKE) fclean)
+	@(cd $(DIR_MATRIX) && $(MAKE) fclean)
 	@/bin/rm -rf $(DIR_LIB)
 	@/bin/rm -f $(NAME)
 

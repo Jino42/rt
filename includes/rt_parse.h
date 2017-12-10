@@ -2,6 +2,7 @@
 # define RT_PARSE_H
 
 # include "rt_obj.h"
+# include "libft.h"
 
 # include <stdbool.h>
 # include <stdint.h>

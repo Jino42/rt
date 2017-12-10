@@ -5,6 +5,9 @@
 # include "vector.h"
 # include "matrix.h"
 
+# include <stdbool.h>
+# include <stdint.h>
+
 # define NB_OBJ 7
 
 # define OBJ_SPHERE (1 << 0)
