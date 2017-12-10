@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_camera.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/10 22:49:22 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/10 22:58:09 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt_parse.h"
 
 bool		parse_camera(t_scene *scene, const int fd)
 {
 	char	*line_fd;
 
-	(void)scene;
 	line_fd = NULL;
 	if (get_next_line(fd, &line_fd) != 1)
 	{

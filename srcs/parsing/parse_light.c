@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_light.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/10 22:49:33 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/10 22:56:13 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt_parse.h"
 
-static bool sphere_aff_light(t_scene *scene, const t_light *light)
+static bool		sphere_aff_light(t_scene *scene, const t_light *light)
 {
 	t_sphere obj;
+
 	ft_bzero(&obj, sizeof(t_sphere));
 	obj.position = light->position;
 	obj.radius = 0.3;
@@ -19,17 +32,15 @@ static bool sphere_aff_light(t_scene *scene, const t_light *light)
 	return (true);
 }
 
-bool		parse_light(t_scene *scene, char *line_fd)
+bool			parse_light(t_scene *scene, char *line_fd)
 {
 	t_light		light;
 
 	ft_bzero(&light, sizeof(t_light));
 	if (!is_encaps(line_fd, 4))
 		return (false);
-	//[1]  ||  POSITION
 	if (!get_vec(strchr_arg(line_fd, 1), &light.position))
 		return (false);
-	//[2]  ||  TYPE LIGHT
 	if (ft_strequ_arg(strchr_arg(line_fd, 2), "BASIC", 5))
 		light.type = LIGHT_BASIC;
 	else if (ft_strequ_arg(strchr_arg(line_fd, 2), "SPHERE", 6))

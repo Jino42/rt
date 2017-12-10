@@ -1,7 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/10 22:49:18 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/10 22:50:34 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt_parse.h"
 #include "rt.h"
 
-static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd, const t_pars *tab)
+static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd,
+													const t_pars *tab)
 {
 	uint32_t index;
 
@@ -20,7 +33,8 @@ static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd, const t_pars *ta
 	return (end_of_program(e, "pars: name fun error", 0));
 }
 
-bool		run_parse(t_env *e, const int fd, t_scene *scene, const t_pars *tab)
+bool			run_parse(t_env *e, const int fd, t_scene *scene,
+													const t_pars *tab)
 {
 	char	*line_fd;
 
@@ -44,9 +58,7 @@ bool		run_parse(t_env *e, const int fd, t_scene *scene, const t_pars *tab)
 	return (true);
 }
 
-
-
-bool		parse_scene(t_env *e, char *path)
+bool			parse_scene(t_env *e, char *path)
 {
 	int		fd;
 	t_pars	*tab;

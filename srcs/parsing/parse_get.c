@@ -1,12 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_get.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/10 22:49:31 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/10 22:57:06 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt_parse.h"
 
 bool			get_float(char *str, float *nb)
 {
-	int i = 0;
-	int	preci = 0;
-	bool in = false;
+	int			i;
+	int			preci;
+	bool		in;
 
 	*nb = ft_atoi(str);
+	in = false;
+	preci = 0;
+	i = 0;
 	while (str[i] && str[i] != ' ')
 	{
 		if (str[i] == '.')
@@ -24,11 +39,14 @@ bool			get_float(char *str, float *nb)
 
 bool			get_radius(char *str, float *radius, float *radius2)
 {
-	int i = 0;
-	int	preci = 0;
-	bool in = false;
+	int			i;
+	int			preci;
+	bool		in;
 
 	*radius = ft_atoi(str);
+	in = false;
+	preci = 0;
+	i = 0;
 	while (str[i] && str[i] != ' ')
 	{
 		if (str[i] == '.')

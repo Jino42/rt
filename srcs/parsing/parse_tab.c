@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_tab.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/10 22:49:42 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/10 22:54:10 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt_parse.h"
 
-static void 		tab_put_param(t_pars *tab, const char *name,
+static void			tab_put_param(t_pars *tab, const char *name,
 					bool (*f)(t_scene *, char *), const char *msg_error)
 {
 	tab->offset = ft_strlen(name);
@@ -9,7 +21,7 @@ static void 		tab_put_param(t_pars *tab, const char *name,
 	tab->name = ft_strdup(name);
 }
 
-t_pars		*tab_construct(void)
+t_pars				*tab_construct(void)
 {
 	t_pars		*tab;
 
@@ -32,7 +44,7 @@ t_pars		*tab_construct(void)
 	return (tab);
 }
 
-void 		tab_destruct(t_pars **pars)
+void				tab_destruct(t_pars **pars)
 {
 	int i;
 
