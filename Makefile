@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/10 21:11:28 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/10 22:30:43 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,13 +23,11 @@ INC = -I includes/ -I libft/includes -I vector/includes/ -I matrix/includes/ -I 
 SRC_DIR = srcs/
 
 SRC = main.c \
-	  parse.c \
-	  mem_obj.c \
-	  update_fps.c \
-	  update_cam.c \
-	  update_obj.c \
 	  end_of_program.c \
-	  event_cam.c \
+	  update/event_cam.c \
+	  update/update_fps.c \
+	  update/update_cam.c \
+	  update/update_obj.c \
 	  parsing/parse.c \
 	  parsing/parse_camera.c \
 	  parsing/parse_cone.c \
@@ -94,6 +92,7 @@ $(OBJ_DIR) :
 	@mkdir $(OBJ_DIR)$/sdl
 	@mkdir $(OBJ_DIR)$/cl
 	@mkdir $(OBJ_DIR)$/parsing
+	@mkdir $(OBJ_DIR)$/update
 
 $(OBJ_DIR)%.o: $(addprefix $(SRC_DIR), %.c) $(INC_FILES)
 	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
