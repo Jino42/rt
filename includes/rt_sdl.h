@@ -31,7 +31,6 @@ typedef struct		s_sdl
 	SDL_Texture		*img;
 	SDL_Event		ev;
 	t_event			event;
-	const uint32_t	*key;
 	uint32_t		*pix;
 }					t_sdl;
 

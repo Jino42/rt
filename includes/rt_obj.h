@@ -47,9 +47,6 @@ typedef struct	s_scene
 	void		*ptr_light;
 }				t_scene;
 
-
-///////////////////////////////////////////////////
-
 typedef struct	s_light
 {
 	uint32_t	type;

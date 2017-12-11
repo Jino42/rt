@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:42 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 22:54:10 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/11 22:26:09 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,14 @@ t_pars				*tab_construct(void)
 void				tab_destruct(t_pars **pars)
 {
 	int i;
+	t_pars *p = *pars;
 
 	i = 0;
 	while (i < NB_OBJ)
 	{
-		ft_strdel(&((*pars)->name));
-		ft_strdel(&((*pars)->msg_error));
+		ft_strdel(&p[i].name);
+		ft_strdel(&p[i].msg_error);
 		i++;
 	}
-	*pars = NULL;
+	ft_memdel((void *)pars);
 }
