@@ -30,7 +30,7 @@ void	normal_cone(const __local t_cone *obj, t_ray_ret *r);
 
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
-t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, __global t_count *count);
+t_ray_ret		ray_intersection(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin);
 t_ray_ret		ray_shadow(__local char *l_mem_obj, unsigned long mem_size_obj, t_vector *dir, t_vector *origin, float near);
 
 float			ray_light(__local char *l_mem_obj, unsigned long mem_size_obj, __local char *l_mem_light, unsigned long mem_size_light, t_ray_ret *ray_ret, t_vector *dir, int shadow);
@@ -393,8 +393,7 @@ unsigned int	hex_intensity(unsigned int color, float intensity)
 t_ray_ret		ray_intersection(__local char *l_mem_obj,
 								unsigned long mem_size_obj,
 								t_vector *dir,
-								t_vector *origin,
-								__global t_count *count)
+								t_vector *origin)
 {
 	t_ray_ret			tmp_r;
 	t_ray_ret			ray_ret;
@@ -414,7 +413,6 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	cur = 0;
 	while (cur < mem_size_obj)
 	{
-		//atomic_inc(&count->nb_try);
 		tmp_r.distance_intersection = 0;
 		obj = (__local t_obj *)(l_mem_obj + cur);
 
@@ -438,7 +436,6 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
 		{
-			//atomic_inc(&count->nb_hit);
 			tmp_r.ptr_obj = obj;
 			tmp_r.hit = 1;
 			min_distance = tmp_r.distance_intersection;
@@ -590,7 +587,6 @@ __kernel void test(__global int *img,
 					__global char *g_mem_light,
 					unsigned long mem_size_light,
 					__local char *l_mem_light,
-					__global t_count *count,
 					int	flag)
 {
 
@@ -610,11 +606,10 @@ __kernel void test(__global int *img,
 	float py = (1 - 2 * (((float)y + 0.5) * p_cl.invH)) * p_cl.scale;
 
 	dir = vector_construct(px, py, -1);
-	//dir = matrix_get_mult_vector(&cam.camera_to_world, &dir);
 	dir = vector_get_rotate(&dir, &cam.angle);
 	vector_normalize(&dir);
 
-	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam.position, count);
+	t_ray_ret ray_ret = ray_intersection(l_mem_obj, mem_size_obj, &dir, &cam.position);
 	if (!ray_ret.hit)
 	{
 		img[x + y * WIDTH] = 0x123123;

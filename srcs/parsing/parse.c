@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:18 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 22:50:34 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/11 21:21:33 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,12 @@ bool			run_parse(t_env *e, const int fd, t_scene *scene,
 	return (true);
 }
 
+static void		init_camera(t_cam *cam)
+{
+	cam->speed_rotate = 4;
+	cam->speed = 32;
+}
+
 bool			parse_scene(t_env *e, char *path)
 {
 	int		fd;
@@ -67,6 +73,7 @@ bool			parse_scene(t_env *e, char *path)
 		return (end_of_program(e, "Error de mallocation.", 0));
 	if ((fd = open(path, O_RDWR)) <= 0)
 		return (end_of_program(e, "Votre fichier me pose problème.", 0));
+	init_camera(&e->scene.cam);
 	if (!run_parse(e, fd, &e->scene, tab))
 	{
 		tab_destruct(&tab);

@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 19:31:04 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/11 21:30:51 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,6 @@
 # define F_FOCUS (1 << 16)
 
 # define ERROR_SDL (1 << 1)
-
-
-# define NB_THREAD 4
-
-typedef struct	s_count
-{
-	float		time;
-	uint32_t	nb_obj;
-	uint32_t	nb_ray;
-	uint32_t	nb_try;
-	uint32_t	nb_hit;
-}				t_count;
 
 typedef struct	s_ptr_cl
 {
@@ -71,18 +59,12 @@ typedef struct		s_env
 	t_sdl			sdl;
 	t_fps			fps;
 
-	t_list			*obj;
-
 	t_scene			scene;
 
-	int32_t			obj_len;
 	int32_t			obj_index;
 	uint64_t		mem_obj_index;
 
-	float			temp;
 	int64_t			flag;
-
-	t_count			count;
 }					t_env;
 
 bool				flag(int64_t *f, int argc, char **argv);
