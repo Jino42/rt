@@ -1,5 +1,5 @@
-#ifndef MATRIX_PRIVATE_HL
-# define MATRIX_PRIVATE_HL
+#ifndef LOCAL_FUNCTION_HL
+# define LOCAL_FUNCTION_HL
 
 #include "matrix.hl"
 

@@ -66,8 +66,6 @@ typedef struct	s_cam
 	t_matrix	camera_to_world;
 }				t_cam;
 
-///////////////////////////////////////////////////
-
 typedef struct	s_light
 {
 	uint32_t		type;
@@ -136,7 +134,7 @@ typedef struct	s_ray_ret
 typedef struct 	s_sphere
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -155,7 +153,7 @@ typedef struct 	s_sphere
 typedef struct 	s_ellipsoid
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -175,7 +173,7 @@ typedef struct 	s_ellipsoid
 typedef struct 	s_cone
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -195,7 +193,7 @@ typedef struct 	s_cone
 typedef struct	s_paraboloid
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -215,7 +213,7 @@ typedef struct	s_paraboloid
 typedef struct	s_plan
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 
@@ -233,7 +231,7 @@ typedef struct	s_plan
 typedef struct	s_cylinder
 {
 	uint64_t	mem_size_obj;
-	uint32_t		id;
+	uint32_t	id;
 	uint32_t	color;
 	uint32_t	flag;
 

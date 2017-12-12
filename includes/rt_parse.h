@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rt_parse.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/12 22:30:39 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/12 22:32:29 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RT_PARSE_H
 # define RT_PARSE_H
 
@@ -30,13 +42,15 @@ bool			get_radius(char *str, float *radius, float *radius2);
 bool			get_hexa(char *str, uint32_t *nb);
 bool			get_vec(char *str, t_vector *vec);
 
-void			parse_basic_param(t_obj *obj, const uint32_t mem_size_obj, const uint32_t obj_id);
+void			parse_basic_param(t_obj *obj, const uint32_t mem_size_obj,
+														const uint32_t obj_id);
 bool			parse_ptr_obj(char *line_fd, t_obj *obj);
 
 t_pars			*tab_construct(void);
-void 			tab_destruct(t_pars **pars);
+void			tab_destruct(t_pars **pars);
 
-bool			parse_push_obj(t_scene *scene, const void * obj, const uint32_t size_obj);
+bool			parse_push_obj(t_scene *scene, const void *obj,
+													const uint32_t size_obj);
 bool			parse_push_light(t_scene *scene, const void *obj);
 
 bool			parse_sphere(t_scene *scene, char *line_fd);

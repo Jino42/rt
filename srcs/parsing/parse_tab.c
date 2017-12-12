@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:42 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/11 22:26:09 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 21:44:58 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ t_pars				*tab_construct(void)
 
 void				tab_destruct(t_pars **pars)
 {
-	int i;
-	t_pars *p = *pars;
+	int		i;
+	t_pars	*p;
 
+	p = *pars;
 	i = 0;
 	while (i < NB_OBJ)
 	{

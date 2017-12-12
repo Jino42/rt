@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rt_sdl.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/12 22:30:31 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/12 22:31:00 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RT_SDL_H
 # define RT_SDL_H
 
@@ -35,9 +47,9 @@ typedef struct		s_sdl
 }					t_sdl;
 
 bool				sdl_init(t_sdl *sdl);
-void 				sdl_put_pixel(t_sdl *sdl, const uint32_t x,
+void				sdl_put_pixel(t_sdl *sdl, const uint32_t x,
 							const uint32_t y, uint32_t const col);
-void 				sdl_update_event(t_sdl *sdl, t_event *event);
+void				sdl_update_event(t_sdl *sdl, t_event *event);
 bool				sdl_event_exit(t_sdl *sdl);
 bool				sdl_key(t_sdl *sdl, const uint32_t key);
 

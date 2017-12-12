@@ -21,12 +21,12 @@ float		intersection_cone(const __local t_cone *obj, const t_vector *origin_objec
 float		intersection_plane(const __local t_plan *obj, const t_vector *origin, const t_vector *dir, const float len);
 float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_object, const t_vector *dir_object, float inter0, float inter1);
 
-void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r);
-void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r);
-void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r);
-void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r);
-void	normal_plan(const __local t_plan *obj, t_ray_ret *r);
-void	normal_cone(const __local t_cone *obj, t_ray_ret *r);
+void		normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r);
+void		normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r);
+void		normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r);
+void		normal_sphere(const __local t_sphere *obj, t_ray_ret *r);
+void		normal_plan(const __local t_plan *obj, t_ray_ret *r);
+void		normal_cone(const __local t_cone *obj, t_ray_ret *r);
 
 unsigned int	hex_intensity(unsigned int color, float intensity);
 
@@ -38,13 +38,12 @@ float			light_specular(const __local t_light *light, const t_vector *dir_light_t
 float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_light, const t_ray_ret *ray_ret);
 float			light_sphere(const __local t_light *light, const float dist);
 
-t_vector	vector_get_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
-t_vector	vector_get_inverse_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
+t_vector		vector_get_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
+t_vector		vector_get_inverse_rotate_obj_local(const t_vector *this, const __local t_obj *obj);
 
 /*|
 **|
 */
-
 
 t_vector	vector_get_rotate_obj_local(const t_vector *this, const __local t_obj *obj)
 {
@@ -305,31 +304,6 @@ float		intersection_paraboloid(const __local t_paraboloid *obj,
 	return (0);
 }
 
-void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r)
-{
-	r->hit_normal.x = r->position_obj_to_hit.x / (obj->size.x * obj->size.x);
-	r->hit_normal.y = r->position_obj_to_hit.y / (obj->size.y * obj->size.y);
-	r->hit_normal.z = r->position_obj_to_hit.z / (obj->size.z * obj->size.z);
-}
-void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r)
-{
-	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
-	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
-}
-void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r)
-{
-	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
-	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
-}
-void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r)
-{
-	r->hit_normal = r->position_obj_to_hit;
-}
-void	normal_plan(const __local t_plan *obj, t_ray_ret *r)
-{
-	r->hit_normal = obj->normal;
-}
-
 float		intersection_cone(const __local t_cone *obj,
 								const t_vector *origin_object,
 								const t_vector *dir_object,
@@ -365,6 +339,31 @@ float		intersection_cone(const __local t_cone *obj,
 	if (inter0 < len)
 		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_object, dir_object, inter0, inter1));
 	return (0);
+}
+
+void	normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r)
+{
+	r->hit_normal.x = r->position_obj_to_hit.x / (obj->size.x * obj->size.x);
+	r->hit_normal.y = r->position_obj_to_hit.y / (obj->size.y * obj->size.y);
+	r->hit_normal.z = r->position_obj_to_hit.z / (obj->size.z * obj->size.z);
+}
+void	normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r)
+{
+	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
+	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
+}
+void	normal_paraboloid(const __local t_paraboloid *obj, t_ray_ret *r)
+{
+	r->hit_normal = vector_get_mult(&r->y_axis, r->m);
+	r->hit_normal = vector_get_sub(&r->position_obj_to_hit, &r->hit_normal);
+}
+void	normal_sphere(const __local t_sphere *obj, t_ray_ret *r)
+{
+	r->hit_normal = r->position_obj_to_hit;
+}
+void	normal_plan(const __local t_plan *obj, t_ray_ret *r)
+{
+	r->hit_normal = obj->normal;
 }
 void	normal_cone(const __local t_cone *obj, t_ray_ret *r)
 {
@@ -516,6 +515,7 @@ float			light_specular(const __local t_light *light, const t_vector *dir_light_t
 		specular = 1;
 	return (pow(specular, ray_ret->ptr_obj->m_specular));
 }
+
 float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_light, const t_ray_ret *ray_ret)
 {
 	float ret_dot;
@@ -527,6 +527,7 @@ float			light_diffuse(const __local t_light *light, const t_vector *dir_obj_to_l
 		ret_dot = 0;
 	return (ret_dot);
 }
+
 float			ray_light(__local char *l_mem_obj,
 						unsigned long mem_size_obj,
 						__local char *l_mem_light,
@@ -535,14 +536,15 @@ float			ray_light(__local char *l_mem_obj,
 						t_vector *dir,
 						int flag)
 {
-	unsigned long cur;
-	__local t_light *light;
-	__local t_obj *obj;
+	unsigned long		cur;
+	__local t_light		*light;
+	__local t_obj		*obj;
 
-	t_vector dir_obj_to_light;
-	t_vector dir_light_to_obj;
-	t_vector light_position;
-	t_ray_ret ray_shad;
+	t_vector			dir_obj_to_light;
+	t_vector			dir_light_to_obj;
+	t_vector			light_position;
+	t_ray_ret			ray_shad;
+
 	float		is_not_shadow, final_color = 0, specular = 0, diffuse = 1, spherical = 1;
 
 	cur = 0;
@@ -560,7 +562,6 @@ float			ray_light(__local char *l_mem_obj,
 		vector_normalize(&dir_obj_to_light);
 		vector_normalize(&dir_light_to_obj);
 
-		//SHAD
 		light_position = light->position;
 		if (flag & F_SHADOW)
 			ray_shad = ray_shadow(l_mem_obj, mem_size_obj, &dir_light_to_obj, &light_position, dist);
@@ -578,7 +579,7 @@ float			ray_light(__local char *l_mem_obj,
 	return (0.1 + final_color);
 }
 
-__kernel void test(__global int *img,
+__kernel void raytracer(__global int *img,
 					__global char *g_mem_obj,
 					unsigned long mem_size_obj,
 					t_ptr_cl	p_cl,
@@ -615,7 +616,7 @@ __kernel void test(__global int *img,
 		img[x + y * WIDTH] = 0x123123;
 		return ;
 	}
-	//AFTER
+
 	o = ray_ret.ptr_obj;
 	ray_ret.hit_point = vector_get_mult(&dir, ray_ret.distance_intersection);
 	ray_ret.hit_point = vector_get_add(&cam.position, &ray_ret.hit_point);

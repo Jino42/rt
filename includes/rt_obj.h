@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rt_obj.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/12/12 22:31:13 by ntoniolo          #+#    #+#             */
+/*   Updated: 2017/12/12 22:31:55 by ntoniolo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef RT_OBJ_H
 # define RT_OBJ_H
@@ -41,7 +52,7 @@ typedef struct	s_scene
 	t_cam		cam;
 
 	uint64_t	mem_size_obj;
-	void 		*ptr_obj;
+	void		*ptr_obj;
 
 	uint64_t	mem_size_light;
 	void		*ptr_light;
@@ -91,7 +102,7 @@ typedef struct	s_obj_limit
 
 }				t_obj_limit;
 
-typedef struct 	s_sphere
+typedef struct	s_sphere
 {
 	uint64_t	mem_size_obj;
 	uint32_t	id;
@@ -110,7 +121,7 @@ typedef struct 	s_sphere
 	float		radius2;
 }				t_sphere;
 
-typedef struct 	s_ellipsoid
+typedef struct	s_ellipsoid
 {
 	uint64_t	mem_size_obj;
 	uint32_t	id;
@@ -130,7 +141,7 @@ typedef struct 	s_ellipsoid
 	t_vector	size;
 }				t_ellipsoid;
 
-typedef struct 	s_cone
+typedef struct	s_cone
 {
 	uint64_t	mem_size_obj;
 	uint32_t	id;

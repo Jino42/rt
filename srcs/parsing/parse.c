@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:18 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/12 19:26:39 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 21:44:35 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,6 @@ bool			parse_scene(t_env *e, char *path)
 	tab_destruct(&tab);
 	close(fd);
 	if (!e->scene.ptr_light)
-		return(end_of_program(e, "pars: missing light", 0));
+		return (end_of_program(e, "pars: missing light", 0));
 	return (true);
 }
