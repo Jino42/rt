@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/11 22:38:03 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 17:39:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void		sdl_loop_gpu(t_env *e, t_sdl *sdl)
 	}
 }
 
-bool		flag(int64_t *f, int argc, char **argv)
+int		flag(int64_t *f, int argc, char **argv)
 {
 	int i;
 
@@ -180,7 +180,7 @@ int		main(int argc, char **argv)
 
 	ft_bzero(&e, sizeof(t_env));
 	index = flag(&e.flag, argc, argv);
-	if (!parse_scene(&e, argv[index + 1]))
+	if (!parse_scene(&e, argv[index]))
 		return (0);
 	if (e.flag & F_DEBUG_PARSING)
 		return (EXIT_SUCCESS);

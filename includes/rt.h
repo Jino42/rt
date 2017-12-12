@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 20:15:15 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/11 21:30:51 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 17:39:41 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct		s_env
 	int64_t			flag;
 }					t_env;
 
-bool				flag(int64_t *f, int argc, char **argv);
+int					flag(int64_t *f, int argc, char **argv);
 bool				parse_scene(t_env *e, char *path);
 void				update_fps(t_fps *fps);
 void 				update_cam(t_cam *cam);
