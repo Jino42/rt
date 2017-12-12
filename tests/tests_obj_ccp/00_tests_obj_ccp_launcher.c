@@ -34,51 +34,51 @@ static int tests_obj_ccp8(void)
 }
 static int tests_obj_ccp9(void)
 {
-	RUN_RT("tests_obj_ccp/ccp9", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp9", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp10(void)
 {
-	RUN_RT("tests_obj_ccp/ccp10", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp10", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp11(void)
 {
-	RUN_RT("tests_obj_ccp/ccp11", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp11", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp12(void)
 {
-	RUN_RT("tests_obj_ccp/ccp12", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp12", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp13(void)
 {
-	RUN_RT("tests_obj_ccp/ccp13", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp13", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp14(void)
 {
-	RUN_RT("tests_obj_ccp/ccp14", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp14", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp15(void)
 {
-	RUN_RT("tests_obj_ccp/ccp15", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp15", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp16(void)
 {
-	RUN_RT("tests_obj_ccp/ccp16", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp16", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp17(void)
 {
-	RUN_RT("tests_obj_ccp/ccp17", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp17", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp18(void)
 {
-	RUN_RT("tests_obj_ccp/ccp18", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp18", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp19(void)
 {
-	RUN_RT("tests_obj_ccp/ccp19", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp19", "pars: obj transform error\n", 0)
 }
 static int tests_obj_ccp20(void)
 {
-	RUN_RT("tests_obj_ccp/ccp20", "pars: obj ccp error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp20", "pars: obj transform error\n", 0)
 }
 int	tests_obj_ccp_launcher(void)
 {

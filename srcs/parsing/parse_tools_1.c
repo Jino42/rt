@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:44 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 22:53:01 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 18:40:57 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,23 @@ int				rt_count_number_preci(long int n)
 		i++;
 	}
 	return (i);
+}
+
+t_obj			*parse_get_last_obj(const t_scene *scene)
+{
+	t_obj		*obj;
+	uint64_t	cur;
+
+	obj = scene->ptr_obj;
+	if (!obj)
+		return (NULL);
+	cur = 0;
+	while ((cur + obj->mem_size_obj) < scene->mem_size_obj)
+	{
+		cur += obj->mem_size_obj;
+		obj = (scene->ptr_obj + cur);
+	}
+	if (!obj || obj->flag & OBJ_ISLIGHT)
+		return (false);
+	return (obj);
 }

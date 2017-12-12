@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:18 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/11 22:25:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 17:56:01 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ static bool		parse_obj(t_env *e, t_scene *scene, char *line_fd,
 			return (true);
 		}
 		index++;
+	}
+	if (ft_strequ_max(line_fd, "transform", 9) && line_fd[9 + 1])
+	{
+		if (!parse_transform(scene, line_fd + 9))
+			return (end_of_program(e, "pars: transform error", 0));
+		return (true);
 	}
 	return (end_of_program(e, "pars: name fun error", 0));
 }

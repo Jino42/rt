@@ -23,6 +23,7 @@ int				nb_of_arg(const char *str, char c_count, char *c_stop);
 char			*strchr_arg(char *str, int arg);
 char			*strchr_arg_vec(char *str, int arg);
 int				rt_count_number_preci(long int n);
+t_obj			*parse_get_last_obj(const t_scene *scene);
 
 bool			get_float(char *str, float *nb);
 bool			get_radius(char *str, float *radius, float *radius2);
@@ -46,6 +47,8 @@ bool			parse_paraboloid(t_scene *scene, char *line_fd);
 bool			parse_ellipsoid(t_scene *scene, char *line_fd);
 bool			parse_plan(t_scene *scene, char *line_fd);
 bool			parse_light(t_scene *scene, char *line_fd);
+
+bool			parse_transform(t_scene *scene, char *line_fd);
 
 bool			parse_name(t_scene *scene, const int fd);
 bool			parse_camera(t_scene *scene, const int fd);

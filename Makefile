@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/11 22:30:33 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/12 17:43:46 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC = main.c \
 	  update/update_cam.c \
 	  update/update_obj.c \
 	  parsing/parse.c \
+	  parsing/parse_transform.c \
 	  parsing/parse_camera.c \
 	  parsing/parse_cone.c \
 	  parsing/parse_cylinder.c \
