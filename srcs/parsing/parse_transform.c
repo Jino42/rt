@@ -6,14 +6,17 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/12 17:43:26 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/12 18:41:17 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 19:17:08 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt_parse.h"
 
-static void		parse_rotation_obj(t_obj *o, const t_vector *rot)
+static void		parse_rotation_obj(t_obj *o, t_vector *rot)
 {
+	rot->x = rot->x * M_PI / 180;
+	rot->y = rot->y * M_PI / 180;
+	rot->z = rot->z * M_PI / 180;
 	o->rot.x = rot->x;
 	o->cos.x = cos(o->rot.x);
 	o->sin.x = sin(o->rot.x);
@@ -69,7 +72,6 @@ bool			parse_transform(t_scene *scene, char *line_fd)
 	translate = vector_construct(0, 0, 0);
 	rotation = vector_construct(0, 0, 0);
 	scaling = 0;
-
 	if (!is_encaps(line_fd, 3))
 		return (false);
 	if (!get_vec(strchr_arg(line_fd, 1), &translate))

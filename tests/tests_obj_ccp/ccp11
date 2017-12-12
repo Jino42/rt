@@ -1,5 +1,6 @@
 name:name
 camera(0 0 0)
+transform(1 1 1, 1 1 1, 1)
 light(10 10 10, BASIC, 0.66, AFF)
 light(-10 10 10, BASIC, 0.33, AFF)
 sphere(20 20 0, 84f15e, 24, 0.5)
