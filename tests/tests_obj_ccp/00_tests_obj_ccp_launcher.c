@@ -46,7 +46,7 @@ static int tests_obj_ccp11(void)
 }
 static int tests_obj_ccp12(void)
 {
-	RUN_RT("tests_obj_ccp/ccp12", "pars: transform error\n", 0)
+	RUN_RT("tests_obj_ccp/ccp12", "pars: missing light\n", 0)
 }
 static int tests_obj_ccp13(void)
 {
@@ -98,7 +98,7 @@ int	tests_obj_ccp_launcher(void)
 	load_test(&testlist, "ccp9 transform 4arg", 0, &tests_obj_ccp9);
 	load_test(&testlist, "ccp10 transform light", 0, &tests_obj_ccp10);
 	load_test(&testlist, "ccp11 transform camera", 0, &tests_obj_ccp11);
-	load_test(&testlist, "ccp12", 0, &tests_obj_ccp12);
+	load_test(&testlist, "ccp12 missing light", 0, &tests_obj_ccp12);
 	load_test(&testlist, "ccp13", 0, &tests_obj_ccp13);
 	load_test(&testlist, "ccp14", 0, &tests_obj_ccp14);
 	load_test(&testlist, "ccp15", 0, &tests_obj_ccp15);

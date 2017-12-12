@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/10 22:49:33 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/10 22:56:13 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/12 19:35:56 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ bool			parse_light(t_scene *scene, char *line_fd)
 		return (false);
 	if (ft_strequ_arg(strchr_arg(line_fd, 2), "BASIC", 5))
 		light.type = LIGHT_BASIC;
-	else if (ft_strequ_arg(strchr_arg(line_fd, 2), "SPHERE", 6))
-		light.type = LIGHT_SPHERE;
 	else
 		return (false);
 	if (!get_float(strchr_arg(line_fd, 3), &light.intensity))
