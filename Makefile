@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/12 22:28:08 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/13 19:35:04 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -121,6 +121,3 @@ fclean:
 	@/bin/rm -f $(NAME)
 
 re: fclean all
-
-test:
-	make -C tests

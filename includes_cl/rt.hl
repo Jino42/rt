@@ -94,6 +94,7 @@ typedef struct	s_obj
 	float		m_specular;
 
 }				t_obj;
+
 typedef struct	s_obj_limit
 {
 	uint64_t	mem_size_obj;

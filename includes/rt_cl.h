@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/13 17:10:34 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/12 22:30:44 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/13 19:36:35 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define MAX_SOURCE_SIZE (30000)
 # define CL_ERROR_LEN_BUFFER 17000
 
-typedef struct	s_cl
+typedef struct			s_cl
 {
 	cl_device_id		device_id;
 	cl_context			context;
@@ -36,11 +36,12 @@ typedef struct	s_cl
 	size_t				local_item_size;
 
 	char				*path;
-}				t_cl;
+}						t_cl;
 
-void 					cl_check_err(cl_int err, const char *name);
-void 					cl_end(t_cl *cl);
-int						cl_init(t_cl *cl, const char *path, const char *name, const size_t global_item_size);
+void					cl_check_err(cl_int err, const char *name);
+void					cl_end(t_cl *cl);
+int						cl_init(t_cl *cl, const char *path, const char *name,
+								const size_t global_item_size);
 bool					cl_create_buffer(t_cl *cl, size_t size);
 
 #endif

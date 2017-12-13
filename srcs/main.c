@@ -6,7 +6,7 @@
 /*   By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 16:25:46 by ntoniolo          #+#    #+#             */
-/*   Updated: 2017/12/12 22:36:20 by ntoniolo         ###   ########.fr       */
+/*   Updated: 2017/12/13 19:37:36 by ntoniolo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int			main(int argc, char **argv)
 		return (end_of_program(&e, "Erreur a l'initialisation", ERROR_SDL));
 	if (e.flag & F_DEBUG_SIZE_STRUCT)
 		debug_print_size_obj();
-	cl_init(&e.cl, "srcs_cl/raytracer.cl", "raytracer", e.sdl.height * e.sdl.width);
+	cl_init(&e.cl, "srcs_cl/raytracer.cl", "raytracer",
+								e.sdl.height * e.sdl.width);
 	cl_init_buffer(&e);
 	init_projection(&e.sdl, &e.p_cl);
 	rt_loop_gpu(&e, &e.sdl);
