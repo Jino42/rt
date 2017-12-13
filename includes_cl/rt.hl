@@ -129,6 +129,7 @@ typedef struct	s_ray_ret
 	__local t_obj *ptr_obj;
 	int			inter;
 	int			hit;
+	int			inter_exter;
 }				t_ray_ret;
 
 typedef struct 	s_sphere
