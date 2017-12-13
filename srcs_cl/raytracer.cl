@@ -214,11 +214,17 @@ float		intersection_ellipsoid(const __local t_ellipsoid *obj,
 
 float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_isobject, const t_vector *dir_object, float inter0, float inter1)
 {
-	r->m = vector_dot(dir_object, &r->y_axis) * inter0  + vector_dot(origin_isobject, &r->y_axis);
-	if (r->m > obj->limit || r->m <  -obj->limit)
+ 	t_vector tmp;
+
+	tmp = vector_get_mult(dir_object, inter0);
+	tmp = vector_get_add(&tmp, origin_isobject);
+	r->m = vector_dot(&tmp, &r->y_axis);
+	if (r->m > obj->limit || r->m < -obj->limit)
 	{
-		r->m = vector_dot(dir_object, &r->y_axis) * inter1 + vector_dot(origin_isobject, &r->y_axis);
-		if (r->m > obj->limit || r->m <  -obj->limit)
+		tmp = vector_get_mult(dir_object, inter1);
+		tmp = vector_get_add(&tmp, origin_isobject);
+		r->m = vector_dot(&tmp, &r->y_axis);
+		if (r->m > obj->limit || r->m < -obj->limit)
 			return (0);
 		return (inter1);
 	}
