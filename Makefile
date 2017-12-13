@@ -6,7 +6,7 @@
 #    By: ntoniolo <ntoniolo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/02 18:45:43 by ntoniolo          #+#    #+#              #
-#    Updated: 2017/12/13 19:35:04 by ntoniolo         ###   ########.fr        #
+#    Updated: 2017/12/13 19:57:56 by ntoniolo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,9 @@ OBJ_DIR = objs/
 
 OBJET = $(SRC:.c=.o)
 
-SDL_FLAG = -I SDL2-2.0.5/include SDL2-2.0.5/build/.libs/libSDL2.a -framework Cocoa -framework CoreAudio -framework AudioToolbox -framework ForceFeedback -framework CoreVideo -framework Carbon -framework IOKit -liconv
+SDL_DIR = SDL2-2.0.5
+SDL_LIB = SDL2-2.0.5/build/.libs/libSDL2.a
+SDL_FLAG = $(SDL_LIB) -framework Cocoa -framework CoreAudio -framework AudioToolbox -framework ForceFeedback -framework CoreVideo -framework Carbon -framework IOKit -liconv
 
 FRAMEWORK = -framework OpenGL -framework AppKit -framework Opencl
 
@@ -79,7 +81,7 @@ DIR_LIB = libs/
 
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) lib $(addprefix $(OBJ_DIR), $(OBJET))
+$(NAME): $(OBJ_DIR) $(SDL_LIB) lib $(addprefix $(OBJ_DIR), $(OBJET))
 	@$(CC) $(INC) $(addprefix $(OBJ_DIR), $(OBJET)) -L./$(DIR_LIB) $(FLAG_LIB) $(SDL_FLAG) $(FRAMEWORK) -o $(NAME)
 
 lib:
@@ -89,6 +91,13 @@ lib:
 	@(cp $(DIR_LFT)libft.a $(DIR_LIB))
 	@(cp $(DIR_VEC)libvector.a $(DIR_LIB))
 	@(cp $(DIR_MATRIX)libmatrix.a $(DIR_LIB))
+
+$(SDL_DIR):
+	@$(shell tar xzf .$(SDL_DIR).tar.gz)
+
+$(SDL_LIB): $(SDL_DIR)
+	@cd $(SDL_DIR) && ./configure
+	@cd $(SDL_DIR) && make
 
 $(OBJ_DIR) :
 	@mkdir $(DIR_LIB)
@@ -117,6 +126,7 @@ fclean:
 	@(cd $(DIR_LFT) && $(MAKE) fclean)
 	@(cd $(DIR_VEC) && $(MAKE) fclean)
 	@(cd $(DIR_MATRIX) && $(MAKE) fclean)
+	@/bin/rm -rf $(SDL_DIR)
 	@/bin/rm -rf $(DIR_LIB)
 	@/bin/rm -f $(NAME)
 
