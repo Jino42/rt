@@ -3,22 +3,22 @@
 
 bool			solve_quadratic(const float a, const float b, const float c,
 								float *inter0, float *inter1);
-float			intersection_sphere(const __local t_sphere *obj, const t_vector *origin_isobject,
+float			intersection_sphere(const __local t_sphere *obj, const t_vector *cam_to_obj,
 								const t_vector *dir_object, const float len);
 float			intersection_ellipsoid(const __local t_ellipsoid *obj, t_vector *origin,
 								t_vector *dir, const float len, t_ray_ret *r);
 float			intersection_planeconst (__local t_plan *obj, const t_vector *origin,
 								const t_vector *dir, const float len);
-float			intersection_ellipsoid(const __local t_ellipsoid *obj, t_vector *origin_isobject,
+float			intersection_ellipsoid(const __local t_ellipsoid *obj, t_vector *cam_to_obj,
 								t_vector *dir_object, const float len, t_ray_ret *r);
-float			intersection_cylinder(const __local t_cylinder *obj, const t_vector *origin_isobject,
+float			intersection_cylinder(const __local t_cylinder *obj, const t_vector *cam_to_obj,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
-float			intersection_paraboloid(const __local t_paraboloid *obj, const t_vector *origin_isobject,
+float			intersection_paraboloid(const __local t_paraboloid *obj, const t_vector *cam_to_obj,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
-float			intersection_cone(const __local t_cone *obj, const t_vector *origin_isobject,
+float			intersection_cone(const __local t_cone *obj, const t_vector *cam_to_obj,
 								const t_vector *dir_object, const float len, t_ray_ret *r);
 float			intersection_plane(const __local t_plan *obj, const t_vector *origin, const t_vector *dir, const float len);
-float			calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_isobject, const t_vector *dir_object, float inter0, float inter1);
+float			calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *cam_to_obj, const t_vector *dir_object, float inter0, float inter1);
 
 void			normal_ellipsoid(const __local t_ellipsoid *obj, t_ray_ret *r);
 void			normal_cylinder(const __local t_cylinder *obj, t_ray_ret *r);
@@ -134,7 +134,7 @@ bool		solve_quadratic(const float a, const float b, const float c,
 }
 
 float		intersection_sphere(const __local t_sphere *obj,
-								const t_vector *origin_isobject,
+								const t_vector *cam_to_obj,
 								const t_vector *dir_object,
 								const float len)
 {
@@ -143,8 +143,8 @@ float		intersection_sphere(const __local t_sphere *obj,
 
 
 	a = 1;
-	b = 2 * vector_dot(dir_object, origin_isobject);
-	c = vector_magnitude(origin_isobject) - obj->radius2;
+	b = 2 * vector_dot(dir_object, cam_to_obj);
+	c = vector_magnitude(cam_to_obj) - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 < 0)
@@ -165,9 +165,9 @@ float		intersection_plane(const __local t_plan *obj,
 {
 	t_vector normal;
 
-	t_vector	origin_isobject;
+	t_vector	cam_to_obj;
 
-	origin_isobject = vector_get_sub_local(origin, &obj->position);
+	cam_to_obj = vector_get_sub_local(origin, &obj->position);
 
 	normal = obj->normal;
 	normal = vector_get_inverse_rotate_obj_local(&normal, (const __local t_obj *)obj);
@@ -175,7 +175,7 @@ float		intersection_plane(const __local t_plan *obj,
 	float denom = vector_dot(&normal, dir);
 	if (fabs(denom) > EPSILON)
 	{
-		t_vector origin_to_plan = local_vector_get_sub(&obj->position, &origin_isobject); //
+		t_vector origin_to_plan = local_vector_get_sub(&obj->position, &cam_to_obj); //
 		float t = vector_dot(&origin_to_plan, &normal) / denom;
 		if (t >= 0 && t < len)
 			return (t);
@@ -184,7 +184,7 @@ float		intersection_plane(const __local t_plan *obj,
 }
 
 float		intersection_ellipsoid(const __local t_ellipsoid *obj,
-									t_vector *origin_isobject,
+									t_vector *cam_to_obj,
 									t_vector *dir_object,
 									const float len,
 									t_ray_ret *r)
@@ -193,18 +193,18 @@ float		intersection_ellipsoid(const __local t_ellipsoid *obj,
 	float a, b, c;
 
 
-	vector_div_vector_local(origin_isobject, &obj->size);
+	vector_div_vector_local(cam_to_obj, &obj->size);
 	vector_div_vector_local(dir_object, &obj->size);
 
 	a = (dir_object->x * dir_object->x +
 	 	 dir_object->y * dir_object->y +
 	 	 dir_object->z * dir_object->z);
-	 b = (2 * origin_isobject->x * dir_object->x +
-		  2 * origin_isobject->y * dir_object->y +
-		  2 * origin_isobject->z * dir_object->z);
-	 c = (origin_isobject->x * origin_isobject->x +
-		  origin_isobject->y * origin_isobject->y +
-		  origin_isobject->z * origin_isobject->z) - obj->radius2;
+	 b = (2 * cam_to_obj->x * dir_object->x +
+		  2 * cam_to_obj->y * dir_object->y +
+		  2 * cam_to_obj->z * dir_object->z);
+	 c = (cam_to_obj->x * cam_to_obj->x +
+		  cam_to_obj->y * cam_to_obj->y +
+		  cam_to_obj->z * cam_to_obj->z) - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 < len)
@@ -212,17 +212,17 @@ float		intersection_ellipsoid(const __local t_ellipsoid *obj,
 	return (0);
 }
 
-float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *origin_isobject, const t_vector *dir_object, float inter0, float inter1)
+float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_vector *cam_to_obj, const t_vector *dir_object, float inter0, float inter1)
 {
  	t_vector tmp;
 
 	tmp = vector_get_mult(dir_object, inter0);
-	tmp = vector_get_add(&tmp, origin_isobject);
+	tmp = vector_get_add(&tmp, cam_to_obj);
 	r->m = vector_dot(&tmp, &r->y_axis);
 	if (r->m > obj->limit || r->m < -obj->limit)
 	{
 		tmp = vector_get_mult(dir_object, inter1);
-		tmp = vector_get_add(&tmp, origin_isobject);
+		tmp = vector_get_add(&tmp, cam_to_obj);
 		r->m = vector_dot(&tmp, &r->y_axis);
 		if (r->m > obj->limit || r->m < -obj->limit)
 			return (0);
@@ -232,7 +232,7 @@ float		calculate_m_value(const __local t_obj_limit *obj, t_ray_ret *r, const t_v
 }
 
 float		intersection_cylinder(const __local t_cylinder *obj,
-									const t_vector *origin_isobject,
+									const t_vector *cam_to_obj,
 									const t_vector *dir_object,
 									const float len,
 									t_ray_ret *r)
@@ -241,19 +241,19 @@ float		intersection_cylinder(const __local t_cylinder *obj,
 	float a, b, c;
 
 	a = dir_object->x * dir_object->x + dir_object->z * dir_object->z;
-	b = 2 * origin_isobject->x * dir_object->x +
-		2 * origin_isobject->z * dir_object->z;
-	c = origin_isobject->x * origin_isobject->x +
-		origin_isobject->z * origin_isobject->z - obj->radius2;
+	b = 2 * cam_to_obj->x * dir_object->x +
+		2 * cam_to_obj->z * dir_object->z;
+	c = cam_to_obj->x * cam_to_obj->x +
+		cam_to_obj->z * cam_to_obj->z - obj->radius2;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 < len)
-		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_isobject, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, cam_to_obj, dir_object, inter0, inter1));
 	return (0);
 }
 
 float		intersection_paraboloid(const __local t_paraboloid *obj,
-									const t_vector *origin_isobject,
+									const t_vector *cam_to_obj,
 									const t_vector *dir_object,
 									const float len,
 									t_ray_ret *r)
@@ -262,21 +262,21 @@ float		intersection_paraboloid(const __local t_paraboloid *obj,
 	float a, b, c;
 
 	a = (dir_object->x * dir_object->x + dir_object->z * dir_object->z);
-	b = (2 * origin_isobject->x * dir_object->x +
-		2 * origin_isobject->z * dir_object->z) - (dir_object->y) * obj->option;
-	c = (origin_isobject->x * origin_isobject->x +
-		origin_isobject->z * origin_isobject->z) - (origin_isobject->y) * obj->option;
+	b = (2 * cam_to_obj->x * dir_object->x +
+		2 * cam_to_obj->z * dir_object->z) - (dir_object->y) * obj->option;
+	c = (cam_to_obj->x * cam_to_obj->x +
+		cam_to_obj->z * cam_to_obj->z) - (cam_to_obj->y) * obj->option;
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 < len)
-		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_isobject, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, cam_to_obj, dir_object, inter0, inter1));
 	return (0);
 }
 
 //x² + y² - z² / tan(angle)² = 0
 
 float		intersection_cone(const __local t_cone *obj,
-								const t_vector *origin_isobject,
+								const t_vector *cam_to_obj,
 								const t_vector *dir_object,
 								const float len,
 								t_ray_ret *r)
@@ -287,16 +287,16 @@ float		intersection_cone(const __local t_cone *obj,
 	a = (dir_object->x * dir_object->x +
 	 	 dir_object->z * dir_object->z -
 	 	 (dir_object->y * dir_object->y) * tan(obj->angle));
-	 b = (2 * origin_isobject->x * dir_object->x +
-		  2 * origin_isobject->z * dir_object->z -
-		  2 * (origin_isobject->y * dir_object->y) * tan(obj->angle));
-	 c = (origin_isobject->x * origin_isobject->x +
-		  origin_isobject->z * origin_isobject->z -
-		  (origin_isobject->y * origin_isobject->y) * tan(obj->angle));
+	 b = (2 * cam_to_obj->x * dir_object->x +
+		  2 * cam_to_obj->z * dir_object->z -
+		  2 * (cam_to_obj->y * dir_object->y) * tan(obj->angle));
+	 c = (cam_to_obj->x * cam_to_obj->x +
+		  cam_to_obj->z * cam_to_obj->z -
+		  (cam_to_obj->y * cam_to_obj->y) * tan(obj->angle));
 	if (!solve_quadratic(a, b, c, &inter0, &inter1))
 		return (0);
 	if (inter0 < len)
-		return (calculate_m_value((const __local t_obj_limit *)obj, r, origin_isobject, dir_object, inter0, inter1));
+		return (calculate_m_value((const __local t_obj_limit *)obj, r, cam_to_obj, dir_object, inter0, inter1));
 	return (0);
 }
 
@@ -362,7 +362,7 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 	float				min_distance;
 
 	t_vector			dir_object;
-	t_vector			origin_isobject;
+	t_vector			cam_to_obj;
 
 	ray_ret.hit = 0;
 	tmp_r.y_axis = vector_construct(0, 1, 0);
@@ -375,21 +375,21 @@ t_ray_ret		ray_intersection(__local char *l_mem_obj,
 		obj = (__local t_obj *)(l_mem_obj + cur);
 
 		dir_object = vector_get_rotate_obj_local(dir, obj);
-		origin_isobject = vector_get_sub_local(origin, &obj->position);
-		origin_isobject = vector_get_rotate_obj_local(&origin_isobject, obj);
+		cam_to_obj = vector_get_sub_local(origin, &obj->position);
+		cam_to_obj = vector_get_rotate_obj_local(&cam_to_obj, obj);
 
 		if (obj->id == OBJ_SPHERE)
-			tmp_r.distance_intersection = intersection_sphere((__local t_sphere *)obj, &origin_isobject, &dir_object, INFINITY);
+			tmp_r.distance_intersection = intersection_sphere((__local t_sphere *)obj, &cam_to_obj, &dir_object, INFINITY);
 		else if (obj->id == OBJ_PLANE)
 			tmp_r.distance_intersection = intersection_plane((__local t_plan *)obj, origin, dir, INFINITY);
 		else if (obj->id == OBJ_ELLIPSOID)
-			tmp_r.distance_intersection = intersection_ellipsoid((__local t_ellipsoid *)obj, &origin_isobject, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_ellipsoid((__local t_ellipsoid *)obj, &cam_to_obj, &dir_object, INFINITY, &tmp_r);
 		else if (obj->id == OBJ_CONE)
-			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_isobject, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &cam_to_obj, &dir_object, INFINITY, &tmp_r);
 		else if (obj->id == OBJ_PARABOLOID)
-			tmp_r.distance_intersection = intersection_paraboloid((__local t_paraboloid *)obj, &origin_isobject, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_paraboloid((__local t_paraboloid *)obj, &cam_to_obj, &dir_object, INFINITY, &tmp_r);
 		else if (obj->id == OBJ_CYLINDER)
-			tmp_r.distance_intersection = intersection_cylinder((__local t_cylinder *)obj, &origin_isobject, &dir_object, INFINITY, &tmp_r);
+			tmp_r.distance_intersection = intersection_cylinder((__local t_cylinder *)obj, &cam_to_obj, &dir_object, INFINITY, &tmp_r);
 
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
@@ -418,7 +418,7 @@ t_ray_ret		ray_shadow(__local char *l_mem_obj,
 	float				min_distance;
 
 	t_vector			dir_object;
-	t_vector			origin_isobject;
+	t_vector			cam_to_obj;
 
 	tmp_r.y_axis = vector_construct(0, 1, 0);
 	min_distance = INFINITY;
@@ -429,21 +429,21 @@ t_ray_ret		ray_shadow(__local char *l_mem_obj,
 		tmp_r.distance_intersection = 0;
 
 		dir_object = vector_get_rotate_obj_local(dir, obj);
-		origin_isobject = vector_get_sub_local(origin, &obj->position);
-		origin_isobject = vector_get_rotate_obj_local(&origin_isobject, obj);
+		cam_to_obj = vector_get_sub_local(origin, &obj->position);
+		cam_to_obj = vector_get_rotate_obj_local(&cam_to_obj, obj);
 
 		if (obj->id == OBJ_SPHERE && (!obj->flag & OBJ_ISLIGHT))
-			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &origin_isobject, &dir_object, near);
+			tmp_r.distance_intersection = intersection_sphere((const __local t_sphere *)obj, &cam_to_obj, &dir_object, near);
 		else if (obj->id == OBJ_PLANE)
 			tmp_r.distance_intersection = intersection_plane((const __local t_plan *)obj, origin, dir, near);
 		else if (obj->id == OBJ_ELLIPSOID)
-			tmp_r.distance_intersection = intersection_ellipsoid((const __local t_ellipsoid *)obj, &origin_isobject, &dir_object, near, &tmp_r);
+			tmp_r.distance_intersection = intersection_ellipsoid((const __local t_ellipsoid *)obj, &cam_to_obj, &dir_object, near, &tmp_r);
 		else if (obj->id == OBJ_CONE)
-			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &origin_isobject, &dir_object, near, &tmp_r);
+			tmp_r.distance_intersection = intersection_cone((const __local t_cone *)obj, &cam_to_obj, &dir_object, near, &tmp_r);
 		else if (obj->id == OBJ_PARABOLOID)
-			tmp_r.distance_intersection = intersection_paraboloid((const __local t_paraboloid *)obj, &origin_isobject, &dir_object, near, &tmp_r);
+			tmp_r.distance_intersection = intersection_paraboloid((const __local t_paraboloid *)obj, &cam_to_obj, &dir_object, near, &tmp_r);
 		else if (obj->id == OBJ_CYLINDER)
-			tmp_r.distance_intersection = intersection_cylinder((const __local t_cylinder *)obj, &origin_isobject, &dir_object, near, &tmp_r);
+			tmp_r.distance_intersection = intersection_cylinder((const __local t_cylinder *)obj, &cam_to_obj, &dir_object, near, &tmp_r);
 
 		if (fabs(tmp_r.distance_intersection) > EPSILON &&
 				tmp_r.distance_intersection < min_distance)
